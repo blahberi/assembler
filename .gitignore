@@ -1,0 +1,108 @@
+# Ignore directories created by CLion
+.idea/
+cmake-build-debug/
+cmake-build-release/
+
+# Ignore compiled files
+*.o
+*.so
+*.ko
+*.a
+*.mod
+*.mod.c
+*.lo
+
+# Ignore executables
+*.exe
+
+# Ignore generated files
+*.s
+*.swp
+*.out
+*.d
+*.4
+*.4a
+*.4b
+*.4f
+*.4i
+*.4o
+*.4t
+*.4x
+*.Po
+*.Plo
+*.bak
+*.log
+*.orig
+*.rej
+*.swp
+*.swo
+*.vi
+*.vsp
+*~
+
+# Ignore temporary files created by the linker
+*.ilk
+*.pdb
+*.exp
+*.lib
+*.exe
+*.dll
+*.idb
+*.pdb
+*.manifest
+*.res
+*.pch
+*.sbr
+*.bsc
+*.ilk
+*.map
+*.exp
+*.ipch
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.opendb
+*.VC.db-shm
+*.VC.db-wal
+*.VC.VC.opendb
+
+# Ignore files created by GNU Global
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+
+# Ignore files created by ctags and cscope
+tags
+cscope.*
+
+# Ignore files created by gnu indent
+*.BAK
+*.bak
+*.bAk
+*.baK
+*.bak2
+*.BAK2
+*.bAk2
+*.baK2
+*.bak3
+*.BAK3
+*.bAk3
+*.baK3
+
+# Ignore core dumps
+core
+
+# Ignore files created by distcc
+*.distcc
+
+# Ignore files created by ccache
+*.ccache
+
+# Ignore files created by autoscan
+autoscan.log
+
+# Ignore files created by configure
+config.log
+config.status
