@@ -12,7 +12,7 @@ cmake-build-release/
 *.mod.c
 *.lo
 
-# Ignore executables
+# Ignore executables yum
 *.exe
 
 # Ignore generated files
