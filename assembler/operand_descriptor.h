@@ -6,8 +6,8 @@
 #define ASSEMBLER_OPERAND_DESCRIPTOR_H
 
 #include <stdbool.h>
-#include "../words/instruction_word.h"
-#include "../addressing_mode/addressing_mode.h"
+#include "instruction_word.h"
+#include "addressing_mode.h"
 
 
 typedef struct operand_descriptor OperandDescriptor;

@@ -3,7 +3,7 @@
 //
 
 #include "instruction_to_machine_code.h"
-#include "../enums/are.h"
+#include "are.h"
 
 typedef struct  {
     unsigned int ARE : 2;
@@ -26,7 +26,9 @@ void generate_first_word(OperationDescriptor* descriptor, ADDR_MODE src, ADDR_MO
     word->OPCODE = descriptor->opcode;
 }
 
-int generate_two_word_instruction(OperationDescriptor* descriptor, OperandDescriptor* src, OperandDescriptor* dest, InstructionWord *instruction_words) {
+int generate_two_word_instruction(OperationDescriptor* descriptor, OperandDescriptor* operands, InstructionWord *instruction_words) {
+    OperandDescriptor *src = &operands[0];
+    OperandDescriptor *dest = &operands[1];
     get_addr_mode(src);
     get_addr_mode(dest);
     generate_first_word(descriptor, src->addr_mode, dest->addr_mode, instruction_words);

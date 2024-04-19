@@ -3,8 +3,8 @@
 //
 
 #include "symbol_table.h"
-#include "../symbol_node/symbol_node.h"
-#include "../symbol/symbol.h"
+#include "symbol_node.h"
+#include "symbol.h"
 
 #include <stdio.h>
 #include <stdlib.h>

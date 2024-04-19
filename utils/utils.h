@@ -10,6 +10,6 @@
 
 bool is_number_signed(const char* str);
 bool is_number_unsigned(const char* str);
-bool is_register(const char* operand);
+int is_register(const char* operand);
 
 #endif //ASSEMBLER_UTILS_H

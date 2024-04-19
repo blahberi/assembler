@@ -1,0 +1,13 @@
+//
+// Author: Eitan H. .
+//
+
+#ifndef ASSEMBLER_REGISTER_ERROR_H
+#define ASSEMBLER_REGISTER_ERROR_H
+
+typedef enum {
+    INVALID_REGISTER_NAME = -1,
+    INVALID_REGISTER_ID = -2
+} REGISTER_ERROR;
+
+#endif //ASSEMBLER_REGISTER_ERROR_H

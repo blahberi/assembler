@@ -7,18 +7,17 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "utils.h"
-#include "../config/config.h"
+#include "../config.h"
+#include "../assembler/register_error.h"
 
 bool is_number_helper(const char* str){
-    bool is_number = false;
     while (*str != '\0') {
         if (!isdigit((unsigned char)*str)) {
             return false;
         }
-        is_number = true;
         str++;
     }
-    return is_number;
+    return true;
 }
 
 bool is_number_signed(const char* str) {
@@ -41,13 +40,14 @@ bool is_number_unsigned(const char* str) {
     return is_number_helper(str);
 }
 
-bool is_register(const char* operand) {
+int is_register(const char* operand) {
     // check if starts with r and the rest is a number
     if (operand[0] == 'r' && is_number_unsigned(operand + 1)) {
         int reg_num = atoi(operand + 1);
         if (reg_num < REGISTER_COUNT) { // Check if the register number is valid
-            return true;
+            return 0;
         }
+        return INVALID_REGISTER_ID;
     }
-    return false;
+    return INVALID_REGISTER_NAME;
 }

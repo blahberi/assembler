@@ -3,7 +3,7 @@
 //
 
 #include "symbol_node.h"
-#include "../symbol/symbol.h"
+#include "symbol.h"
 
 #include <stdlib.h>
 #include <string.h>
