@@ -2,11 +2,11 @@
 // Author: Eitan H. .
 //
 #include <stdlib.h>
-#include "../machine_code_generator/instruction_to_machine_code.h"
-#include "../symbol_table/global_symbol_table/global_symbol_table.h"
+#include <string.h>
+#include "instruction_to_machine_code.h"
+#include "../symbol_table/global_symbol_table.h"
 #include "../utils/utils.h"
-#include "../words/operand_words.h"
-#include "../machine_code_generator/operand_to_machine_code/operand_to_machine_code.h"
+#include "operand_to_machine_code.h"
 
 
 void get_addr_mode(OperandDescriptor* descriptor) {
@@ -26,7 +26,7 @@ void get_addr_mode(OperandDescriptor* descriptor) {
         descriptor->generate = generate_index_operand;
         return;
     }
-    if (is_register(operand)) {
+    if (is_register(operand) == 0) {
         descriptor->addr_mode = REGISTER;
         descriptor->generate = generate_register_operand;
         return;

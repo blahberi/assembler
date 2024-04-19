@@ -3,10 +3,10 @@
 //
 
 #include "operand_to_machine_code.h"
-#include "../../symbol_table/global_symbol_table/global_symbol_table.h"
-#include "../../utils/utils.h"
-#include "../../enums/are.h"
-#include "../../words/operand_words.h"
+#include "../symbol_table/global_symbol_table.h"
+#include "../utils/utils.h"
+#include "are.h"
+#include "operand_words.h"
 
 #include <stdlib.h>
 #include <string.h>

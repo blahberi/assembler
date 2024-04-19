@@ -3,7 +3,7 @@
 //
 
 #include "global_symbol_table.h"
-#include "../table/symbol_table.h"
+#include "symbol_table.h"
 #include <stdlib.h>
 
 SymbolTable *SYMBOL_TABLE = NULL;

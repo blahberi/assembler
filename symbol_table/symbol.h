@@ -5,7 +5,7 @@
 #ifndef ASSEMBLER_SYMBOL_H
 #define ASSEMBLER_SYMBOL_H
 
-#include "../../config/config.h"
+#include "../config.h"
 
 typedef struct symbol {
     char name[MAX_LABEL_LENGTH];

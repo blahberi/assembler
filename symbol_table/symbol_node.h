@@ -5,7 +5,7 @@
 #ifndef ASSEMBLER_SYMBOL_NODE_H
 #define ASSEMBLER_SYMBOL_NODE_H
 
-#include "../symbol/symbol.h"
+#include "symbol.h"
 
 
 typedef struct symbol_node {

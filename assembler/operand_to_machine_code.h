@@ -6,7 +6,7 @@
 #define ASSEMBLER_OPERAND_TO_MACHINE_CODE_H
 
 
-#include "../../descriptors/operand_descriptor.h"
+#include "operand_descriptor.h"
 
 int generate_immediate_operand(OperandDescriptor* descriptor, InstructionWord* instruction_word);
 int generate_direct_operand(OperandDescriptor* descriptor, InstructionWord* instruction_word);

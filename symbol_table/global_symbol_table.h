@@ -6,7 +6,7 @@
 #ifndef ASSEMBLER_GLOBAL_SYMBOL_TABLE_H
 #define ASSEMBLER_GLOBAL_SYMBOL_TABLE_H
 
-#include "../symbol/symbol.h"
+#include "symbol.h"
 #include <stdbool.h>
 
 int create_global_symbol_table();

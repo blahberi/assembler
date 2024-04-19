@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
-#include "machine_code_generator/instruction_to_machine_code.h"
-#include "symbol_table/global_symbol_table/global_symbol_table.h"
+#include "assembler/instruction_to_machine_code.h"
+#include "symbol_table/global_symbol_table.h"
 
 int main() {
     create_global_symbol_table();
@@ -32,10 +32,13 @@ int main() {
         .generate = NULL
     };
 
+    OperandDescriptor operands[2] = {src_desc, dest_desc};
+
     InstructionWord instruction_words[5];
     memset(instruction_words, 0, sizeof(instruction_words));
 
-    int len = op_desc.generate(&op_desc, &src_desc, &dest_desc, instruction_words);
+
+    int len = op_desc.generate(&op_desc, operands, instruction_words);
 
     // print the instruction words in binary with 1 line per word
     for (int i = 0; i < len; i++) {
