@@ -1,0 +1,15 @@
+//
+// Author: Eitan H.
+//
+
+#ifndef ASSEMBLER_CONFIG_H
+#define ASSEMBLER_CONFIG_H
+
+#define MEMORY_SIZE 4096
+#define MAX_LINE_LENGTH 80
+#define MAX_LABEL_LENGTH 31
+#define REGISTER_COUNT 8
+#define SYMBOL_TABLE_SIZE 100
+
+
+#endif //ASSEMBLER_CONFIG_H
