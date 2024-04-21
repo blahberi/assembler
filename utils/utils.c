@@ -5,10 +5,10 @@
 
 #include <stdbool.h>
 #include <ctype.h>
-#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
 #include "utils.h"
-#include "../config.h"
-#include "../assembler/register_error.h"
 
 bool is_number_helper(const char* str){
     while (*str != '\0') {
@@ -40,14 +40,50 @@ bool is_number_unsigned(const char* str) {
     return is_number_helper(str);
 }
 
-int is_register(const char* operand) {
-    // check if starts with r and the rest is a number
-    if (operand[0] == 'r' && is_number_unsigned(operand + 1)) {
-        int reg_num = atoi(operand + 1);
-        if (reg_num < REGISTER_COUNT) { // Check if the register number is valid
-            return 0;
-        }
-        return INVALID_REGISTER_ID;
+void print_binary(unsigned int num, int bits) {
+    for (int i = bits - 1; i >= 0; i--) {
+        printf("%d", (num >> i) & 1);
     }
-    return INVALID_REGISTER_NAME;
+    printf("\n");
+}
+
+char** split_string_by_comma(const char* str) {
+    char* str_copy = strdup(str);
+    char** result = malloc(sizeof(char*) * (strlen(str) + 1)); // Allocate enough pointers
+    char* token = strtok(str_copy, ",");
+    int i = 0;
+
+    while (token != NULL) {
+        result[i] = strdup(token);
+        token = strtok(NULL, ",");
+        i++;
+    }
+
+    result[i] = NULL; // Null-terminate the array
+    free(str_copy);
+    return result;
+}
+
+void trim_whitespace(char* str) {
+    char* start = str;
+    char* end = str + strlen(str);
+
+    // Move start pointer to first non-whitespace character
+    while (isspace((unsigned char)*start)) {
+        start++;
+    }
+
+    // Move end pointer to last non-whitespace character
+    while (end > start && isspace((unsigned char)*(end - 1))) {
+        end--;
+    }
+
+    // Calculate new length
+    size_t length = end - start;
+
+    // Shift characters to start of string
+    memmove(str, start, length);
+
+    // Null-terminate the string
+    str[length] = '\0';
 }

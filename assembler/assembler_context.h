@@ -1,5 +1,5 @@
 //
-// Author: Eitan H. .
+// Author: Eitan H.
 //
 
 #ifndef ASSEMBLER_ASSEMBLER_CONTEXT_H
@@ -9,6 +9,7 @@
 
 typedef struct {
     int IC; // Instruction counter
+    int DC; // Data counter
     bool is_first_pass;
 } AssemblerContext;
 

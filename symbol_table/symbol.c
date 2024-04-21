@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 // Construct a new Symbol
-Symbol *construct_symbol(const char *name, int value, int is_external) {
+Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_external, bool is_entry) {
     Symbol* symbol = (Symbol*)malloc(sizeof(Symbol));
     if (!symbol) {
         fprintf(stderr, "Failed to allocate memory for Symbol\n");
@@ -21,6 +21,7 @@ Symbol *construct_symbol(const char *name, int value, int is_external) {
     symbol->name[MAX_LABEL_LENGTH - 1] = '\0';
     symbol->value = value;
     symbol->is_external = is_external;
+    symbol->is_entry = is_entry;
     return symbol;
 }
 

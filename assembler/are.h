@@ -1,5 +1,5 @@
 //
-// Author: Eitan H. .
+// Author: Eitan H.
 //
 
 #ifndef ASSEMBLER_ARE_H

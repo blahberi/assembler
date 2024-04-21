@@ -1,5 +1,5 @@
 //
-// Author: Eitan H. .
+// Author: Eitan H.
 //
 
 #include "global_symbol_table.h"
@@ -21,7 +21,6 @@ int create_global_symbol_table() {
 int destroy_global_symbol_table() {
     if (SYMBOL_TABLE) {
         SYMBOL_TABLE->free(SYMBOL_TABLE);
-        free(SYMBOL_TABLE);
         SYMBOL_TABLE = NULL;
     }
     return 0;

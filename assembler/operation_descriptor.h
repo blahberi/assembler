@@ -1,5 +1,5 @@
 //
-// Author: Eitan H. .
+// Author: Eitan H.
 //
 
 #ifndef ASSEMBLER_OPERATION_DESCRIPTOR_H
@@ -7,6 +7,8 @@
 
 #include "instruction_to_machine_code.h"
 #include "operand_descriptor.h"
+#include "assembler_context.h"
+#include "words.h"
 
 // Enum for operation codes
 typedef enum {
@@ -28,13 +30,13 @@ typedef enum {
     HLT      // Halt
 } OPCODE;
 
-typedef struct OperationDescriptor OperationDescriptor;
+typedef struct operation_descriptor OperationDescriptor;
 
-typedef int (*InstructionGenerator)(OperationDescriptor*, OperandDescriptor*, InstructionWord*);
+typedef int InstructionGenerator(const OperationDescriptor*, OperandDescriptor*, const AssemblerContext*, Word*);
 
-struct OperationDescriptor {
+struct operation_descriptor {
     OPCODE opcode;
-    InstructionGenerator generate;
+    InstructionGenerator* generate;
 };
 
 #endif //ASSEMBLER_OPERATION_DESCRIPTOR_H

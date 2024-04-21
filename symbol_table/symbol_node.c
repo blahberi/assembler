@@ -1,5 +1,5 @@
 //
-// Author: Eitan H. .
+// Author: Eitan H.
 //
 
 #include "symbol_node.h"

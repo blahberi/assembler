@@ -17,14 +17,25 @@ add_executable(assembler main.c
         symbol_table/symbol.c
         symbol_table/symbol_node.c
         symbol_table/global_symbol_table.c
-        assembler/instruction_word.h
         assembler/operation_descriptor.h
         assembler/operand_descriptor.h
-        assembler/operand_words.h
+        assembler/words.h
         assembler/addressing_mode.c
         assembler/operand_to_machine_code.c
         assembler/addressing_mode.h
         assembler/operand_to_machine_code.h
         assembler/are.h
         assembler/assembler_context.h
-        assembler/register_error.h)
+        assembler/assembly_strings.c
+        assembler/assembly_strings.h
+        assembler/directive_to_machine_code.c
+        assembler/directive_descriptor.h
+        assembler/handle_label.c
+        assembler/handle_label.h
+        errors.h
+        tests/test1.c
+        tests/test1.h
+        tests/test2.c
+        assembler/directive_to_machine_code.h
+        tests/test2.h
+)
