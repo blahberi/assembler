@@ -9,16 +9,16 @@
 #include "handle_label.h"
 
 typedef enum {
-    DATA,
-    STRING,
-    ENTRY,
-    EXTERN
+    DATA_DIRECTIVE,
+    STRING_DIRECTIVE,
+    ENTRY_DIRECTIVE,
+    EXTERN_DIRECTIVE
 
 } DIRECTIVE_TYPE;
 
 typedef struct directive_descriptor DirectiveDescriptor;
 
-typedef int DirectiveGenerator(const DirectiveDescriptor*, const char*, AssemblerContext*, Word*);
+typedef void DirectiveGenerator(const DirectiveDescriptor*, const char*, AssemblerContext*, Word*);
 
 struct directive_descriptor {
     DIRECTIVE_TYPE type;

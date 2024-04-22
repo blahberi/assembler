@@ -15,6 +15,7 @@ Symbol* symbol_table_find(const char *name);
 void symbol_table_insert(Symbol *symbol);
 bool symbol_table_is_in(const char *name);
 void symbol_table_update_address(int ic);
+void write_entry_file(const char *filename);
 void symbol_table_print();
 
 #endif //ASSEMBLER_GLOBAL_SYMBOL_TABLE_H

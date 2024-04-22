@@ -12,15 +12,15 @@
 
 void test1() {
     create_global_symbol_table();
-    symbol_table_insert(construct_symbol("sz", MDEFINE, 2, false, false));
-    symbol_table_insert(construct_symbol("MAIN", CODE, 100, false, false));
-    symbol_table_insert(construct_symbol("LOOP", CODE, 104, false, false));
-    symbol_table_insert(construct_symbol("L1", CODE, 120, false, false));
-    symbol_table_insert(construct_symbol("END", CODE, 124, false, false));
-    symbol_table_insert(construct_symbol("len", MDEFINE, 4, false, false));
-    symbol_table_insert(construct_symbol("STR", DATA, 125, false, false));
-    symbol_table_insert(construct_symbol("LIST", DATA, 132, false, false));
-    symbol_table_insert(construct_symbol("K", DATA, 135, false, false));
+    symbol_table_insert(construct_symbol("sz", MDEFINE_LABEL, 2, false, false));
+    symbol_table_insert(construct_symbol("MAIN", CODE_LABEL, 100, false, false));
+    symbol_table_insert(construct_symbol("LOOP", CODE_LABEL, 104, false, false));
+    symbol_table_insert(construct_symbol("L1", CODE_LABEL, 120, false, false));
+    symbol_table_insert(construct_symbol("END", CODE_LABEL, 124, false, false));
+    symbol_table_insert(construct_symbol("len", MDEFINE_LABEL, 4, false, false));
+    symbol_table_insert(construct_symbol("STR", DATA_LABEL, 125, false, false));
+    symbol_table_insert(construct_symbol("LIST", DATA_LABEL, 132, false, false));
+    symbol_table_insert(construct_symbol("K", DATA_LABEL, 135, false, false));
 
     OperationDescriptor op_desc = {
             .opcode = MOV,

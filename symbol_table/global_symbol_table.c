@@ -42,14 +42,34 @@ void symbol_table_update_address(int ic) {
     for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
         SymbolNode *node = SYMBOL_TABLE->symbolTable[i];
         while (node != NULL) {
-            if (node->symbol->type == CODE) {
+            if (node->symbol->type == CODE_LABEL) {
                 node->symbol->value += 100;
-            } else if (node->symbol->type == DATA) {
+            } else if (node->symbol->type == DATA_LABEL) {
                 node->symbol->value += 100 + ic;
             }
             node = node->next;
         }
     }
+}
+
+void write_entry_file(const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Unable to open file %s\n", filename);
+        return;
+    }
+
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+        SymbolNode *node = SYMBOL_TABLE->symbolTable[i];
+        while (node != NULL) {
+            if (node->symbol->is_entry) {
+                fprintf(file, "%s\t%d\n", node->symbol->name, node->symbol->value);
+            }
+            node = node->next;
+        }
+    }
+
+    fclose(file);
 }
 
 void symbol_table_print() {

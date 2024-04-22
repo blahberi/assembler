@@ -36,7 +36,7 @@ int handle_label_define(const char* label, const AssemblerContext* context) { //
         return -1;
     }
     check_label_and_error(label);
-    Symbol *symbol = construct_symbol(label, MDEFINE, context->IC, false, false);
+    Symbol *symbol = construct_symbol(label, MDEFINE_LABEL, context->IC, false);
     symbol_table_insert(symbol);
     return 0;
 }
@@ -46,7 +46,7 @@ int handle_label_instruction(const char* label, const AssemblerContext* context)
         return -1;
     }
     check_label_and_error(label);
-    Symbol *symbol = construct_symbol(label, CODE, context->IC, false, false);
+    Symbol *symbol = construct_symbol(label, CODE_LABEL, context->IC, false);
     symbol_table_insert(symbol);
     return 0;
 }
@@ -56,28 +56,19 @@ int handle_label_data(const char* label, const AssemblerContext* context){ // Fo
         return -1;
     }
     check_label_and_error(label);
-    Symbol *symbol = construct_symbol(label, DATA, context->DC, false, false);
+    if (symbol_table_is_in(label)) {
+        fprintf(stderr, "Label %s already exists\n", label);
+        exit(EXIT_FAILURE); // TODO: Handle error
+    }
+    Symbol *symbol = construct_symbol(label, DATA_LABEL, context->DC, false);
     symbol_table_insert(symbol);
     return 0;
 }
 
 int handle_label_extern(const char* label, const AssemblerContext* context) { // For .extern directive
-    if (!context->is_first_pass){
-        return -1;
-    }
-    check_label_and_error(label);
-    Symbol *symbol = construct_symbol(label, EXTERN, 0, false, false);
-    symbol_table_insert(symbol);
     return 0;
 }
 
 int handle_label_entry(const char* label, const AssemblerContext *context) { // For .entry directive
-    if (context->is_first_pass) {
-        return -1;
-    }
-
-    find_label_and_error(label);
-    Symbol *symbol = symbol_table_find(label);
-    symbol->is_entry = true;
     return 0;
 }

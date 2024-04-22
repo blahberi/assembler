@@ -9,21 +9,20 @@
 #include "../config.h"
 
 typedef enum {
-    MDEFINE,
-    DATA,
-    CODE,
-    EXTERN
+    MDEFINE_LABEL,
+    DATA_LABEL,
+    CODE_LABEL,
+    EXTERN_LABEL
 } LABEL_TYPE;
 
 typedef struct symbol {
     char name[MAX_LABEL_LENGTH+1]; // +1 for null terminator
-    LABEL_TYPE type; // MDEFINE, DATA, CODE
+    LABEL_TYPE type; // MDEFINE_LABEL, DATA_LABEL, CODE_LABEL
     int value;
-    bool is_external; // Did the symbol come from .extern directive
-    bool is_entry; // Did the symbol go through .entry directive
+    bool is_entry; // Did we apply .entry to this label?
     void (*free)(struct symbol*); // Garbage collection
 } Symbol;
 
-Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_external, bool is_entry);
+Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry);
 
 #endif //ASSEMBLER_SYMBOL_H

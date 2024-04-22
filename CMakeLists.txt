@@ -48,6 +48,13 @@ add_executable(assembler main.c
         assembler/handle_line.h
         assembler/file_reader.c
         tests/test4.c
-        tests/test4.c.h
+        tests/test4.h
         assembler/file_reader.h
+        extern_handler/extern_label_node.h
+        extern_handler/extern_label_list.h
+        extern_handler/extern_label_list.c
+        extern_handler/extern_handler.c
+        extern_handler/extern_label_usage.c
+        extern_handler/extern_label_usage.h
+        extern_handler/extern_handler.h
 )

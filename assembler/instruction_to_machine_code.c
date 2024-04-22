@@ -13,6 +13,10 @@ void generate_first_word(const OperationDescriptor* descriptor, ADDR_MODE src, A
     // bits 2-3: Destination addressing mode
     // bits 4-5: Source addressing mode
     // bits 6-9: Opcode
+    if (!context->is_first_pass) {
+        context->IC++;
+        return;
+    }
 
     int ic = context->IC;
     FirstWord *word = (FirstWord*)(instruction_word+ic);

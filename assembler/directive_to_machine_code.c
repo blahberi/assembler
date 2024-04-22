@@ -9,8 +9,10 @@
 #include "words.h"
 #include "../utils/utils.h"
 #include "../errors.h"
+#include "../symbol_table/symbol.h"
+#include "../symbol_table/global_symbol_table.h"
 
-int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, const char* operands, AssemblerContext* context, Word* words){
+void generate_data_directive(const DirectiveDescriptor* directiveDescriptor, const char* operands, AssemblerContext* context, Word* words){
     if (operands == NULL) {
         fprintf(stderr, "error");
         exit(EXIT_FAILURE); // TODO: Handle error properly
@@ -39,11 +41,9 @@ int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, cons
     free(tokens);
 
     context->DC = i; // Increment the data counter by the number of words generated
-
-    return i; // Return the number of words generated
 }
 
-int generate_string_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
+void generate_string_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
     // Remove the quotes from the operand
     char* str = strdup(operand + 1);
     str[strlen(str) - 1] = '\0';
@@ -59,5 +59,23 @@ int generate_string_directive(const DirectiveDescriptor* directiveDescriptor, co
 
     free(str);
     context->DC = i; // Increment the data counter by the number of words generated
-    return i; // Return the number of words generated
+}
+
+void generate_entry_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
+    if (context->is_first_pass){
+        return;
+    }
+    find_label_and_error(operand);
+    Symbol *symbol = symbol_table_find(operand);
+
+    symbol->is_entry = true;
+}
+
+void generate_extern_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
+    if (!context->is_first_pass){
+        return;
+    }
+    check_label_and_error(operand);
+    Symbol *symbol = construct_symbol(operand, EXTERN_LABEL, 0, false);
+    symbol_table_insert(symbol);
 }

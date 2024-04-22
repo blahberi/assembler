@@ -10,7 +10,7 @@
 #include "assembly_strings.h"
 #include "handle_label.h"
 #include "../errors.h"
-
+#include "../extern_handler/extern_handler.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -24,12 +24,12 @@ void generate_immediate_operand(OperandDescriptor* descriptor, AssemblerContext 
         return;
     }
 
-    char* str_value = descriptor->operand + 1; // Skip the '#' character
+    const char* str_value = descriptor->operand + 1; // Skip the '#' character
     int value;
     if (symbol_table_is_in(str_value)) {
         find_label_and_error(str_value); // Check if label exists
         Symbol *symbol = symbol_table_find(str_value);
-        if (symbol->type != MDEFINE) {
+        if (symbol->type != MDEFINE_LABEL) {
             fprintf(stderr, ERR_LABEL_MUST_BE_MDEFINE, str_value);
             exit(EXIT_FAILURE); // TODO: Handle error appropriately
         }
@@ -66,7 +66,11 @@ void generate_direct_operand(OperandDescriptor* descriptor, AssemblerContext *co
     int ic = context->IC;
     find_label_and_error(descriptor->operand);
     Symbol *symbol = symbol_table_find(descriptor->operand);
-    ARE are = symbol->is_external ? EXTERNAL : RELOCATABLE;
+    if (symbol->type == EXTERN_LABEL){
+        add_extern_label_usage(symbol->name, ic);
+    }
+
+    ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
     ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = are;
     word->VALUE = symbol->value; // Address
@@ -103,7 +107,7 @@ void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *con
     else {
         find_label_and_error(index_str);
         Symbol *symbol = symbol_table_find(index_str);
-        if (symbol->type != MDEFINE) {
+        if (symbol->type != MDEFINE_LABEL) {
             fprintf(stderr, ERR_LABEL_MUST_BE_MDEFINE, index_str);
             exit(EXIT_FAILURE); // TODO: Handle error appropriately
         }
@@ -112,7 +116,11 @@ void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *con
 
     int ic = context->IC;
     Symbol *symbol = symbol_table_find(address);
-    ARE are = symbol->is_external ? EXTERNAL : RELOCATABLE;
+    if (symbol->type == EXTERN_LABEL){
+        add_extern_label_usage(symbol->name, ic);
+    }
+
+    ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
     IndexMachineCode* mc = (IndexMachineCode*)(instruction_word+ic);
     mc->address_word.ARE = are;
     mc->address_word.VALUE = symbol->value; // Address

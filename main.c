@@ -1,7 +1,7 @@
 #include "tests/test1.h"
 #include "tests/test2.h"
 #include "tests/test3.h"
-#include "tests/test4.c.h"
+#include "tests/test4.h"
 
 
 int main() {

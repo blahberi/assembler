@@ -9,6 +9,7 @@
 #include "../assembler/assembler_context.h"
 #include "../symbol_table/global_symbol_table.h"
 #include "../utils/utils.h"
+#include "../extern_handler//extern_handler.h"
 
 void read_file(const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -18,6 +19,7 @@ void read_file(const char* filename) {
     }
 
     create_global_symbol_table();
+    init_extern_list();
 
     AssemblerContext context = {
             .is_first_pass = true,
@@ -67,5 +69,10 @@ void read_file(const char* filename) {
 
     printf("Symbol Table:\n");
     symbol_table_print();
+
+    update_extern_list_address();
+    write_extern_file("C:\\Users\\blahb\\CLionProjects\\assembler\\extern.ext");
+    write_entry_file("C:\\Users\\blahb\\CLionProjects\\assembler\\entry.ent");
+
     destroy_global_symbol_table();
 }

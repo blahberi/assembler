@@ -17,19 +17,21 @@ DirectiveDescriptor* get_directive_descriptor(const char* sentence) {
     LabelHandler *handle_label = NULL;
     DIRECTIVE_TYPE type = 0;
     if (strcmp(directive_str, ".data") == 0) {
-        type = DATA;
+        type = DATA_DIRECTIVE;
         generate = generate_data_directive;
         handle_label = handle_label_data;
     } else if (strcmp(directive_str, ".string") == 0) {
-        type = STRING;
+        type = STRING_DIRECTIVE;
         generate = generate_string_directive;
         handle_label = handle_label_data;
     } else if (strcmp(directive_str, ".entry") == 0) {
-        type = ENTRY;
+        type = ENTRY_DIRECTIVE;
         handle_label = handle_label_entry;
+        generate = generate_entry_directive;
     } else if (strcmp(directive_str, ".extern") == 0) {
-        type = EXTERN;
+        type = EXTERN_DIRECTIVE;
         handle_label = handle_label_extern;
+        generate = generate_extern_directive;
     }
     DirectiveDescriptor* descriptor = (DirectiveDescriptor*) malloc(sizeof(struct directive_descriptor));
     descriptor->type = type;
