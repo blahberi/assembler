@@ -3,12 +3,13 @@
 //
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "instruction_to_machine_code.h"
 #include "operand_to_machine_code.h"
 #include "assembly_strings.h"
 #include "../errors.h"
 
-void get_addr_mode(OperandDescriptor *descriptor, const AssemblerContext *context) {
+void get_addr_mode(OperandDescriptor *descriptor) {
     const char* operand = descriptor->operand;
     if (operand[0] ==  '#') {
         descriptor->addr_mode = IMMEDIATE;

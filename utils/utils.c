@@ -64,6 +64,25 @@ char** split_string_by_comma(const char* str) {
     return result;
 }
 
+int comma_seperated_list_length(const char* str) {
+    int count = 0;
+
+    // If the string is not empty, start count from 1
+    if (str != NULL && *str != '\0') {
+        count = 1;
+    }
+
+    // For each character in the string
+    for (const char* c = str; *c != '\0'; c++) {
+        // If the character is a comma, increment the count
+        if (*c == ',') {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 void trim_whitespace(char* str) {
     char* start = str;
     char* end = str + strlen(str);

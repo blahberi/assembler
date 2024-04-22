@@ -20,6 +20,7 @@ Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_e
     strncpy(symbol->name, name, MAX_LABEL_LENGTH - 1);
     symbol->name[MAX_LABEL_LENGTH - 1] = '\0';
     symbol->value = value;
+    symbol->type = type;
     symbol->is_external = is_external;
     symbol->is_entry = is_entry;
     return symbol;

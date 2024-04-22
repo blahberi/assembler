@@ -11,8 +11,12 @@
 #include "../errors.h"
 
 int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, const char* operands, AssemblerContext* context, Word* words){
+    if (operands == NULL) {
+        fprintf(stderr, "error");
+        exit(EXIT_FAILURE); // TODO: Handle error properly
+    }
     char** tokens = split_string_by_comma(operands);
-    int i = 0;
+    int i = context->DC;
 
     for (char** token = tokens; *token != NULL; token++) {
         trim_whitespace(*token);
@@ -25,7 +29,7 @@ int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, cons
         fprintf(stderr, ERR_CONSTANT_TOO_BIG);
             exit(EXIT_FAILURE); // TODO: Handle error properly
         }
-        words[i].word = value;
+        (words+i)->word = value;
         i++;
     }
     // Free the tokens
@@ -34,7 +38,7 @@ int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, cons
     }
     free(tokens);
 
-    context->DC += i; // Increment the data counter by the number of words generated
+    context->DC = i; // Increment the data counter by the number of words generated
 
     return i; // Return the number of words generated
 }
@@ -45,15 +49,15 @@ int generate_string_directive(const DirectiveDescriptor* directiveDescriptor, co
     str[strlen(str) - 1] = '\0';
 
     int i;
-    for (i = 0; str[i] != '\0'; i++) {
+    for (i = context->DC; str[i] != '\0'; i++) {
         words[i].word = (int)str[i];
     }
 
     // Add null terminator
     words[i].word = 0;
+    i++;
 
     free(str);
-    i++;
-    context->DC += i; // Increment the data counter by the number of words generated
+    context->DC = i; // Increment the data counter by the number of words generated
     return i; // Return the number of words generated
 }

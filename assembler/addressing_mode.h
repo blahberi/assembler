@@ -17,6 +17,6 @@ typedef enum {
     REGISTER       // Register direct
 } ADDR_MODE;
 
-void get_addr_mode(struct operand_descriptor *, const AssemblerContext *context);
+void get_addr_mode(struct operand_descriptor *);
 
 #endif //ASSEMBLER_ADDRESSING_MODE_H

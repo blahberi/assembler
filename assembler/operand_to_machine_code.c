@@ -16,16 +16,18 @@
 #include <stdio.h>
 
 
-int generate_immediate_operand(OperandDescriptor* descriptor, const AssemblerContext *context, Word *instruction_word) {
+void generate_immediate_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
     // bits 0-1: ARE
     // bits 2-13: Value
     if (context->is_first_pass) {
-        return 1;
+        context->IC += 1;
+        return;
     }
 
     char* str_value = descriptor->operand + 1; // Skip the '#' character
     int value;
     if (symbol_table_is_in(str_value)) {
+        find_label_and_error(str_value); // Check if label exists
         Symbol *symbol = symbol_table_find(str_value);
         if (symbol->type != MDEFINE) {
             fprintf(stderr, ERR_LABEL_MUST_BE_MDEFINE, str_value);
@@ -44,29 +46,35 @@ int generate_immediate_operand(OperandDescriptor* descriptor, const AssemblerCon
         fprintf(stderr, ERR_INVALID_IMMEDIATE_VALUE, str_value);
         exit(EXIT_FAILURE); // TODO: Handle error appropriately
     }
-    ValueWord *word = (ValueWord *)instruction_word;
+    int ic = context->IC;
+    ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = ABSOLUTE;
     word->VALUE = value; // Value
-    return 1;
+
+    context->IC += 1;
 }
 
-int generate_direct_operand(OperandDescriptor* descriptor, const AssemblerContext *context, Word *instruction_word) {
+void generate_direct_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
     // bits 0-1: ARE
     // bits 2-13: Address
 
     if (context->is_first_pass) {
-        return 1;
+        context->IC += 1;
+        return;
     }
 
+    int ic = context->IC;
+    find_label_and_error(descriptor->operand);
     Symbol *symbol = symbol_table_find(descriptor->operand);
     ARE are = symbol->is_external ? EXTERNAL : RELOCATABLE;
-    ValueWord *word = (ValueWord *)instruction_word;
+    ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = are;
     word->VALUE = symbol->value; // Address
-    return 1;
+
+    context->IC += 1;
 }
 
-int generate_index_operand(OperandDescriptor* descriptor, const AssemblerContext *context, Word *instruction_word) {
+void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
     // First word bits 0-1: ARE
     // First word bits 2-13: Address
 
@@ -74,7 +82,8 @@ int generate_index_operand(OperandDescriptor* descriptor, const AssemblerContext
     // Second word bits 2-13: Index
 
     if (context->is_first_pass) {
-        return 2;
+        context->IC += 2;
+        return;
     }
 
     char* address = malloc(strlen(descriptor->operand) + 1);
@@ -101,9 +110,10 @@ int generate_index_operand(OperandDescriptor* descriptor, const AssemblerContext
         index = symbol->value;
     }
 
+    int ic = context->IC;
     Symbol *symbol = symbol_table_find(address);
     ARE are = symbol->is_external ? EXTERNAL : RELOCATABLE;
-    IndexMachineCode* mc = (IndexMachineCode*)instruction_word;
+    IndexMachineCode* mc = (IndexMachineCode*)(instruction_word+ic);
     mc->address_word.ARE = are;
     mc->address_word.VALUE = symbol->value; // Address
     mc->index_word.ARE = ABSOLUTE;
@@ -111,24 +121,28 @@ int generate_index_operand(OperandDescriptor* descriptor, const AssemblerContext
 
     free(address);
     free(index_str);
-    return 2;
+
+    context->IC += 2;
 }
 
-int generate_register_operand(OperandDescriptor* descriptor, const AssemblerContext *context, Word *instruction_word) {
+void generate_register_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
     // bits 0-1: ARE
     // bits 2-4: Source register
 
     if (context->is_first_pass) {
-        return 1;
+        context->IC += 1;
+        return;
     }
 
+    int ic = context->IC;
     int reg_num = atoi(descriptor->operand + 1);
-    RegisterWord *word = (RegisterWord*)instruction_word;
+    RegisterWord *word = (RegisterWord*)(instruction_word+ic);
     word->ARE = ABSOLUTE;
     if (descriptor->is_dest) {
         word->DEST = reg_num; // Register number for destination operand
     } else {
         word->SRC = reg_num; // Register number for source operand
     }
-    return 1;
+
+    context->IC += 1;
 }

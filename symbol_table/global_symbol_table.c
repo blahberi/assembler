@@ -37,3 +37,21 @@ void symbol_table_insert(Symbol *symbol) {
 bool symbol_table_is_in(const char *name) {
     return SYMBOL_TABLE->is_in(SYMBOL_TABLE, name);
 }
+
+void symbol_table_update_address(int ic) {
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+        SymbolNode *node = SYMBOL_TABLE->symbolTable[i];
+        while (node != NULL) {
+            if (node->symbol->type == CODE) {
+                node->symbol->value += 100;
+            } else if (node->symbol->type == DATA) {
+                node->symbol->value += 100 + ic;
+            }
+            node = node->next;
+        }
+    }
+}
+
+void symbol_table_print() {
+    SYMBOL_TABLE->print(SYMBOL_TABLE);
+}

@@ -12,7 +12,7 @@
 
 typedef struct operand_descriptor OperandDescriptor;
 
-typedef int (OperandGenerator)(OperandDescriptor*, const AssemblerContext *context, Word*);
+typedef void (OperandGenerator)(OperandDescriptor*, AssemblerContext *context, Word*);
 
 struct operand_descriptor {
     const char* operand;
@@ -20,6 +20,8 @@ struct operand_descriptor {
     bool is_dest;
     OperandGenerator *generate;
 };
+
+OperandDescriptor* get_operand_descriptors(const char* operands);
 
 
 #endif //ASSEMBLER_OPERAND_DESCRIPTOR_H

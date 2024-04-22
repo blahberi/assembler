@@ -20,6 +20,7 @@ struct symbol_table {
     Symbol* (*find)(SymbolTable* this, const char* name);
     void (*insert)(SymbolTable* this, Symbol* symbol);
     bool (*is_in)(SymbolTable *this, const char *name);
+    void (*print)(SymbolTable *this);
     void (*free)(SymbolTable *table);
 };
 

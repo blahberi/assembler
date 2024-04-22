@@ -38,4 +38,16 @@ add_executable(assembler main.c
         tests/test2.c
         assembler/directive_to_machine_code.h
         tests/test2.h
+        tests/test3.c
+        tests/test3.h
+        assembler/handle_line.c
+        assembler/sentence_type.h
+        assembler/directive_descriptor.c
+        assembler/operation_descriptor.c
+        assembler/operand_descriptor.c
+        assembler/handle_line.h
+        assembler/file_reader.c
+        tests/test4.c
+        tests/test4.c.h
+        assembler/file_reader.h
 )

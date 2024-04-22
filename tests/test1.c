@@ -27,10 +27,10 @@ void test1() {
             .generate = generate_two_word_instruction
     };
     OperandDescriptor src_desc = {
-            .operand = "#-2048",
+            .operand = "r3",
     };
     OperandDescriptor dest_desc = {
-            .operand = "r1",
+            .operand = "LIST[sz]",
     };
     Word *instruction_words = malloc(5 * sizeof(Word));
     memset(instruction_words, 0, 5 * sizeof(Word));
@@ -40,13 +40,4 @@ void test1() {
             .IC = 100,
             .is_first_pass = false,
     };
-
-    int size = generate_two_word_instruction(&op_desc, operands, &context, instruction_words);
-    for (int i = 0; i < size; i++) {
-        print_binary(instruction_words[i].word, 14);
-    }
-    printf("%d\n", size);
-
-    free(instruction_words);
-    destroy_global_symbol_table();
 }

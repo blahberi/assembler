@@ -49,6 +49,17 @@ bool is_in(SymbolTable *this, const char *name) {
     return true;
 }
 
+// Prints the symbol table
+void print(SymbolTable *this) {
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+        SymbolNode *node = this->symbolTable[i];
+        while (node != NULL) {
+            printf("Name: %s, Value: %d, Type: %d\n", node->symbol->name, node->symbol->value, node->symbol->type);
+            node = node->next;
+        }
+    }
+}
+
 // Frees all memory associated with the symbol table
 void free_symbol_table(SymbolTable *table) {
     if (table == NULL) return;
@@ -78,5 +89,6 @@ SymbolTable *construct_symbol_table() {
     symbolTable->insert = insert;
     symbolTable->is_in = is_in;
     symbolTable->free = free_symbol_table;
+    symbolTable->print = print;
     return symbolTable;
 }

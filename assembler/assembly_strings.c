@@ -8,6 +8,17 @@
 #include "assembly_strings.h"
 #include "../utils/utils.h"
 #include "../config.h"
+#include "directive_descriptor.h"
+
+const char* INSTRUCTIONS[] = {
+        "mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "hlt"
+};
+
+const char* DIRECTIVES[] = {
+        ".data", ".string", ".entry", ".extern"
+};
+
+const char* DEFINE = ".define";
 
 
 REGISTER_STATUS check_register(const char* operand) {
@@ -23,9 +34,6 @@ REGISTER_STATUS check_register(const char* operand) {
 }
 
 // List of all instruction names
-const char* INSTRUCTIONS[] = {
-        "MOV", "ADD", "SUB", "AND", "OR", "NOT", "JMP", "JZ", "JNZ", "JGT", "CALL", "RET", "PUSH", "POP", "HLT"
-};
 const int INSTRUCTION_COUNT = sizeof(INSTRUCTIONS) / sizeof(INSTRUCTIONS[0]);
 
 bool is_instruction(const char* str) {
@@ -91,6 +99,7 @@ int parse_index_operand(const char* operand, char* address, char* index) {
     return -1;
 }
 
+
 INDEX_OPERAND_STATUS check_index_operand(const char* operand) {
     char* address = malloc(strlen(operand) + 1);
     char* index = malloc(strlen(operand) + 1);
@@ -126,4 +135,70 @@ INDEX_OPERAND_STATUS check_index_operand(const char* operand) {
     free(address);
     free(index);
     return VALID_OPERAND;
+}
+
+
+bool is_label_in_line(const char* line) { // does the line start with "<label>: "
+    char* colon_position = strchr(line, ':');
+    if (colon_position != NULL && colon_position != line && *(colon_position - 1) != ' ') {
+        return true;
+    }
+    return false;
+}
+
+
+void split_label_and_sentence(const char* line, char* label, char* sentence) {
+    char* colon_position = strchr(line, ':');
+
+    // Copy characters from line to label
+    strncpy(label, line, colon_position - line);
+    label[colon_position - line] = '\0'; // Null-terminate the string
+    trim_whitespace(label);
+
+    // Copy characters from line to sentence
+    strcpy(sentence, colon_position + 1);
+    trim_whitespace(sentence);
+}
+
+char* get_sentence_start(const char* sentence) {
+    char* sentence_copy = strdup(sentence); // Create a copy of the sentence to avoid modifying the original string
+    char* first_word = strtok(sentence_copy, " "); // Get the first word
+    char* result = strdup(first_word); // Copy the first word to a new string
+    free(sentence_copy);
+    return result;
+}
+
+SENTENCE_TYPE get_sentence_type(const char* sentence) {
+    if (strncmp(sentence, DEFINE, strlen(DEFINE)) == 0) {
+        return DEFINE_SENTENCE;
+    }
+
+    for (int i = 0; i < sizeof(DIRECTIVES) / sizeof(DIRECTIVES[0]); i++) {
+        if (strncmp(sentence, DIRECTIVES[i], strlen(DIRECTIVES[i])) == 0) {
+            return DIRECTIVE_SENTENCE;
+        }
+    }
+
+    for (int i = 0; i < sizeof(INSTRUCTIONS) / sizeof(INSTRUCTIONS[0]); i++) {
+        if (strncmp(sentence, INSTRUCTIONS[i], strlen(INSTRUCTIONS[i])) == 0) {
+            return INSTRUCTION_SENTENCE;
+        }
+    }
+
+    // If none of the above conditions are met, return an error or a default value
+    return -1;
+}
+
+char* get_operands(const char* sentence) {
+    char* space_position = strchr(sentence, ' ');
+
+    // If there is no space in the sentence, return NULL
+    if (space_position == NULL) {
+        return NULL;
+    }
+
+    // Copy characters from sentence to operands, starting from the character after the space
+    char* operands = strdup(space_position + 1);
+    trim_whitespace(operands);
+    return operands;
 }
