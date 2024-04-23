@@ -5,7 +5,7 @@
 #include "extern_label_list.h"
 #include <stdlib.h>
 #include <string.h>
-#include "../config.h"
+#include "../../config.h"
 
 
 void add(ExternalLabelList* this, ExternalLabelUsage* usage) {

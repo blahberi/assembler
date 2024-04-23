@@ -5,7 +5,7 @@
 #ifndef ASSEMBLER_SYMBOL_TABLE_H
 #define ASSEMBLER_SYMBOL_TABLE_H
 
-#include "../config.h"
+#include "../../config.h"
 #include "symbol.h"
 #include "symbol_node.h"
 

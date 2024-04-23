@@ -8,7 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
+#include <stdlib.h>
 #include "utils.h"
+#include "../symbol_table/global_symbol_table.h"
 
 bool is_number_helper(const char* str){
     while (*str != '\0') {
@@ -38,6 +40,33 @@ bool is_number_unsigned(const char* str) {
         return false;
     }
     return is_number_helper(str);
+}
+
+int get_value_signed(const char* str, int* result) {
+    // this function gets a number or an mdefien label and returns it's int value
+    if (is_number_signed(str)) {
+        *result = atoi(str);
+        return 0;
+    }
+    Symbol* symbol = symbol_table_find(str);
+    if (symbol == NULL) {
+        return -1;
+    }
+    if (symbol->type != MDEFINE_LABEL) {
+        return -1;
+    }
+    *result = symbol->value;
+    return 0;
+}
+
+int get_value_unsigned(const char* str, int* result) {
+    if (get_value_signed(str, result) != 0) {
+        return -1;
+    }
+    if (*result < 0) {
+        return -1;
+    }
+    return 0;
 }
 
 void print_binary(unsigned int num, int bits) {

@@ -3,68 +3,56 @@
 //
 
 #include "operand_to_machine_code.h"
-#include "../symbol_table/global_symbol_table.h"
-#include "../utils/utils.h"
 #include "are.h"
 #include "words.h"
-#include "assembly_strings.h"
-#include "handle_label.h"
-#include "../errors.h"
-#include "../extern_handler/extern_handler.h"
+#include "utils/assembly_strings.h"
+#include "handlers/handle_label.h"
+#include "symbol_table/global_symbol_table.h"
+#include "utils/utils.h"
+#include "utils/error_checking.h"
+#include "extern_handler/extern_handler.h"
+#include "utils/errors.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
 
-void generate_immediate_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
+int generate_immediate_operand(OperandDescriptor* descriptor, const char* line, AssemblerContext *context, Word *instruction_word) {
     // bits 0-1: ARE
     // bits 2-13: Value
     if (context->is_first_pass) {
         context->IC += 1;
-        return;
+        return 0;
     }
 
     const char* str_value = descriptor->operand + 1; // Skip the '#' character
     int value;
-    if (symbol_table_is_in(str_value)) {
-        find_label_and_error(str_value); // Check if label exists
-        Symbol *symbol = symbol_table_find(str_value);
-        if (symbol->type != MDEFINE_LABEL) {
-            fprintf(stderr, ERR_LABEL_MUST_BE_MDEFINE, str_value);
-            exit(EXIT_FAILURE); // TODO: Handle error appropriately
-        }
-        value = symbol->value;
-    }
-    else if (is_number_signed(str_value)) {
-        value = atoi(str_value);
-        if (value < MIN_SIGNED_VALUE || value > MAX_SIGNED_VALUE) {
-            fprintf(stderr, ERR_CONSTANT_TOO_BIG);
-            exit(EXIT_FAILURE); // TODO: Handle error appropriately
-        }
-    }
-    else {
-        fprintf(stderr, ERR_INVALID_IMMEDIATE_VALUE, str_value);
-        exit(EXIT_FAILURE); // TODO: Handle error appropriately
+    if (get_value_signed(str_value, &value) != 0) {
+        fprintf(stderr, ERR_IMMEDIATE_MUST_BE_NUMBER, line);
+        return -1;
     }
     int ic = context->IC;
     ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = ABSOLUTE;
-    word->VALUE = value; // Value
+    word->VALUE = value;
 
     context->IC += 1;
+    return 0;
 }
 
-void generate_direct_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
+int generate_direct_operand(OperandDescriptor* descriptor, const char* line, AssemblerContext *context, Word *instruction_word) {
     // bits 0-1: ARE
     // bits 2-13: Address
 
     if (context->is_first_pass) {
         context->IC += 1;
-        return;
+        return 0;
     }
 
     int ic = context->IC;
-    find_label_and_error(descriptor->operand);
+    if (check_label_err(line, descriptor->operand, context) != 0) {
+        return -1;
+    }
     Symbol *symbol = symbol_table_find(descriptor->operand);
     if (symbol->type == EXTERN_LABEL){
         add_extern_label_usage(symbol->name, ic);
@@ -76,9 +64,10 @@ void generate_direct_operand(OperandDescriptor* descriptor, AssemblerContext *co
     word->VALUE = symbol->value; // Address
 
     context->IC += 1;
+    return 0;
 }
 
-void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
+int generate_index_operand(OperandDescriptor* descriptor, const char* line, AssemblerContext *context, Word *instruction_word) {
     // First word bits 0-1: ARE
     // First word bits 2-13: Address
 
@@ -87,7 +76,7 @@ void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *con
 
     if (context->is_first_pass) {
         context->IC += 2;
-        return;
+        return 0;
     }
 
     char* address = malloc(strlen(descriptor->operand) + 1);
@@ -95,23 +84,12 @@ void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *con
     parse_index_operand(descriptor->operand, address, index_str);
 
     int index;
-    find_label_and_error(address);
-    if (is_number_unsigned(index_str)) {
-        index = atoi(index_str);
-        if (index > MAX_UNSIGNED_VALUE) {
-            fprintf(stderr, ERR_CONSTANT_TOO_BIG);
-            exit(EXIT_FAILURE); // TODO: Handle error appropriately
-
-        }
+    if (check_label_err(line, address, context) != 0){
+        return -1;
     }
-    else {
-        find_label_and_error(index_str);
-        Symbol *symbol = symbol_table_find(index_str);
-        if (symbol->type != MDEFINE_LABEL) {
-            fprintf(stderr, ERR_LABEL_MUST_BE_MDEFINE, index_str);
-            exit(EXIT_FAILURE); // TODO: Handle error appropriately
-        }
-        index = symbol->value;
+    if (get_value_unsigned(index_str, &index) != 0) {
+        fprintf(stderr, ERR_INDEX_MUST_BE_NUMBER, line);
+        return -1;
     }
 
     int ic = context->IC;
@@ -131,15 +109,16 @@ void generate_index_operand(OperandDescriptor* descriptor, AssemblerContext *con
     free(index_str);
 
     context->IC += 2;
+    return 0;
 }
 
-void generate_register_operand(OperandDescriptor* descriptor, AssemblerContext *context, Word *instruction_word) {
+int generate_register_operand(OperandDescriptor* descriptor, const char* line, AssemblerContext *context, Word *instruction_word) {
     // bits 0-1: ARE
     // bits 2-4: Source register
 
     if (context->is_first_pass) {
         context->IC += 1;
-        return;
+        return 0;
     }
 
     int ic = context->IC;
@@ -153,4 +132,5 @@ void generate_register_operand(OperandDescriptor* descriptor, AssemblerContext *
     }
 
     context->IC += 1;
+    return 0;
 }

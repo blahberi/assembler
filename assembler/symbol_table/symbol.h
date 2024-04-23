@@ -6,7 +6,7 @@
 #define ASSEMBLER_SYMBOL_H
 
 #include <stdbool.h>
-#include "../config.h"
+#include "../../config.h"
 
 typedef enum {
     MDEFINE_LABEL,

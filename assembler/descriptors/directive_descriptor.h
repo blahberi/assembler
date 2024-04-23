@@ -6,7 +6,7 @@
 #define ASSEMBLER_DIRECTIVE_DESCRIPTOR_H
 
 #include "operand_descriptor.h"
-#include "handle_label.h"
+#include "../handlers/handle_label.h"
 
 typedef enum {
     DATA_DIRECTIVE,
@@ -18,7 +18,7 @@ typedef enum {
 
 typedef struct directive_descriptor DirectiveDescriptor;
 
-typedef void DirectiveGenerator(const DirectiveDescriptor*, const char*, AssemblerContext*, Word*);
+typedef int DirectiveGenerator(const DirectiveDescriptor*, const char*, const char*, AssemblerContext*, Word*);
 
 struct directive_descriptor {
     DIRECTIVE_TYPE type;

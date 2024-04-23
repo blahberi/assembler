@@ -5,31 +5,33 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "directive_descriptor.h"
+#include "descriptors/directive_descriptor.h"
 #include "words.h"
-#include "../utils/utils.h"
-#include "../errors.h"
-#include "../symbol_table/symbol.h"
-#include "../symbol_table/global_symbol_table.h"
+#include "utils/utils.h"
+#include "symbol_table/global_symbol_table.h"
+#include "utils/error_checking.h"
+#include "utils/errors.h"
 
-void generate_data_directive(const DirectiveDescriptor* directiveDescriptor, const char* operands, AssemblerContext* context, Word* words){
+int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, const char* operands, const char* line, AssemblerContext* context, Word* words){
     if (operands == NULL) {
-        fprintf(stderr, "error");
-        exit(EXIT_FAILURE); // TODO: Handle error properly
+        fprintf(stderr, ERR_DATA_EXPECTS_OPERANDS, line);
+        return -1;
     }
-    char** tokens = split_string_by_comma(operands);
-    int i = context->DC;
 
+    char** tokens = split_string_by_comma(operands);
+    if (context->is_first_pass) {
+        int length = comma_seperated_list_length(operands);
+        context->DC += length;
+        return 0;
+    }
+
+    int i = context->DC;
     for (char** token = tokens; *token != NULL; token++) {
         trim_whitespace(*token);
-        if (!is_number_signed(*token)) {
-            fprintf(stderr, ERR_INVALID_CONSTANT, *token);
-            exit(EXIT_FAILURE); // TODO: Handle error properly
-        }
-        int value = atoi(*token);
-        if (value < MIN_LARGE_SIGNED_VALUE || value > MAX_LARGE_SIGNED_VALUE) {
-        fprintf(stderr, ERR_CONSTANT_TOO_BIG);
-            exit(EXIT_FAILURE); // TODO: Handle error properly
+        int value;
+        if (get_value_signed(*token, &value) != 0) {
+            fprintf(stderr, ERR_INVALID_DATA_OPERAND, line);
+            return -1;
         }
         (words+i)->word = value;
         i++;
@@ -41,9 +43,10 @@ void generate_data_directive(const DirectiveDescriptor* directiveDescriptor, con
     free(tokens);
 
     context->DC = i; // Increment the data counter by the number of words generated
+    return 0;
 }
 
-void generate_string_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
+int generate_string_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, const char* line, AssemblerContext* context, Word* words){
     // Remove the quotes from the operand
     char* str = strdup(operand + 1);
     str[strlen(str) - 1] = '\0';
@@ -59,23 +62,30 @@ void generate_string_directive(const DirectiveDescriptor* directiveDescriptor, c
 
     free(str);
     context->DC = i; // Increment the data counter by the number of words generated
+    return 0;
 }
 
-void generate_entry_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
+int generate_entry_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, const char* line, AssemblerContext* context, Word* words){
     if (context->is_first_pass){
-        return;
+        return 0;
     }
-    find_label_and_error(operand);
+    if (check_label_err(line, operand, context) != 0){
+        return -1;
+    }
     Symbol *symbol = symbol_table_find(operand);
 
     symbol->is_entry = true;
+    return 0;
 }
 
-void generate_extern_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, AssemblerContext* context, Word* words){
+int generate_extern_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, const char* line, AssemblerContext* context, Word* words){
     if (!context->is_first_pass){
-        return;
+        return 0;
     }
-    check_label_and_error(operand);
+    if (check_label_err(line, operand, context) != 0) {
+        return -1;
+    }
     Symbol *symbol = construct_symbol(operand, EXTERN_LABEL, 0, false);
     symbol_table_insert(symbol);
+    return 0;
 }

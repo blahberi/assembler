@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include "operation_descriptor.h"
 #include "../utils/utils.h"
-#include "assembly_strings.h"
-#include "instruction_to_machine_code.h"
+#include "../utils/assembly_strings.h"
+#include "../instruction_to_machine_code.h"
 
 OperationDescriptor* get_operation_descriptor(const char* sentance){
     char* operation_str = get_sentence_start(sentance);

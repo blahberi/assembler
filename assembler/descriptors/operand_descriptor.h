@@ -6,13 +6,13 @@
 #define ASSEMBLER_OPERAND_DESCRIPTOR_H
 
 #include <stdbool.h>
-#include "addressing_mode.h"
-#include "words.h"
+#include "../addressing_mode.h"
+#include "../words.h"
 
 
 typedef struct operand_descriptor OperandDescriptor;
 
-typedef void (OperandGenerator)(OperandDescriptor*, AssemblerContext *context, Word*);
+typedef int (OperandGenerator)(OperandDescriptor*, const char*, AssemblerContext*, Word*);
 
 struct operand_descriptor {
     const char* operand;

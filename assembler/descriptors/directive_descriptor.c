@@ -5,9 +5,9 @@
 
 #include <tchar.h>
 #include "directive_descriptor.h"
-#include "assembly_strings.h"
+#include "../utils/assembly_strings.h"
 #include "../utils/utils.h"
-#include "directive_to_machine_code.h"
+#include "../directive_to_machine_code.h"
 #include <stdlib.h>
 
 DirectiveDescriptor* get_directive_descriptor(const char* sentence) {

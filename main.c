@@ -1,10 +1,7 @@
-#include "tests/test1.h"
-#include "tests/test2.h"
-#include "tests/test3.h"
-#include "tests/test4.h"
-
+#include "assembler/assembler.h"
 
 int main() {
-    test4();
+    const char* filename = "C:\\Users\\blahb\\CLionProjects\\assembler\\code1.asm";
+    assemble(filename);
     return 0;
 }
