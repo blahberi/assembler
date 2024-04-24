@@ -13,6 +13,7 @@ typedef struct operand_descriptor OperandDescriptor;
 typedef struct instruction_line_descriptor {
     OperationDescriptor *operation;
     OperandDescriptor *operands;
+    int operand_count;
 } InstructionLineDescriptor;
 
 

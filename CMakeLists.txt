@@ -11,18 +11,14 @@ add_executable(assembler main.c
         assembler/utils/utils.c
         assembler/utils/utils.h
         config.h
-        assembler/symbol_table/symbol_node.h
         assembler/symbol_table/symbol.h
         assembler/symbol_table/global_symbol_table.h
         assembler/symbol_table/symbol.c
-        assembler/symbol_table/symbol_node.c
         assembler/symbol_table/global_symbol_table.c
         assembler/descriptors/operation_descriptor.h
         assembler/descriptors/operand_descriptor.h
         assembler/words.h
-        assembler/addressing_mode.c
         assembler/operand_to_machine_code.c
-        assembler/addressing_mode.h
         assembler/operand_to_machine_code.h
         assembler/are.h
         assembler/context/assembler_context.h
@@ -56,4 +52,10 @@ add_executable(assembler main.c
         assembler/handlers/handle_line.c
         assembler/descriptors/line_descriptor.h
         assembler/context/context.h
+        hash_table/node.h
+        hash_table/hash_table.h
+        hash_table/hash_table.c
+        assembler/enums.h
+        hash_table/int_hash_table.h
+        hash_table/int_hash_table.c
 )

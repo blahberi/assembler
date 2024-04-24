@@ -6,14 +6,8 @@
 #define ASSEMBLER_DIRECTIVE_DESCRIPTOR_H
 
 #include "../handlers/handle_label.h"
+#include "../enums.h"
 
-typedef enum {
-    DATA_DIRECTIVE,
-    STRING_DIRECTIVE,
-    ENTRY_DIRECTIVE,
-    EXTERN_DIRECTIVE
-
-} DIRECTIVE_TYPE;
 
 typedef struct directive_descriptor DirectiveDescriptor;
 

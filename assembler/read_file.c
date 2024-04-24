@@ -27,4 +27,8 @@ int read_file(const char* filename, Context* context) {
     }
 
     fclose(file);
+    if (context->assembler_context->error) {
+        return -1;
+    }
+    return 0;
 }

@@ -9,7 +9,7 @@
 #include "symbol.h"
 #include <stdbool.h>
 
-int create_global_symbol_table();
+int init_global_symbol_table();
 int destroy_global_symbol_table();
 Symbol* symbol_table_find(const char *name);
 void symbol_table_insert(Symbol *symbol);

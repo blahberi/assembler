@@ -10,6 +10,7 @@
 #include "read_file.h"
 #include "utils/utils.h"
 #include "context/context.h"
+#include "utils/assembly_strings.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,8 +23,10 @@ void assemble(const char* filename) {
             .error = false
     };
 
-    create_global_symbol_table();
+    init_global_symbol_table();
     init_extern_list();
+    init_operation_table();
+    init_directive_table();
 
     Word *instruction_words = calloc(MEMORY_SIZE, sizeof(Word));
     Word *data_words = calloc(MEMORY_SIZE, sizeof(Word));

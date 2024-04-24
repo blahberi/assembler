@@ -8,18 +8,57 @@
 #include "utils.h"
 #include "../../config.h"
 #include "../context/context.h"
-#include "../sentence_type.h"
+#include "../../hash_table/int_hash_table.h"
 
-
-const char* INSTRUCTIONS[] = {
-        "mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "hlt"
-};
-
-const char* DIRECTIVES[] = {
-        ".data", ".string", ".entry", ".extern"
-};
 
 const char* DEFINE = ".define";
+
+IntHashTable *OPERATION_TABLE;
+IntHashTable *DIRECTIVE_TABLE;
+
+void init_operation_table() {
+    OPERATION_TABLE = construct_int_hash_table();
+    OPERATION_TABLE->insert(OPERATION_TABLE, "mov", MOV);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "cmp", CMP);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "add", ADD);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "sub", SUB);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "not", NOT);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "clr", CLR);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "lea", LEA);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "inc", INC);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "dec", DEC);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "jmp", JMP);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "bne", BNE);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "red", RED);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "prn", PRN);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "jsr", JSR);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "rts", RTS);
+    OPERATION_TABLE->insert(OPERATION_TABLE, "hlt", HLT);
+}
+
+void init_directive_table() {
+    DIRECTIVE_TABLE = construct_int_hash_table();
+    DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".data", DATA_DIRECTIVE);
+    DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".string", STRING_DIRECTIVE);
+    DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".entry", ENTRY_DIRECTIVE);
+    DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".extern", EXTERN_DIRECTIVE);
+}
+
+OPCODE find_operation(const char* operation){
+    return OPERATION_TABLE->find(OPERATION_TABLE, operation);
+}
+
+bool is_operation(const char* operation) {
+    return find_operation(operation) != -1;
+}
+
+DIRECTIVE_TYPE find_directive(const char* directive){
+    return DIRECTIVE_TABLE->find(DIRECTIVE_TABLE, directive);
+}
+
+bool is_directive(const char* directive) {
+    return find_directive(directive) != -1;
+}
 
 
 bool check_register(const char* operand) {
@@ -33,19 +72,6 @@ bool check_register(const char* operand) {
     return false;
 }
 
-// List of all instruction names
-const int INSTRUCTION_COUNT = sizeof(INSTRUCTIONS) / sizeof(INSTRUCTIONS[0]);
-
-bool is_instruction(const char* str) {
-    for (int i = 0; i < INSTRUCTION_COUNT; i++) {
-        if (strcmp(str, INSTRUCTIONS[i]) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 bool check_label(const char* label) {
     // Check if label is empty
     if (strlen(label) == 0) {
@@ -58,7 +84,7 @@ bool check_label(const char* label) {
     }
 
     // Check if label is reserved for instruction
-    if (is_instruction(label)) {
+    if (is_operation(label)) {
         return false;
     }
 
@@ -105,9 +131,7 @@ bool check_index_operand(const char* operand) {
     char* index = malloc(strlen(operand) + 1);
     int code = parse_index_operand(operand, address, index);
     if (code != 0) {
-        free(address);
-        free(index);
-        return -1;
+        goto error;
     }
     bool address_status = check_label(address);
     bool index_status = check_label(index);
@@ -121,6 +145,11 @@ bool check_index_operand(const char* operand) {
     free(address);
     free(index);
     return true;
+
+    error:
+    free(address);
+    free(index);
+    return -1;
 }
 
 
@@ -155,20 +184,18 @@ char* get_sentence_start(const char* sentence) {
 }
 
 SENTENCE_TYPE get_sentence_type(const char* sentence) {
-    if (strncmp(sentence, DEFINE, strlen(DEFINE)) == 0) {
+    char* sentence_start = get_sentence_start(sentence);
+
+    if (strncmp(sentence_start, DEFINE, strlen(DEFINE)) == 0) {
         return DEFINE_SENTENCE;
     }
 
-    for (int i = 0; i < sizeof(DIRECTIVES) / sizeof(DIRECTIVES[0]); i++) {
-        if (strncmp(sentence, DIRECTIVES[i], strlen(DIRECTIVES[i])) == 0) {
-            return DIRECTIVE_SENTENCE;
-        }
+    if (is_operation(sentence_start)) {
+        return INSTRUCTION_SENTENCE;
     }
 
-    for (int i = 0; i < sizeof(INSTRUCTIONS) / sizeof(INSTRUCTIONS[0]); i++) {
-        if (strncmp(sentence, INSTRUCTIONS[i], strlen(INSTRUCTIONS[i])) == 0) {
-            return INSTRUCTION_SENTENCE;
-        }
+    if (is_directive(sentence_start)) {
+        return DIRECTIVE_SENTENCE;
     }
 
     // If none of the above conditions are met, return an error or a default value
@@ -190,4 +217,13 @@ char* get_operands(Context *context) {
     trim_whitespace(operands);
     context->line_descriptor->operands = operands;
     return operands;
+}
+
+char* get_string_from_quotes(const char* str) {
+    if (str[0] == '"' && str[strlen(str) - 1] == '"') {
+        char* result = strdup(str + 1);
+        result[strlen(result) - 1] = '\0';
+        return result;
+    }
+    return NULL;
 }

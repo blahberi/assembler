@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 SymbolTable *SYMBOL_TABLE = NULL;
-int create_global_symbol_table() {
+int init_global_symbol_table() {
     if (SYMBOL_TABLE){
         SYMBOL_TABLE->free(SYMBOL_TABLE);
     }
@@ -38,40 +38,60 @@ bool symbol_table_is_in(const char *name) {
     return SYMBOL_TABLE->is_in(SYMBOL_TABLE, name);
 }
 
-void symbol_table_update_address(int ic) {
-    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
-        SymbolNode *node = SYMBOL_TABLE->symbolTable[i];
-        while (node != NULL) {
-            if (node->symbol->type == CODE_LABEL) {
-                node->symbol->value += 100;
-            } else if (node->symbol->type == DATA_LABEL) {
-                node->symbol->value += 100 + ic;
-            }
-            node = node->next;
-        }
+typedef struct {
+    int ic;
+} UpdateContext;
+
+void update_address(Symbol* symbol, UpdateContext* context) {
+    int ic = context->ic;
+    if (symbol->type == CODE_LABEL) {
+        symbol->value += 100;
+    } else if (symbol->type == DATA_LABEL) {
+        symbol->value += 100 + ic;
     }
 }
 
-void write_entry_file(const char *filename) {
-    FILE *file = fopen(filename, "w");
+void symbol_table_update_address(int ic) {
+    UpdateContext context = {ic};
+    SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void(*)(Symbol*, void*)) update_address, &context);
+}
+
+typedef struct {
+    FILE* file;
+} WriteContext;
+
+void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) {
+    FILE* file = (FILE*)context->file;
+    if (file == NULL) {
+        printf("errrrmmm awkward much?!?!? \n");
+        return;
+    }
+    if (symbol->is_entry) {
+        fprintf(file, "%s\t%04d\n", symbol->name, symbol->value);
+    }
+}
+
+void write_entry_file(const char* filename) {
+    FILE* file = fopen(filename, "w");
     if (file == NULL) {
         printf("Unable to open file %s\n", filename);
         return;
     }
 
-    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
-        SymbolNode *node = SYMBOL_TABLE->symbolTable[i];
-        while (node != NULL) {
-            if (node->symbol->is_entry) {
-                fprintf(file, "%s\t%d\n", node->symbol->name, node->symbol->value);
-            }
-            node = node->next;
-        }
-    }
+    WriteContext context = {file};
+    SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void (*)(Symbol*, void*)) write_entry_file_helper, &context);
 
     fclose(file);
 }
 
+void print_symbol(Symbol* symbol) {
+    printf("Name: %s, Value: %d, Type: %d, Is Entry: %s\n",
+           symbol->name,
+           symbol->value,
+           symbol->type,
+           symbol->is_entry ? "Yes" : "No");
+}
+
 void symbol_table_print() {
-    SYMBOL_TABLE->print(SYMBOL_TABLE);
+    SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void (*)(Symbol*, void*)) print_symbol, NULL);
 }

@@ -5,28 +5,10 @@
 #ifndef ASSEMBLER_OPERATION_DESCRIPTOR_H
 #define ASSEMBLER_OPERATION_DESCRIPTOR_H
 
-#include "operand_descriptor.h"
+#include "../enums.h"
 #include "../handlers/handle_label.h"
 
-// Enum for operation codes
-typedef enum {
-    MOV = 0, // Move
-    CMP,     // Compare
-    ADD,     // Add
-    SUB,     // Subtract
-    NOT,     // Logical NOT
-    CLR,     // Clear
-    LEA,     // Load Effective Address
-    INC,     // Increment
-    DEC,     // Decrement
-    JMP,     // Jump
-    BNE,     // Branch if Not Equal
-    RED,     // Read
-    PRN,     // Print
-    JSR,     // Jump to Subroutine
-    RTS,     // Return from Subroutine
-    HLT      // Halt
-} OPCODE;
+typedef struct context Context;
 
 typedef struct operation_descriptor OperationDescriptor;
 

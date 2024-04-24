@@ -6,7 +6,7 @@
 #define ASSEMBLER_OPERAND_DESCRIPTOR_H
 
 #include <stdbool.h>
-#include "../addressing_mode.h"
+#include "../enums.h"
 
 typedef struct context Context;
 
@@ -22,6 +22,7 @@ struct operand_descriptor {
 };
 
 OperandDescriptor* get_operand_descriptors(Context *context);
+int get_addr_mode(OperandDescriptor *descriptor);
 
 
 #endif //ASSEMBLER_OPERAND_DESCRIPTOR_H

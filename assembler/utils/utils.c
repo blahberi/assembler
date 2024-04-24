@@ -50,23 +50,29 @@ int get_value_signed(const char* str, int* result) {
     }
     Symbol* symbol = symbol_table_find(str);
     if (symbol == NULL) {
-        return -1;
+        goto error;
     }
     if (symbol->type != MDEFINE_LABEL) {
-        return -1;
+        goto error;
     }
     *result = symbol->value;
     return 0;
+
+    error:
+    return -1;
 }
 
 int get_value_unsigned(const char* str, int* result) {
     if (get_value_signed(str, result) != 0) {
-        return -1;
+        goto error;
     }
     if (*result < 0) {
-        return -1;
+        goto error;
     }
     return 0;
+
+    error:
+    return -1;
 }
 
 void print_binary(unsigned int num, int bits) {

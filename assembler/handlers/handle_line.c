@@ -21,10 +21,10 @@ int handle_define_line(Context *context) {
     }
     if (context->line_descriptor->is_label) {
         fprintf(stderr, ERR_DEFINE_GOT_LABEL, context->line_descriptor->line);
-        return -1;
+        goto error;
     }
 
-    const char* operands = get_operands(context);
+    char* operands = get_operands(context);
     char* label = strtok(operands, "=");
     trim_whitespace(label);
 
@@ -33,23 +33,27 @@ int handle_define_line(Context *context) {
 
     if (label == NULL || value_str == NULL) {
         fprintf(stderr, ERR_DEFINE_DIDNT_GET_VALUE, context->line_descriptor->line);
-        return -1;
+        goto error;
     }
 
     if (check_label_err(label, context) != 0) {
-        return -1;
+        goto error;
     }
 
     int value;
     if (get_value_signed(value_str, &value) != 0) {
         fprintf(stderr, ERR_INVALID_DEFINE_VALUE, context->line_descriptor->line);
-        return -1;
+        goto error;
     }
 
     Symbol *symbol = construct_symbol(label, MDEFINE_LABEL, value, false);
     symbol_table_insert(symbol);
     free(operands);
     return 0;
+
+    error:
+    free(operands);
+    return -1;
 }
 
 int handle_directive_line(Context *context) {
@@ -59,7 +63,7 @@ int handle_directive_line(Context *context) {
     DirectiveDescriptor *descriptor = get_directive_descriptor(context);
     if (descriptor == NULL) {
         fprintf(stderr, ERR_INVALID_SENTENCE, line);
-        return -1;
+        goto error;
     }
     if (is_label && is_first_pass) {
         descriptor->handle_label(context);
@@ -68,7 +72,12 @@ int handle_directive_line(Context *context) {
     get_operands(context);
 
     int result = descriptor->generate(context);
+    free(context->line_descriptor->operands);
     return result;
+
+    error:
+    free(context->line_descriptor->operands);
+    return -1;
 }
 
 int handle_instruction_line(Context *context) {
@@ -78,7 +87,7 @@ int handle_instruction_line(Context *context) {
     OperationDescriptor* descriptor = get_operation_descriptor(context);
     if (descriptor == NULL) {
         fprintf(stderr, ERR_INVALID_SENTENCE, line);
-        return -1;
+        goto error;
     }
 
     if (is_label && is_first_pass) {
@@ -100,9 +109,16 @@ int handle_instruction_line(Context *context) {
     }
     free(operandDescriptors);
     free(operands);
-    free(descriptor);
-
+    if (descriptor != NULL) {
+        free(descriptor);
+    }
     return result;
+
+    error:
+    if (descriptor != NULL){
+        free(descriptor);
+    }
+    return -1;
 }
 
 int handle_line(Context* context) {

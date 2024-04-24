@@ -2,9 +2,6 @@
 // Author: Eitan H.
 //
 
-
-
-
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
@@ -37,7 +34,7 @@ int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) 
     int value;
     if (get_value_signed(str_value, &value) != 0) {
         fprintf(stderr, ERR_IMMEDIATE_MUST_BE_NUMBER, line);
-        return -1;
+        goto error;
     }
     int ic = *IC;
     ValueWord *word = (ValueWord *)(instruction_word+ic);
@@ -46,12 +43,16 @@ int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) 
 
     (*IC)++;
     return 0;
+
+    error:
+    return -1;
 }
 
 int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
     // bits 0-1: ARE
     // bits 2-13: Address
 
+    const char* line = context->line_descriptor->line;
     Word *instruction_word = context->instruction_words;
     bool is_first_pass = context->assembler_context->is_first_pass;
     int *IC = &context->assembler_context->IC;
@@ -63,10 +64,14 @@ int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
 
     int ic = *IC;
     if (check_label_err(descriptor->operand, context) != 0) {
-        return -1;
+        goto error;
     }
     Symbol *symbol = symbol_table_find(descriptor->operand);
-    if (symbol->type == EXTERN_LABEL){
+    if (symbol->type == MDEFINE_LABEL) {
+        fprintf(stderr, ERR_DIRECT_CANNOT_BE_MDEFINE, descriptor->operand, line);
+        goto error;
+    }
+    if (symbol->type == EXTERN_LABEL) {
         add_extern_label_usage(symbol->name, ic);
     }
 
@@ -77,6 +82,9 @@ int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
 
     (*IC)++;
     return 0;
+
+    error:
+    return -1;
 }
 
 int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
@@ -102,17 +110,21 @@ int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
 
     int index;
     if (check_label_err(address, context) != 0){
-        return -1;
+        goto error;
     }
     if (get_value_unsigned(index_str, &index) != 0) {
         fprintf(stderr, ERR_INDEX_MUST_BE_NUMBER, line);
-        return -1;
+        goto error;
     }
 
     int ic = *IC;
     Symbol *symbol = symbol_table_find(address);
     if (symbol->type == EXTERN_LABEL){
         add_extern_label_usage(symbol->name, ic);
+    }
+    if (symbol->type == MDEFINE_LABEL) {
+        fprintf(stderr, ERR_BASE_LABEL_CANNOT_BE_MDEFINE, address, line);
+        goto error;
     }
 
     ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
@@ -127,6 +139,11 @@ int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
 
     *IC += 2;
     return 0;
+
+    error:
+    free(address);
+    free(index_str);
+    return -1;
 }
 
 int generate_register_operand(OperandDescriptor* descriptor, Context *context) {

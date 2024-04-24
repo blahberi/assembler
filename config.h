@@ -28,6 +28,6 @@
 
 #define REGISTER_COUNT 8
 
-#define SYMBOL_TABLE_SIZE 137 // Prime number
+#define HASH_TABLE_SIZE 137 // Prime number
 
 #endif //ASSEMBLER_CONFIG_H
