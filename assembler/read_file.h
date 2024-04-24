@@ -5,9 +5,8 @@
 #ifndef ASSEMBLER_READ_FILE_H
 #define ASSEMBLER_READ_FILE_H
 
-#include "assembler_context.h"
-#include "words.h"
+typedef struct context Context;
 
-void read_file(const char* filename, AssemblerContext* context, Word* instruction_words, Word* data_words);
+void read_file(const char* filename, Context *context);
 
 #endif //ASSEMBLER_READ_FILE_H

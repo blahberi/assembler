@@ -6,22 +6,23 @@
 #define ASSEMBLER_LINE_DESCRIPTOR_H
 
 #include <stdbool.h>
-#include "operand_descriptor.h"
-#include "operation_descriptor.h"
 
-typedef struct {
-    char *line;
-    const char *label;
-    const char *sentence;
-    const char *mnemonic;
-    const char *operands;
-    bool is_label;
-} LineDescriptor;
+typedef struct operation_descriptor OperationDescriptor;
+typedef struct operand_descriptor OperandDescriptor;
 
-typedef struct {
-    LineDescriptor *line;
+typedef struct instruction_line_descriptor {
     OperationDescriptor *operation;
     OperandDescriptor *operands;
 } InstructionLineDescriptor;
+
+
+typedef struct line_descriptor {
+    char *line;
+    char *label;
+    char *sentence;
+    char *mnemonic;
+    char *operands;
+    bool is_label;
+} LineDescriptor;
 
 #endif //ASSEMBLER_LINE_DESCRIPTOR_H

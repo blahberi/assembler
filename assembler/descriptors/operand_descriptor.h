@@ -7,12 +7,12 @@
 
 #include <stdbool.h>
 #include "../addressing_mode.h"
-#include "../words.h"
 
+typedef struct context Context;
 
 typedef struct operand_descriptor OperandDescriptor;
 
-typedef int (OperandGenerator)(OperandDescriptor*, const char*, AssemblerContext*, Word*);
+typedef int (OperandGenerator)(OperandDescriptor*, Context *context);
 
 struct operand_descriptor {
     const char* operand;
@@ -21,7 +21,7 @@ struct operand_descriptor {
     OperandGenerator *generate;
 };
 
-OperandDescriptor* get_operand_descriptors(const char* operands);
+OperandDescriptor* get_operand_descriptors(Context *context);
 
 
 #endif //ASSEMBLER_OPERAND_DESCRIPTOR_H

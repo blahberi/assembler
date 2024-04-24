@@ -3,13 +3,14 @@
 //
 
 
-#include "operand_descriptor.h"
+#include "../context/context.h"
 #include "../utils/utils.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-OperandDescriptor* get_operand_descriptors(const char* operands) {
+OperandDescriptor* get_operand_descriptors(Context *context) {
+    const char* operands = context->line_descriptor->operands;
     if (operands == NULL) {
         return NULL;
     }
@@ -37,5 +38,6 @@ OperandDescriptor* get_operand_descriptors(const char* operands) {
     }
     free(operand_strings);
 
+    context->instruction->operands = descriptors;
     return descriptors;
 }

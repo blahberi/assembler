@@ -2,30 +2,37 @@
 // Author: Eitan H.
 //
 
-#include <stdlib.h>
+
+
 #include <stdio.h>
 #include <string.h>
-#include "descriptors/directive_descriptor.h"
-#include "words.h"
-#include "utils/utils.h"
-#include "symbol_table/global_symbol_table.h"
-#include "utils/error_checking.h"
+#include "context/context.h"
 #include "utils/errors.h"
+#include "utils/utils.h"
+#include "utils/error_checking.h"
+#include "symbol_table/symbol.h"
+#include "symbol_table/global_symbol_table.h"
 
-int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, const char* operands, const char* line, AssemblerContext* context, Word* words){
+int generate_data_directive(Context *context){
+    const char* line = context->line_descriptor->line;
+    const char* operands = context->line_descriptor->operands;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    Word* words = context->data_words;
+
+    int DC = context->assembler_context->DC;
     if (operands == NULL) {
         fprintf(stderr, ERR_DATA_EXPECTS_OPERANDS, line);
         return -1;
     }
 
     char** tokens = split_string_by_comma(operands);
-    if (context->is_first_pass) {
+    if (is_first_pass) {
         int length = comma_seperated_list_length(operands);
-        context->DC += length;
+        DC += length;
+        context->assembler_context->DC = DC;
         return 0;
     }
 
-    int i = context->DC;
     for (char** token = tokens; *token != NULL; token++) {
         trim_whitespace(*token);
         int value;
@@ -33,8 +40,8 @@ int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, cons
             fprintf(stderr, ERR_INVALID_DATA_OPERAND, line);
             return -1;
         }
-        (words+i)->word = value;
-        i++;
+        (words+DC)->word = value;
+        DC++;
     }
     // Free the tokens
     for (char** token = tokens; *token != NULL; token++) {
@@ -42,34 +49,40 @@ int generate_data_directive(const DirectiveDescriptor* directiveDescriptor, cons
     }
     free(tokens);
 
-    context->DC = i; // Increment the data counter by the number of words generated
+    context->assembler_context->DC = DC;
     return 0;
 }
 
-int generate_string_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, const char* line, AssemblerContext* context, Word* words){
+int generate_string_directive(Context *context){
+    const char* line = context->line_descriptor->line;
+    const char* operand = context->line_descriptor->operands;
+    int DC = context->assembler_context->DC;
+    Word* words = context->data_words;
     // Remove the quotes from the operand
     char* str = strdup(operand + 1);
     str[strlen(str) - 1] = '\0';
 
-    int i;
-    for (i = context->DC; str[i] != '\0'; i++) {
-        words[i].word = (int)str[i];
+    for (; str[DC] != '\0'; DC++) {
+        words[DC].word = (unsigned int)str[DC];
     }
 
     // Add null terminator
-    words[i].word = 0;
-    i++;
+    words[DC].word = 0;
+    DC++;
 
     free(str);
-    context->DC = i; // Increment the data counter by the number of words generated
+    context->assembler_context->DC = DC;
     return 0;
 }
 
-int generate_entry_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, const char* line, AssemblerContext* context, Word* words){
-    if (context->is_first_pass){
+int generate_entry_directive(Context *context){
+    const char* operand = context->line_descriptor->operands;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+
+    if (is_first_pass){
         return 0;
     }
-    if (check_label_err(line, operand, context) != 0){
+    if (check_label_err(operand, context) != 0){
         return -1;
     }
     Symbol *symbol = symbol_table_find(operand);
@@ -78,11 +91,13 @@ int generate_entry_directive(const DirectiveDescriptor* directiveDescriptor, con
     return 0;
 }
 
-int generate_extern_directive(const DirectiveDescriptor* directiveDescriptor, const char* operand, const char* line, AssemblerContext* context, Word* words){
-    if (!context->is_first_pass){
+int generate_extern_directive(Context *context){
+    const char* operand = context->line_descriptor->operands;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    if (!is_first_pass){
         return 0;
     }
-    if (check_label_err(line, operand, context) != 0) {
+    if (check_label_err(operand, context) != 0) {
         return -1;
     }
     Symbol *symbol = construct_symbol(operand, EXTERN_LABEL, 0, false);

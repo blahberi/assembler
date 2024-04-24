@@ -5,13 +5,13 @@
 #ifndef ASSEMBLER_HANDLE_LABEL_H
 #define ASSEMBLER_HANDLE_LABEL_H
 
-#include "../assembler_context.h"
+typedef struct context Context;
 
-typedef int LabelHandler(const char* label, const char* line, const AssemblerContext* context);
+typedef int LabelHandler(Context* context);
 
-int handle_label_instruction(const char* label, const char* line, const AssemblerContext* context);
-int handle_label_data(const char* label, const char* line, const AssemblerContext* context);
-int handle_label_entry(const char* label, const char* line, const AssemblerContext* context);
-int handle_label_extern(const char* label, const char* line, const AssemblerContext* context);
+int handle_label_instruction(Context* context);
+int handle_label_data(Context *context);
+int handle_label_entry(Context *context);
+int handle_label_extern(Context *context);
 
 #endif //ASSEMBLER_HANDLE_LABEL_H

@@ -7,8 +7,9 @@
 #include <stdlib.h>
 #include "../config.h"
 #include "handlers/handle_line.h"
+#include "context/context.h"
 
-int read_file(const char* filename, AssemblerContext* context, Word* instruction_words, Word* data_words) {
+int read_file(const char* filename, Context* context) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         fprintf(stderr, "Error: Could not open file %s\n", filename);
@@ -18,9 +19,10 @@ int read_file(const char* filename, AssemblerContext* context, Word* instruction
     char line[MAX_LINE_LENGTH];
 
     while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
-        int result = handle_line(line, context, instruction_words, data_words);
+        context->line_descriptor->line = line;
+        int result = handle_line(context);
         if (result == -1) {
-            context->error = true;
+            context->assembler_context->error = true;
         }
     }
 

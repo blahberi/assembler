@@ -4,11 +4,12 @@
 
 #include <string.h>
 #include <stdlib.h>
-
-#include "assembly_strings.h"
-#include "../utils/utils.h"
+#include <stdbool.h>
+#include "utils.h"
 #include "../../config.h"
-#include "../descriptors/directive_descriptor.h"
+#include "../context/context.h"
+#include "../sentence_type.h"
+
 
 const char* INSTRUCTIONS[] = {
         "mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "hlt"
@@ -174,16 +175,19 @@ SENTENCE_TYPE get_sentence_type(const char* sentence) {
     return -1;
 }
 
-char* get_operands(const char* sentence) {
+char* get_operands(Context *context) {
+    char* sentence = context->line_descriptor->sentence;
     char* space_position = strchr(sentence, ' ');
 
     // If there is no space in the sentence, return NULL
     if (space_position == NULL) {
+        context->line_descriptor->operands = NULL;
         return NULL;
     }
 
     // Copy characters from sentence to operands, starting from the character after the space
     char* operands = strdup(space_position + 1);
     trim_whitespace(operands);
+    context->line_descriptor->operands = operands;
     return operands;
 }

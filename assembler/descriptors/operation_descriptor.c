@@ -2,14 +2,17 @@
 // Author: Eitan H.
 //
 
+
+
 #include <string.h>
-#include <stdlib.h>
-#include "operation_descriptor.h"
-#include "../utils/utils.h"
+#include <malloc.h>
+#include "../context/context.h"
 #include "../utils/assembly_strings.h"
+#include "../utils/utils.h"
 #include "../instruction_to_machine_code.h"
 
-OperationDescriptor* get_operation_descriptor(const char* sentance){
+OperationDescriptor* get_operation_descriptor(Context *context){
+    const char* sentance = context->line_descriptor->sentence;
     char* operation_str = get_sentence_start(sentance);
     trim_whitespace(operation_str);
     OPCODE type;
@@ -72,5 +75,8 @@ OperationDescriptor* get_operation_descriptor(const char* sentance){
     descriptor->opcode = type;
     descriptor->generate = generate;
     descriptor->handle_label = handle_label;
+    context->instruction->operation = descriptor;
+
+    free(operation_str);
     return descriptor;
 }

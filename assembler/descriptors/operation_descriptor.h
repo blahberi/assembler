@@ -6,8 +6,6 @@
 #define ASSEMBLER_OPERATION_DESCRIPTOR_H
 
 #include "operand_descriptor.h"
-#include "../assembler_context.h"
-#include "../words.h"
 #include "../handlers/handle_label.h"
 
 // Enum for operation codes
@@ -32,7 +30,7 @@ typedef enum {
 
 typedef struct operation_descriptor OperationDescriptor;
 
-typedef int InstructionGenerator(const OperationDescriptor*, OperandDescriptor*, const char* line, AssemblerContext*, Word*);
+typedef int InstructionGenerator(Context *context);
 
 struct operation_descriptor {
     OPCODE opcode;
@@ -40,6 +38,6 @@ struct operation_descriptor {
     LabelHandler *handle_label;
 };
 
-OperationDescriptor* get_operation_descriptor(const char* sentance);
+OperationDescriptor* get_operation_descriptor(Context *context);
 
 #endif //ASSEMBLER_OPERATION_DESCRIPTOR_H

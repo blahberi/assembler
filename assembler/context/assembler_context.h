@@ -7,7 +7,7 @@
 
 #include <stdbool.h>
 
-typedef struct {
+typedef struct assembler_context {
     int IC; // Instruction counter
     int DC; // Data counter
     bool is_first_pass;

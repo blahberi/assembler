@@ -6,10 +6,9 @@
 #include <stdio.h>
 #include <tchar.h>
 #include "assembly_strings.h"
-#include "../assembler_context.h"
 #include "../symbol_table/global_symbol_table.h"
+#include "../context/context.h"
 #include "errors.h"
-
 
 
 int check_label_err_first_pass(const char* line, const char* label) {
@@ -45,8 +44,10 @@ int check_label_err_second_pass(const char* line, const char* label) {
     return 0;
 }
 
-int check_label_err(const char* line, const char* label, const AssemblerContext* context) {
-    if (context->is_first_pass) {
+int check_label_err(const char* label, const Context *context) {
+    const char* line = context->line_descriptor->line;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    if (is_first_pass) {
         return check_label_err_first_pass(line, label);
     } else {
         return check_label_err_second_pass(line, label);

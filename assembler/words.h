@@ -7,7 +7,7 @@
 
 #include "../config.h"
 
-typedef struct {
+typedef struct word {
     unsigned int word : WORD_SIZE;
 } Word;
 

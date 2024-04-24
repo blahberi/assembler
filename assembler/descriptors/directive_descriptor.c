@@ -2,15 +2,16 @@
 // Author: Eitan H.
 //
 
-
-#include <tchar.h>
-#include "directive_descriptor.h"
+#include <string.h>
+#include <malloc.h>
+#include "../context/context.h"
 #include "../utils/assembly_strings.h"
 #include "../utils/utils.h"
 #include "../directive_to_machine_code.h"
-#include <stdlib.h>
 
-DirectiveDescriptor* get_directive_descriptor(const char* sentence) {
+
+DirectiveDescriptor* get_directive_descriptor(Context* context) {
+    const char* sentence = context->line_descriptor->sentence;
     char* directive_str = get_sentence_start(sentence);
     trim_whitespace(directive_str);
     DirectiveGenerator *generate= NULL;
@@ -37,5 +38,9 @@ DirectiveDescriptor* get_directive_descriptor(const char* sentence) {
     descriptor->type = type;
     descriptor->generate = generate;
     descriptor->handle_label = handle_label;
+
+    context->directive = descriptor;
+
+    free(directive_str);
     return descriptor;
 }

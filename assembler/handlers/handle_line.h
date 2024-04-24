@@ -2,12 +2,11 @@
 // Author: Eitan H.
 //
 
-#include "../assembler_context.h"
-#include "../words.h"
+typedef struct context Context;
 
 #ifndef ASSEMBLER_HANDLE_LINE_H
 #define ASSEMBLER_HANDLE_LINE_H
 
-int handle_line(const char*, AssemblerContext*, Word*, Word*);
+int handle_line(Context *context);
 
 #endif //ASSEMBLER_HANDLE_LINE_H

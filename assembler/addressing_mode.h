@@ -5,9 +5,7 @@
 #ifndef ASSEMBLER_ADDRESSING_MODE_H
 #define ASSEMBLER_ADDRESSING_MODE_H
 
-#include "assembler_context.h"
-
-typedef struct operand_descriptor OperandDescritor;
+typedef struct operand_descriptor OperandDescriptor;
 
 // Enum for addressing modes
 typedef enum {
@@ -17,6 +15,6 @@ typedef enum {
     REGISTER       // Register direct
 } ADDR_MODE;
 
-void get_addr_mode(struct operand_descriptor *);
+void get_addr_mode(OperandDescriptor *);
 
 #endif //ASSEMBLER_ADDRESSING_MODE_H

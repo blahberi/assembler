@@ -25,7 +25,7 @@ add_executable(assembler main.c
         assembler/addressing_mode.h
         assembler/operand_to_machine_code.h
         assembler/are.h
-        assembler/assembler_context.h
+        assembler/context/assembler_context.h
         assembler/utils/assembly_strings.c
         assembler/utils/assembly_strings.h
         assembler/directive_to_machine_code.c
@@ -55,4 +55,5 @@ add_executable(assembler main.c
         assembler/utils/errors.h
         assembler/handlers/handle_line.c
         assembler/descriptors/line_descriptor.h
+        assembler/context/context.h
 )
