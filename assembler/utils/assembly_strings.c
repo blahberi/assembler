@@ -9,6 +9,7 @@
 #include "../../config.h"
 #include "../context/context.h"
 #include "../../hash_table/int_hash_table.h"
+#include "errors.h"
 
 
 const char* DEFINE = ".define";
@@ -116,6 +117,11 @@ int parse_index_operand(const char* operand, char* address, char* index) {
         char* address_str = strtok(operand_copy, "[");
         char* index_str = strtok(NULL, "]");
 
+        if (address_str == NULL || index_str == NULL) {
+            free(operand_copy);
+            return -1;
+        }
+
         strcpy(address, address_str);
         strcpy(index, index_str);
 
@@ -149,7 +155,7 @@ bool check_index_operand(const char* operand) {
     error:
     free(address);
     free(index);
-    return -1;
+    return false;
 }
 
 

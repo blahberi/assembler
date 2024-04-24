@@ -88,21 +88,23 @@ int generate_type_1(Context *context) { // mov, add, sub
     // dest operand: Direct, Index, Register
 
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        const char *line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    const char *line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 2) {
+    if (operand_count != 2) {
+        if (is_first_pass){
             fprintf(stderr, ERR_EXPECTED_TWO_OPERANDS, line);
-            goto error;
         }
+        goto error;
+    }
 
-        OperandDescriptor dest = context->instruction->operands[1];
+    OperandDescriptor dest = context->instruction->operands[1];
 
-        if (dest.addr_mode == IMMEDIATE) {
+    if (dest.addr_mode == IMMEDIATE) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_DEST_CANNOT_BE_IMMEDIATE, line);
-            goto error;
         }
+        goto error;
     }
     return generate_two_word_instruction(context);
 
@@ -115,14 +117,14 @@ int generate_type_2(Context *context) {  // cmp
     // dest operand: Immediate, Direct, Index, Register
 
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        char *line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    char *line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 2) {
+    if (operand_count != 2) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_EXPECTED_TWO_OPERANDS, line);
-            goto error;
         }
+        goto error;
     }
     return generate_two_word_instruction(context);
 
@@ -135,21 +137,23 @@ int generate_type_3(Context *context) { // not, clr, inc, dec, red
     // dest operand: Direct, Index, Register
 
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        const char *line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    const char *line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 1) {
+    if (operand_count != 1) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_EXPECTED_ONE_OPERAND, line);
-            goto error;
         }
+        goto error;
+    }
 
-        OperandDescriptor dest = context->instruction->operands[0];
+    OperandDescriptor dest = context->instruction->operands[0];
 
-        if (dest.addr_mode == IMMEDIATE) {
+    if (dest.addr_mode == IMMEDIATE) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_DEST_CANNOT_BE_IMMEDIATE, line);
-            goto error;
         }
+        goto error;
     }
 
     return generate_one_word_instruction(context);
@@ -163,31 +167,37 @@ int generate_type_4(Context *context) { // lea
     // dest operand: Direct, Index, Register
 
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        const char *line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    const char *line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 2) {
+    if (operand_count != 2) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_EXPECTED_TWO_OPERANDS, line);
-            goto error;
         }
+        goto error;
+    }
 
-        OperandDescriptor src = context->instruction->operands[0];
-        OperandDescriptor dest = context->instruction->operands[1];
+    OperandDescriptor src = context->instruction->operands[0];
+    OperandDescriptor dest = context->instruction->operands[1];
 
-        if (src.addr_mode == IMMEDIATE) {
+    if (src.addr_mode == IMMEDIATE) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_SRC_CANNOT_BE_IMMEDIATE, line);
-            goto error;
         }
-        if (src.addr_mode == REGISTER) {
+        goto error;
+    }
+    if (src.addr_mode == REGISTER) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_SRC_CANNOT_BE_REGISTER, line);
-            goto error;
         }
+        goto error;
+    }
 
-        if (dest.addr_mode == IMMEDIATE) {
+    if (dest.addr_mode == IMMEDIATE) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_DEST_CANNOT_BE_IMMEDIATE, line);
-            goto error;
         }
+        goto error;
     }
 
     return generate_two_word_instruction(context);
@@ -200,25 +210,29 @@ int generate_type_5(Context *context) { // jmp, bne, jsr
     // no src operand
     // dest operand: Direct, Register
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        const char *line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    const char *line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 1) {
+    if (operand_count != 1) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_EXPECTED_ONE_OPERAND, line);
-            goto error;
         }
+        goto error;
+    }
 
-        OperandDescriptor dest = context->instruction->operands[0];
+    OperandDescriptor dest = context->instruction->operands[0];
 
-        if (dest.addr_mode == IMMEDIATE) {
+    if (dest.addr_mode == IMMEDIATE) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_DEST_CANNOT_BE_IMMEDIATE, line);
-            goto error;
         }
-        if (dest.addr_mode == INDEX) {
+        goto error;
+    }
+    if (dest.addr_mode == INDEX) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_DEST_CANNOT_BE_INDEX, line);
-            goto error;
         }
+        goto error;
     }
 
     return generate_one_word_instruction(context);
@@ -232,14 +246,14 @@ int generate_type_6(Context *context) { // prn
     // dest operand: Immediate, Direct, Index, Register
 
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        const char* line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    const char* line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 1) {
+    if (operand_count != 1) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_EXPECTED_ONE_OPERAND, line);
-            goto error;
         }
+        goto error;
     }
 
     return generate_one_word_instruction(context);
@@ -253,14 +267,14 @@ int generate_type_7(Context *context) { // rts, hlt
     // no dest operand
 
     bool is_first_pass = context->assembler_context->is_first_pass;
-    if (!is_first_pass) {
-        const char *line = context->line_descriptor->line;
-        int operand_count = context->instruction->operand_count;
+    const char *line = context->line_descriptor->line;
+    int operand_count = context->instruction->operand_count;
 
-        if (operand_count != 0) {
+    if (operand_count != 0) {
+        if (is_first_pass) {
             fprintf(stderr, ERR_EXPECTED_ZERO_OPERANDS, line);
-            goto error;
         }
+        goto error;
     }
 
     return generate_zero_word_instruction(context);

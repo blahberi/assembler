@@ -101,6 +101,9 @@ int handle_instruction_line(Context *context) {
     }
 
     OperandDescriptor* operandDescriptors = get_operand_descriptors(context);
+    if (operandDescriptors == NULL && context->instruction->operand_count != 0) {
+        goto error;
+    }
 
     int result = descriptor->generate(context);
 

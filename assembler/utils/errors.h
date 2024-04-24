@@ -6,7 +6,6 @@
 #define ASSEMBLER_ERRORS_H
 
 #define ERR_INVALID_SENTENCE "Error: Invalid sentence:\n %s\n"
-#define ERR_MISSING_COMMA "Error: Missing comma:\n %s\n"
 #define ERR_EMPTY_OPERAND "Error: Empty operand:\n %s\n"
 #define ERR_LABEL_TOO_LONG "Error: Label '%s' too long, max 31 characters:\n %s\n"
 #define ERR_DEFINE_GOT_LABEL "Error: .define does not expect a label\n %s\n"
@@ -16,7 +15,7 @@
 #define ERR_DATA_EXPECTS_OPERANDS "Error: .data expects at least one operand\n %s\n"
 #define ERR_IMMEDIATE_MUST_BE_NUMBER "Error: Immediate operand must be a number or an mdefine symbol\n %s\n"
 #define ERR_INDEX_MUST_BE_NUMBER "Error: Index must be an unsigned number or an mdefine symbol\n %s\n"
-#define ERR_INVALID_OPERAND "Error: Invalid operand\n %s\n"
+#define ERR_INVALID_OPERAND "Error: Invalid operand '%s'\n %s\n"
 #define ERR_LABEL_ALREADY_EXISTS "Error: Label '%s' already exists\n %s\n"
 #define ERR_RESERVED_LABEL "Error: Label '%s' is a reserved keyword\n %s\n"
 #define ERR_INVALID_LABEL "Error: Invalid label name '%s' \n %s\n"

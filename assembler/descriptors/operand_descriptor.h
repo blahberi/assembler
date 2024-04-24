@@ -22,7 +22,7 @@ struct operand_descriptor {
 };
 
 OperandDescriptor* get_operand_descriptors(Context *context);
-int get_addr_mode(OperandDescriptor *descriptor);
+int get_addr_mode(OperandDescriptor *descriptor, Context *context);
 
 
 #endif //ASSEMBLER_OPERAND_DESCRIPTOR_H

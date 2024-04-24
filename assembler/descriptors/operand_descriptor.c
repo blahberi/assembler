@@ -14,6 +14,8 @@
 #include <stdio.h>
 
 OperandDescriptor* get_operand_descriptors(Context *context) {
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    const char* line = context->line_descriptor->line;
     const char* operands = context->line_descriptor->operands;
     if (operands == NULL) {
         context->instruction->operand_count = 0;
@@ -28,19 +30,33 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
     }
 
     OperandDescriptor* descriptors = malloc((count) * sizeof(OperandDescriptor)); // Allocate an array of OperandDescriptor objects
+
+    if (count != comma_seperated_list_length(operands)) {
+        if (is_first_pass){
+            fprintf(stderr, ERR_EMPTY_OPERAND, line);
+        }
+        goto error;
+    }
+
     int i;
     for (i = 0; i < count; i++) {
         // Trim leading and trailing whitespace
         trim_whitespace(operand_strings[i]);
 
+        if (operand_strings[i][0] == '\0') {
+            if (is_first_pass) {
+                fprintf(stderr, ERR_EMPTY_OPERAND, line);
+            }
+            goto error;
+        }
+
         // Create a new OperandDescriptor
         descriptors[i].operand = strdup(operand_strings[i]); // Set the operand field directly
-        if (get_addr_mode(&descriptors[i]) != 0) {
+        if (get_addr_mode(&descriptors[i], context) != 0) {
             goto error;
         }
 
     }
-
 
     // Free the operand strings
     for (int i = 0; i < count; i++) {
@@ -61,7 +77,9 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
     return NULL;
 }
 
-int get_addr_mode(OperandDescriptor *descriptor) {
+int get_addr_mode(OperandDescriptor *descriptor, Context *context) {
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    const char* line = context->line_descriptor->line;
     const char* operand = descriptor->operand;
     if (operand[0] ==  '#') {
         descriptor->addr_mode = IMMEDIATE;
@@ -83,6 +101,8 @@ int get_addr_mode(OperandDescriptor *descriptor) {
         descriptor->generate = generate_index_operand;
         return 0;
     }
-    fprintf(stderr, ERR_INVALID_OPERAND, operand);
+    if (is_first_pass) {
+        fprintf(stderr, ERR_INVALID_OPERAND, operand, line);
+    }
     return -1;
 }
