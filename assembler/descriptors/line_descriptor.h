@@ -10,20 +10,20 @@
 struct OperationDescriptor;
 struct OperandDescriptor;
 
-typedef struct instruction_line_descriptor {
-    struct OperationDescriptor *operation;
-    struct OperandDescriptor *operands;
-    int operand_count;
+typedef struct InstructionLineDescriptor { /* Information about an instruction line */
+    struct OperationDescriptor *operation; /* Operation descriptor */
+    struct OperandDescriptor *operands; /* Operands descriptors */
+    int operand_count; /* Number of operands */
 } InstructionLineDescriptor;
 
 
-typedef struct line_descriptor {
-    char *line;
-    char *label;
-    char *sentence;
-    char *mnemonic;
-    char *operands;
-    bool is_label;
+typedef struct line_descriptor { /* Information about a line */
+    char *line; /* The line */
+    char *label; /* The label */
+    char *sentence; /* The sentence (the line without the label) */
+    char *mnemonic; /* The mnemonic (instruction or directive, "mov", ".data", etc) */
+    char *operands; /* The operands */
+    bool is_label; /* Is there a label? */
 } LineDescriptor;
 
 #endif /* ASSEMBLER_LINE_DESCRIPTOR_H */

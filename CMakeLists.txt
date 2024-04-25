@@ -29,7 +29,6 @@ add_executable(assembler main.c
         assembler/handlers/handle_label.h
         assembler/directive_to_machine_code.h
         assembler/handlers/handle_line.c
-        assembler/sentence_type.h
         assembler/descriptors/directive_descriptor.c
         assembler/descriptors/operation_descriptor.c
         assembler/descriptors/operand_descriptor.c

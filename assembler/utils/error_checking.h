@@ -7,5 +7,5 @@
 
 #include "../context/context.h"
 
-int check_label_err(const char* label, const Context* context);
+int check_label_err(const char* label, const Context* context); /* Handle all errors related to labels */
 #endif /* ASSEMBLER_ERROR_CHECKING_H */

@@ -7,12 +7,12 @@
 
 #include "extern_label_node.h"
 
-typedef struct extern_label_list ExternalLabelList;
+typedef struct ExternLabelList ExternalLabelList;
 
-struct extern_label_list{
-    ExternalLabelNode* head;
-    void (*add)(ExternalLabelList* this, ExternalLabelUsage* usage);
-    ExternalLabelUsage* (*get)(ExternalLabelList* this, const char* label);
+struct ExternLabelList { /* External label list */
+    ExternalLabelNode* head; /* The head of the linked list */
+    void (*add)(ExternalLabelList* this, ExternalLabelUsage* usage); /* A function to add an external label usage */
+    ExternalLabelUsage* (*get)(ExternalLabelList* this, const char* label); /* Get an external label usage */
 };
 
 ExternalLabelList* construct_external_label_list();

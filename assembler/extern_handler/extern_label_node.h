@@ -9,9 +9,9 @@
 
 typedef struct external_label_node ExternalLabelNode;
 
-struct external_label_node {
-    ExternalLabelUsage* usage;
-    ExternalLabelNode* next;
+struct external_label_node { /* External label node */
+    ExternalLabelUsage* usage; /* The external label usage */
+    ExternalLabelNode* next; /* The next node */
 };
 
 #endif /* ASSEMBLER_EXTERN_LABEL_NODE_H */

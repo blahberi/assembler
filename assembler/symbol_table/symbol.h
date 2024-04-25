@@ -15,13 +15,13 @@ typedef enum {
     EXTERN_LABEL
 } LABEL_TYPE;
 
-typedef struct symbol {
+typedef struct symbol { /* A symbol in the symbol table */
     char name[MAX_LABEL_LENGTH+1]; /* +1 for null terminator */
     LABEL_TYPE type; /* MDEFINE_LABEL, DATA_LABEL, CODE_LABEL */
     int value;
     bool is_entry; /* Did we apply .entry to this label? */
 } Symbol;
 
-Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry);
+Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry); /* Construct a symbol */
 
 #endif /*ASSEMBLER_SYMBOL_H */

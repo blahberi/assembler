@@ -114,59 +114,33 @@ char* get_preprocessed_filepath(const char* filepath) {
     return new_filepath;
 }
 
-char* get_extern_filepath(const char* filepath) {
-    char* base_name;
+char* get_filepath_with_extension(const char* filepath, const char* extension) {
+    char* base_name_without_extension;
     int new_filepath_length;
     char* new_filepath;
 
     push_memory();
     check_valid_filepath(filepath);
-    base_name = remove_extension(get_base_name(filepath));
+    base_name_without_extension = remove_extension(get_base_name(filepath));
 
-    new_filepath_length = strlen(base_name) + strlen(".ext") + 1;
+    new_filepath_length = strlen(base_name_without_extension) + strlen(extension) + 1;
     new_filepath = malloc_track_global(new_filepath_length);
 
-    strcpy(new_filepath, base_name);
-    strcat(new_filepath, ".ext");
+    strcpy(new_filepath, base_name_without_extension);
+    strcat(new_filepath, extension);
 
     pop_memory();
     return new_filepath;
+}
+
+char* get_extern_filepath(const char* filepath) {
+    return get_filepath_with_extension(filepath, ".ext");
 }
 
 char* get_entry_filepath(const char* filepath) {
-    char* base_name_without_extension;
-    int new_filepath_length;
-    char* new_filepath;
-
-    push_memory();
-    check_valid_filepath(filepath);
-    base_name_without_extension = remove_extension(get_base_name(filepath));
-
-    new_filepath_length = strlen(base_name_without_extension) + strlen(".ent") + 1;
-    new_filepath = malloc_track_global(new_filepath_length);
-
-    strcpy(new_filepath, base_name_without_extension);
-    strcat(new_filepath, ".ent");
-
-    pop_memory();
-    return new_filepath;
+    return get_filepath_with_extension(filepath, ".ent");
 }
 
 char* get_output_filepath(const char* filepath) {
-    char* base_name_without_extension;
-    int new_filepath_length;
-    char* new_filepath;
-
-    push_memory();
-    check_valid_filepath(filepath);
-    base_name_without_extension = remove_extension(get_base_name(filepath));
-
-    new_filepath_length = strlen(base_name_without_extension) + strlen(".obj") + 1;
-    new_filepath = malloc_track_global(new_filepath_length);
-
-    strcpy(new_filepath, base_name_without_extension);
-    strcat(new_filepath, ".obj");
-
-    pop_memory();
-    return new_filepath;
+    return get_filepath_with_extension(filepath, ".obj");
 }
