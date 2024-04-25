@@ -76,10 +76,11 @@ void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) 
 }
 
 void write_entry_file(const char* filepath) { /* Write the .ent file */
+    FILE* file;
     if (!is_entry()) {
         return;
     }
-    FILE* file = fopen(filepath, "w");
+    file = fopen(filepath, "w");
     WriteContext context;
 
     if (file == NULL) {

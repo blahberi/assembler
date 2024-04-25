@@ -35,11 +35,13 @@ bool is_extern() { /* Check if there is an extern in the list */
 }
 
 void write_extern_file(const char *filepath) { /* Write the extern file */
+    ExternalLabelNode* current;
+    FILE *file;
+
     if (!is_extern()) {
         return;
     }
-    ExternalLabelNode* current;
-    FILE *file = fopen(filepath, "w");
+    file = fopen(filepath, "w");
 
     if (file == NULL) {
         printf("Unable to open file %s\n", filepath);
