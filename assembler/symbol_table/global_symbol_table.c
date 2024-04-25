@@ -77,11 +77,12 @@ void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) 
 
 void write_entry_file(const char* filepath) { /* Write the .ent file */
     FILE* file;
+    WriteContext context;
+
     if (!is_entry()) {
         return;
     }
     file = fopen(filepath, "w");
-    WriteContext context;
 
     if (file == NULL) {
         printf("Unable to open file %s\n", filepath);
