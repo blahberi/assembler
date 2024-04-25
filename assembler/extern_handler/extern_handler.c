@@ -3,6 +3,7 @@
 */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "extern_label_list.h"
 #include "extern_handler.h"
 
@@ -29,7 +30,14 @@ void update_extern_list_address(void) { /* Update the memory address of the exte
     }
 }
 
+bool is_extern() { /* Check if there is an extern in the list */
+    return EXTERN_LIST->head != NULL;
+}
+
 void write_extern_file(const char *filepath) { /* Write the extern file */
+    if (!is_extern()) {
+        return;
+    }
     ExternalLabelNode* current;
     FILE *file = fopen(filepath, "w");
 

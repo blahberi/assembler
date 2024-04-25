@@ -49,6 +49,18 @@ void symbol_table_update_address(int ic) { /* Update the address of all symbols 
     SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void(*)(Symbol*, void*)) update_address, &context);
 }
 
+void is_entry_helper(Symbol* symbol, bool* is_entry) { /* Check if a symbol is an entry */
+    if (symbol->is_entry) {
+        *((bool*)is_entry) = true;
+    }
+}
+
+bool is_entry() { /* Check if there is an entry in the symbol table */
+    bool is_entry = false;
+    SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void (*)(Symbol*, void*)) is_entry_helper, &is_entry);
+    return is_entry;
+}
+
 typedef struct {
     FILE* file;
 } WriteContext;
@@ -64,6 +76,9 @@ void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) 
 }
 
 void write_entry_file(const char* filepath) { /* Write the .ent file */
+    if (!is_entry()) {
+        return;
+    }
     FILE* file = fopen(filepath, "w");
     WriteContext context;
 
