@@ -70,3 +70,5 @@ add_executable(assembler main.c
         assembler/write_file.c
         assembler/write_file.h
 )
+
+target_compile_options(assembler PRIVATE -ansi -Wall -pedantic)

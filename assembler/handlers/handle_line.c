@@ -2,14 +2,11 @@
 // Author: Eitan H.
 //
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "../context/assembler_context.h"
 #include "../utils/assembly_strings.h"
-#include "../utils/utils.h"
 #include "../descriptors/directive_descriptor.h"
-#include "../descriptors/operation_descriptor.h"
 #include "../symbol_table/global_symbol_table.h"
 #include "../../errors.h"
 #include "../utils/error_checking.h"
