@@ -37,7 +37,7 @@ void write_extern_file(const char *filename) {
 
     ExternalLabelNode* current = EXTERN_LIST->head;
     while (current != NULL) {
-        fprintf(file, "%s\t%04d\n", current->usage->label, current->usage->memory_address);
+        fprintf(file, "%s %04d\n", current->usage->label, current->usage->memory_address);
         current = current->next;
     }
 

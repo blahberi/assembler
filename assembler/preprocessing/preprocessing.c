@@ -14,9 +14,9 @@
 #include "../utils/assembly_strings.h"
 #include "../../memory_allocator/memory_allocator.h"
 
-static int handle_line(PreprocessingContext* context, char* line);
+static void handle_line(PreprocessingContext* context, char* line);
 
-static int handle_macro_line(PreprocessingContext* context, char* line) {
+static void handle_macro_line(PreprocessingContext* context, char* line) {
     const char* macro_name = context->macro_name;
     LineList *macro_lines = context->macro_lines;
     if (strcmp(line, "endmcr") == 0) {
@@ -24,7 +24,7 @@ static int handle_macro_line(PreprocessingContext* context, char* line) {
         Macro* macro = construct_macro(macro_name);
         macro->lines = macro_lines;
         insert_macro(macro);
-        return 0;
+        return;
     }
     if (is_macro(line)) {
         Macro* macro = find_macro(line);
@@ -33,19 +33,18 @@ static int handle_macro_line(PreprocessingContext* context, char* line) {
             handle_line(context, current->line);
             current = current->next;
         }
-        return 0;
+        return;
     }
     add_line(macro_lines, line);
-    return 0;
 }
 
-static int handle_regular_line(PreprocessingContext* context, char* line) {
+static void handle_regular_line(PreprocessingContext* context, char* line) {
     if (strncmp(line, "mcr ", 4) == 0) {
         context->macro_lines = construct_line_list();
         context->is_macro = true;
         context->macro_name = get_operands(line);
         context->macro_lines = construct_line_list();
-        return 0;
+        return;
     }
     if (is_macro(line)) {
         Macro* macro = find_macro(line);
@@ -54,30 +53,31 @@ static int handle_regular_line(PreprocessingContext* context, char* line) {
             handle_line(context, current->line);
             current = current->next;
         }
-        return 0;
+        return;
     }
     fprintf(context->output, "%s\n", line);
     fflush(context->output);
-    return 0;
 }
 
-static int handle_line(PreprocessingContext* context, char* line) {
+static void handle_line(PreprocessingContext* context, char* line) {
     trim_whitespace(line);
     if (line[0] == '\0') {
-        return 0;
+        return;
     }
     if (line[0] == ';') {
-        return 0;
+        return;
     }
     if (context->is_macro) {
-        return handle_macro_line(context, line);
+        handle_macro_line(context, line);
+        return;
     }
     else {
-        return handle_regular_line(context, line);
+        handle_regular_line(context, line);
+        return;
     }
 }
 
-int preprocess(const char* filename) {
+void preprocess(const char* filename) {
     init_memory();
     init_macro_table();
     FILE* input = fopen(filename, "r");
@@ -105,5 +105,4 @@ int preprocess(const char* filename) {
         handle_line(&context, line);
     }
     free_all_memory();
-    return 0;
 }

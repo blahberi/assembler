@@ -55,11 +55,10 @@ typedef struct {
 void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) {
     FILE* file = (FILE*)context->file;
     if (file == NULL) {
-        printf("errrrmmm awkward much?!?!? \n");
         return;
     }
     if (symbol->is_entry) {
-        fprintf(file, "%s\t%04d\n", symbol->name, symbol->value);
+        fprintf(file, "%s %04d\n", symbol->name, symbol->value);
     }
 }
 

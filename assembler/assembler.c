@@ -8,12 +8,13 @@
 #include "extern_handler/extern_handler.h"
 #include "words.h"
 #include "read_file.h"
-#include "utils/utils.h"
 #include "context/context.h"
 #include "utils/assembly_strings.h"
 #include "preprocessing/preprocess.h"
 #include "../memory_allocator/memory_allocator.h"
+#include "write_file.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void assemble(const char* filename) {
     preprocess(filename);
@@ -49,6 +50,7 @@ void assemble(const char* filename) {
 
     // First pass
     read_file(filename, &context);
+    symbol_table_update_address(assembler_context.IC);
 
     assembler_context.IC = 0;
     assembler_context.DC = 0;
@@ -56,21 +58,24 @@ void assemble(const char* filename) {
 
     // Second pass
     read_file(filename, &context);
-    symbol_table_update_address(assembler_context.IC);
-
     if (assembler_context.error) {
-        return;
+        free_all_memory();
+        exit(EXIT_FAILURE);
     }
-    printf("Instruction Words:\n");
-    for (int i = 0; i < assembler_context.IC; i++) {
-        print_binary(instruction_words[i].word, 14);
+
+    Word *output_words = calloc_track(MEMORY_SIZE - 100, sizeof(Word));
+    int ic = assembler_context.IC;
+    int dc = assembler_context.DC;
+    for (int i = 0; i < ic; i++) {
+        output_words[i] = instruction_words[i];
     }
-    printf("Data Words:\n");
-    for (int i = 0; i < assembler_context.DC; i++) {
-        print_binary(data_words[i].word, 14);
+    for (int i = 0; i < dc; i++) {
+        output_words[ic + i] = data_words[i];
     }
-    printf("Symbol Table:\n");
+
     symbol_table_print();
+
+    write_file("C:\\Users\\blahb\\CLionProjects\\assembler\\output.obj", output_words, ic, dc);
 
     update_extern_list_address();
 

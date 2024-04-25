@@ -67,4 +67,6 @@ add_executable(assembler main.c
         assembler/preprocessing/preprocess.h
         memory_allocator/memory_allocator.c
         memory_allocator/memory_allocator.h
+        assembler/write_file.c
+        assembler/write_file.h
 )

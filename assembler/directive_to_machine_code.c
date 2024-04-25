@@ -65,6 +65,7 @@ int generate_string_directive(Context *context){
     }
 
     // Add null terminator
+    (*DC)++;
     words[*DC].word = 0;
     return 0;
 
