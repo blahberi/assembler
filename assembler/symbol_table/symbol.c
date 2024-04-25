@@ -9,7 +9,7 @@
 #include <string.h>
 
 /* Construct a new Symbol */
-Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry) {
+Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry) { /* Constructor for symbol */
     Symbol* symbol = malloc_track_global(sizeof(Symbol));
     strncpy(symbol->name, name, MAX_LABEL_LENGTH - 1);
     symbol->name[MAX_LABEL_LENGTH - 1] = '\0';

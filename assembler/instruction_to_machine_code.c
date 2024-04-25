@@ -7,7 +7,7 @@
 #include "context/context.h"
 #include "../errors.h"
 
-int generate_first_word(Context *context) {
+int generate_first_word(Context *context) { /* Generate the machine code for the first word of the instruction */
     /*
      * bits 0-1: ARE
      * bits 2-3: Destination addressing mode
@@ -53,24 +53,24 @@ int generate_first_word(Context *context) {
     return 0;
 }
 
-int generate_two_word_instruction(Context *context) {
+int generate_two_word_instruction(Context *context) { /* Generate machine code for instructions that take two words */
     OperandDescriptor *operands = context->instruction->operands;
-    OperandDescriptor *src = operands;
-    OperandDescriptor *dest = operands+1;
+    OperandDescriptor *src = operands; /* Source operand */
+    OperandDescriptor *dest = operands+1; /* Destination operand */
     int *IC = &context->assembler_context->IC;
     int res1;
     int res2;
 
-    src->is_dest = false;
-    dest->is_dest = true;
-    generate_first_word(context);
+    src->is_dest = false; /* Source operand is not the destination */
+    dest->is_dest = true; /* Destination operand is the destination */
+    generate_first_word(context); /* Generate the machine code for the first word */
     res1 = src->generate(src, context);
-    if (src->addr_mode == REGISTER && dest->addr_mode == REGISTER) {
-        (*IC)--;
+    if (src->addr_mode == REGISTER && dest->addr_mode == REGISTER) { /* If both operands are registers */
+        (*IC)--; /* Decrement the instruction counter since the machine code they generate overlap */
     }
-    res2 = dest->generate(dest, context);
+    res2 = dest->generate(dest, context); /* Generate the destination operand */
 
-    if (res1 != 0 || res2 != 0) {
+    if (res1 != 0 || res2 != 0) { /* Check if there was an error */
         goto error;
     }
     return 0;
@@ -79,27 +79,26 @@ int generate_two_word_instruction(Context *context) {
     return -1;
 }
 
-int generate_one_word_instruction(Context *context) {
+int generate_one_word_instruction(Context *context) { /* Generate machine code for instructions that take one word */
     OperandDescriptor *operands = context->instruction->operands;
-    OperandDescriptor *dest = operands;
+    OperandDescriptor *dest = operands; /* Destination operand */
     int res1;
     int res2;
 
-    dest->is_dest = true;
-    res1 = generate_first_word(context);
-    res2 = dest->generate(dest, context);
-    if (res1 != 0 || res2 != 0) {
+    dest->is_dest = true; /* Set destination flag to be true */
+    res1 = generate_first_word(context); /* Generate the machine code for the first word */
+    res2 = dest->generate(dest, context);  /* Generate the machine code for the operand */
+    if (res1 != 0 || res2 != 0) { /* Check if there was an error */
         goto error;
     }
-
     return 0;
 
     error:
     return -1;
 }
 
-int generate_zero_word_instruction(Context *context) {
-    return generate_first_word(context);
+int generate_zero_word_instruction(Context *context) { /* Generate machine code for instructions that take zero words */
+    return generate_first_word(context); /* Just generate the machine code for the first word */
 }
 
 int generate_type_1(Context *context) { /* mov, add, sub */

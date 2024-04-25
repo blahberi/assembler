@@ -17,7 +17,7 @@ unsigned int hash(const char *key) {
     return hash % HASH_TABLE_SIZE;
 }
 
-static void insert(struct HashTable *this, const char* key, void* value){
+static void insert(struct HashTable *this, const char* key, void* value){ /* Insert a key-value pair into the hash table */
     unsigned int index = hash(key);
     Node* new_node = malloc_track_global(sizeof(Node));
     new_node->key = key;
@@ -26,7 +26,7 @@ static void insert(struct HashTable *this, const char* key, void* value){
     this->buckets[index] = new_node;
 }
 
-static void* find(struct HashTable *this, const char* key){
+static void* find(struct HashTable *this, const char* key){ /* Find a value by key */
     unsigned int index = hash(key);
     Node* current = this->buckets[index];
     while (current != NULL){
@@ -38,11 +38,11 @@ static void* find(struct HashTable *this, const char* key){
     return NULL;
 }
 
-static bool is_in(struct HashTable *this, const char* key){
+static bool is_in(struct HashTable *this, const char* key){ /* Check if a key is in the hash table */
     return find(this, key) != NULL;
 }
 
-static void foreach(struct HashTable *this, void (*callback)(const char* key, void* value, void* context), void* context){
+static void foreach(struct HashTable *this, void (*callback)(const char* key, void* value, void* context), void* context){ /* Call a callback for each key-value pair */
     int i;
     for (i = 0; i < HASH_TABLE_SIZE; i++){
         Node* current = this->buckets[i];
@@ -53,7 +53,7 @@ static void foreach(struct HashTable *this, void (*callback)(const char* key, vo
     }
 }
 
-HashTable * construct_hash_table() {
+HashTable * construct_hash_table() { /* Construct a new hash table */
     int i;
     HashTable* table = malloc_track_global(sizeof(HashTable));
     table->size = HASH_TABLE_SIZE;

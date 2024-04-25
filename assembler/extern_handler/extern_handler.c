@@ -8,20 +8,20 @@
 
 ExternalLabelList *EXTERN_LIST;
 
-void init_extern_list(void) {
+void init_extern_list(void) { /* Initialize the extern list */
     EXTERN_LIST = construct_external_label_list();
 }
 
-void add_extern_label_usage(const char *label, int memory_address) {
+void add_extern_label_usage(const char *label, int memory_address) { /* Add an external label usage to the list */
     ExternalLabelUsage *usage = construct_external_label_usage(label, memory_address);
     EXTERN_LIST->add(EXTERN_LIST, usage);
 }
 
-ExternalLabelUsage *get_extern_label_usage(const char *label) {
+ExternalLabelUsage *get_extern_label_usage(const char *label) { /* Get an external label usage from the list */
     return EXTERN_LIST->get(EXTERN_LIST, label);
 }
 
-void update_extern_list_address(void) {
+void update_extern_list_address(void) { /* Update the memory address of the external labels */
     ExternalLabelNode *current = EXTERN_LIST->head;
     while (current != NULL) {
         current->usage->memory_address += 100;
@@ -29,7 +29,7 @@ void update_extern_list_address(void) {
     }
 }
 
-void write_extern_file(const char *filepath) {
+void write_extern_file(const char *filepath) { /* Write the extern file */
     ExternalLabelNode* current;
     FILE *file = fopen(filepath, "w");
 

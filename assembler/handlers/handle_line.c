@@ -68,7 +68,7 @@ int handle_directive_line(Context *context) {
     bool is_first_pass = context->assembler_context->is_first_pass;
     descriptor = get_directive_descriptor(context);
 
-    if (descriptor == NULL) {
+    if (descriptor == NULL && is_first_pass) {
         fprintf(stderr, ERR_INVALID_SENTENCE, line);
         goto error;
     }
@@ -97,7 +97,7 @@ int handle_instruction_line(Context *context) {
     char* operands;
     int result;
 
-    if (descriptor == NULL) {
+    if (descriptor == NULL && is_first_pass) {
         fprintf(stderr, ERR_INVALID_SENTENCE, line);
         goto error;
     }
@@ -122,32 +122,34 @@ int handle_instruction_line(Context *context) {
     return -1;
 }
 
-int handle_line(Context* context) {
+int handle_line(Context* context) { /* Handle a line in the assembly code */
     const char* line = context->line_descriptor->line;
     bool is_label;
+    bool is_first_pass = context->assembler_context->is_first_pass;
     char sentence[MAX_LINE_LENGTH];
     char label[MAX_LABEL_LENGTH];
     SENTENCE_TYPE sentence_type;
 
-    if (line[0] == '\n' || line[0] == '\0') {
+    if (line[0] == '\n' || line[0] == '\0') { /* Skip empty lines */
         return 0;
     }
 
     is_label = is_label_in_line(line);
-    if(is_label) {
+    if(is_label) { /* If there is a label, split it from the sentence */
         split_label_and_sentence(line, label, sentence);
     }
     else {
         strcpy(sentence, line);
-        trim_whitespace(sentence);
+        trim_whitespace(sentence); /* Remove whitespace from the sentence */
     }
 
-    sentence_type = get_sentence_type(sentence);
+    sentence_type = get_sentence_type(sentence); /* Get the sentence type */
 
     context->line_descriptor->label = label;
     context->line_descriptor->sentence = sentence;
     context->line_descriptor->is_label = is_label;
 
+    /* Handle the sentence according to its type */
     if (sentence_type == DEFINE_SENTENCE){
         return handle_define_line(context);
     }
@@ -157,8 +159,10 @@ int handle_line(Context* context) {
     if (sentence_type == INSTRUCTION_SENTENCE) {
         return handle_instruction_line(context);
     }
-    fprintf(stderr, ERR_INVALID_SENTENCE, line);
-    return -1;
+    if (is_first_pass) {
+        fprintf(stderr, ERR_INVALID_SENTENCE, line); /* The line is invalid so we show an error if it's the first pass */
+    }
+    return -1; /* The line is invalid and we error */
 }
 
 

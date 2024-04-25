@@ -19,7 +19,7 @@ const char* DEFINE = ".define";
 IntHashTable *OPERATION_TABLE;
 IntHashTable *DIRECTIVE_TABLE;
 
-void init_operation_table() {
+void init_operation_table() { /* Initialize the operation table which is used for parsing strings of operations */
     OPERATION_TABLE = construct_int_hash_table();
     OPERATION_TABLE->insert(OPERATION_TABLE, "mov", MOV);
     OPERATION_TABLE->insert(OPERATION_TABLE, "cmp", CMP);
@@ -39,7 +39,7 @@ void init_operation_table() {
     OPERATION_TABLE->insert(OPERATION_TABLE, "hlt", HLT);
 }
 
-void init_directive_table() {
+void init_directive_table() { /* Initialize the directive table which is used for parsing strings of directives */
     DIRECTIVE_TABLE = construct_int_hash_table();
     DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".data", DATA_DIRECTIVE);
     DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".string", STRING_DIRECTIVE);
@@ -47,19 +47,19 @@ void init_directive_table() {
     DIRECTIVE_TABLE->insert(DIRECTIVE_TABLE, ".extern", EXTERN_DIRECTIVE);
 }
 
-OPCODE find_operation(const char* operation){
+OPCODE find_operation(const char* operation){ /* Find an operation's opcode given the operation string */
     return OPERATION_TABLE->find(OPERATION_TABLE, operation);
 }
 
-bool is_operation(const char* operation) {
+bool is_operation(const char* operation) {  /* Check if a string is an operation */
     return find_operation(operation) != -1;
 }
 
-DIRECTIVE_TYPE find_directive(const char* directive){
+DIRECTIVE_TYPE find_directive(const char* directive){ /* Find a directive's type given the directive string */
     return DIRECTIVE_TABLE->find(DIRECTIVE_TABLE, directive);
 }
 
-bool is_directive(const char* directive) {
+bool is_directive(const char* directive) { /* Check if a string is a directive */
     return find_directive(directive) != -1;
 }
 
@@ -73,7 +73,7 @@ bool is_number_helper(const char* str){
     return true;
 }
 
-bool is_number_signed(const char* str) {
+bool is_number_signed(const char* str) { /* Check if a string is a signed number */
     if (str == NULL || *str == '\0') {
         return false;
     }
@@ -86,7 +86,7 @@ bool is_number_signed(const char* str) {
     return is_number_helper(str);
 }
 
-bool is_number_unsigned(const char* str) {
+bool is_number_unsigned(const char* str) { /* Check if a string is an unsigned number */
     if (str == NULL || *str == '\0') {
         return false;
     }
@@ -115,6 +115,7 @@ int get_value_signed(const char* str, int* result) {
 }
 
 int get_value_unsigned(const char* str, int* result) {
+    /* this function gets a number or an mdefien label and returns it's int value */
     if (get_value_signed(str, result) != 0) {
         goto error;
     }
@@ -127,16 +128,12 @@ int get_value_unsigned(const char* str, int* result) {
     return -1;
 }
 
-char** split_string_by_comma(const char* str) {
+char** split_string_by_comma(const char* str) { /* Split a string by commas for example "hello,world  , 123,  pizza" will become ["hello", "world", "123", "pizza"] */
     char* str_copy = my_strdup(str);
     char** result = malloc_track(sizeof(char *) * (strlen(str) + 1));
     char* token;
     int i;
 
-    if (!result) {
-        fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
-        exit(EXIT_FAILURE);
-    }
     token = strtok(str_copy, ",");
     i = 0;
     while (token != NULL) {
@@ -149,7 +146,7 @@ char** split_string_by_comma(const char* str) {
     return result;
 }
 
-int comma_seperated_list_length(const char* str) {
+int comma_seperated_list_length(const char* str) { /* Count the number of elements in a comma-separated list */
     int count = 0;
     const char *c;
 
@@ -169,7 +166,7 @@ int comma_seperated_list_length(const char* str) {
     return count;
 }
 
-void trim_whitespace(char* str) {
+void trim_whitespace(char* str) { /* Remove leading and trailing whitespace from a string */
     char* start = str;
     char* end = str + strlen(str);
     size_t length;
@@ -194,10 +191,12 @@ void trim_whitespace(char* str) {
     str[length] = '\0';
 }
 
-bool check_register(const char* operand) {
-    /* check if starts with r and the rest is a number */
-    if (operand[0] == 'r' && is_number_unsigned(operand + 1)) {
+bool check_register(const char* operand) { /* Check if a string is a valid register */
+    if (operand[0] == 'r' && is_number_unsigned(operand + 1)) { /* Check if the operand starts with 'r' and the rest is a number */
         int reg_num = atoi(operand + 1);
+        if (reg_num > 0 && operand[1] == '0') { /* edge case for stuff like "r01" */
+            return false;
+        }
         if (reg_num < REGISTER_COUNT) { /* Check if the register number is valid */
             return true;
         }
@@ -205,7 +204,7 @@ bool check_register(const char* operand) {
     return false;
 }
 
-bool check_label(const char* label) {
+bool check_label(const char* label) { /* Check if a string is a valid label */
     int i;
 
     /* Check if label is empty */
@@ -245,7 +244,10 @@ bool check_label(const char* label) {
 }
 
 
-int parse_index_operand(const char* operand, char* address, char* index) {
+int parse_index_operand(const char* operand, char* address, char* index) { /* Parse an index operand into an address and an index */
+    /*
+     * For example, LIST[pizza] will become address = "LIST" and index = "pizza"
+     */
     if (strchr(operand, '[') && strchr(operand, ']')) {
         char* operand_copy = my_strdup(operand);
         char* address_str = strtok(operand_copy, "[");
@@ -263,7 +265,7 @@ int parse_index_operand(const char* operand, char* address, char* index) {
 }
 
 
-bool check_index_operand(const char* operand) {
+bool check_index_operand(const char* operand) { /* Check if a string is a valid index operand */
     char* address = malloc_track(strlen(operand) + 1);
     char* index = malloc_track(strlen(operand) + 1);
     int code = parse_index_operand(operand, address, index);
@@ -295,7 +297,10 @@ bool is_label_in_line(const char* line) { /* does the line start with "<label>: 
 }
 
 
-void split_label_and_sentence(const char* line, char* label, char* sentence) {
+void split_label_and_sentence(const char* line, char* label, char* sentence) { /* Split a line into a label and a sentence */
+    /*
+     * For example, "LABEL: MOV r1, r2" will become label = "LABEL" and sentence = "MOV r1, r2"
+     */
     char* colon_position = strchr(line, ':');
 
     /* Copy characters from line to label */
@@ -308,14 +313,17 @@ void split_label_and_sentence(const char* line, char* label, char* sentence) {
     trim_whitespace(sentence);
 }
 
-char* get_sentence_start(const char* sentence) {
+char* get_sentence_start(const char* sentence) { /* Get the first word of a sentence */
+    /*
+     * For example, "MOV r1, r2" will return "MOV"
+     */
     char* sentence_copy = my_strdup(sentence); /* Create a copy of the sentence to avoid modifying the original string */
     char* first_word = strtok(sentence_copy, " "); /* Get the first word */
     char* result = my_strdup(first_word); /* Copy the first word to a new string */
     return result;
 }
 
-SENTENCE_TYPE get_sentence_type(const char* sentence) {
+SENTENCE_TYPE get_sentence_type(const char* sentence) { /* Get the type of a sentence */
     char* sentence_start = get_sentence_start(sentence);
 
     if (strncmp(sentence_start, DEFINE, strlen(DEFINE)) == 0) {
@@ -334,7 +342,10 @@ SENTENCE_TYPE get_sentence_type(const char* sentence) {
     return -1;
 }
 
-char* get_operands(const char* sentence) {
+char* get_operands(const char* sentence) { /* Get the operands */
+    /*
+     * For example, "MOV r1, r2" will return "r1, r2"
+     */
     char* space_position = strchr(sentence, ' ');
     char* operands;
 
@@ -349,7 +360,7 @@ char* get_operands(const char* sentence) {
     return operands;
 }
 
-char* get_string_from_quotes(const char* str) {
+char* get_string_from_quotes(const char* str) { /* Get a string from quotes */
     if (str[0] == '"' && str[strlen(str) - 1] == '"') {
         char* result = my_strdup(str + 1);
         result[strlen(result) - 1] = '\0';

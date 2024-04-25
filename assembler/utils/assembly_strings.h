@@ -12,6 +12,7 @@ void init_operation_table(); /* Hash table for string parsing */
 void init_directive_table(); /* Hash table for string parsing */
 OPCODE find_operation(const char* operation); /* Get the OPCODE given an operation string */
 bool is_operation(const char* str); /* Check if a string is an operation */
+DIRECTIVE_TYPE find_directive(const char* directive); /* Get the DIRECTIVE_TYPE given a directive string */
 bool is_directive(const char* str); /* Check if a string is a directive */
 bool is_number_signed(const char* str); /* Check if a string is a signed number */
 bool is_number_unsigned(const char* str); /* Check if a string is an unsigned number */
