@@ -50,7 +50,7 @@ void free_all_memory() {
     }
 }
 
-void increment_memory_stack() {
+void push_memory() {
     StackNode* new_node = malloc(sizeof(StackNode));
     if (new_node == NULL) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);

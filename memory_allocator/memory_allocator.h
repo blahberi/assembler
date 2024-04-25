@@ -8,7 +8,7 @@
 void init_memory();
 void pop_memory();
 void free_all_memory();
-void increment_memory_stack();
+void push_memory();
 
 void* malloc_track(size_t size);
 void* calloc_track(size_t num, size_t size);

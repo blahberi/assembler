@@ -34,11 +34,11 @@ void write_line(Word* word, int address, FILE* file) {
     fprintf(file, "%04d %s\n", address, str);
 }
 
-void write_file(char* filename, Word* words, int ic, int dc) {
+void write_file(char* filepath, Word* words, int ic, int dc) {
     int words_count = ic + dc;
-    FILE* file = fopen(filename, "w");
+    FILE* file = fopen(filepath, "w");
     if (file == NULL) {
-        fprintf(stderr, "Error: could not open file %s\n", filename);
+        fprintf(stderr, "Error: could not open file %s\n", filepath);
         free_all_memory();
         exit(EXIT_FAILURE);
     }

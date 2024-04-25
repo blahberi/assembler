@@ -62,10 +62,10 @@ void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) 
     }
 }
 
-void write_entry_file(const char* filename) {
-    FILE* file = fopen(filename, "w");
+void write_entry_file(const char* filepath) {
+    FILE* file = fopen(filepath, "w");
     if (file == NULL) {
-        printf("Unable to open file %s\n", filename);
+        printf("Unable to open file %s\n", filepath);
         return;
     }
 

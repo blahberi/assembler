@@ -77,16 +77,17 @@ static void handle_line(PreprocessingContext* context, char* line) {
     }
 }
 
-void preprocess(const char* filename) {
+void preprocess(const char* filepath) {
     init_memory();
     init_macro_table();
-    FILE* input = fopen(filename, "r");
+    FILE* input = fopen(filepath, "r");
     if (!input) {
-        fprintf(stderr, "Failed to open file %s\n", filename);
+        fprintf(stderr, "Failed to open file %s\n", filepath);
         free_all_memory();
         exit(EXIT_FAILURE);
     }
-    FILE* output = fopen("C:\\Users\\blahb\\CLionProjects\\assembler\\preprocessed.asm", "w");
+    const char* preprocessed_filepath = get_preprocessed_filepath(filepath);
+    FILE* output = fopen(preprocessed_filepath, "w");
     if (!output) {
         fprintf(stderr, "Failed to open file preprocessed.asm\n");
         fclose(input);

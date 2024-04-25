@@ -5,12 +5,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "utils.h"
 #include "../../config.h"
 #include "../context/context.h"
 #include "../../hash_table/int_hash_table.h"
-#include "../../errors.h"
 #include "../../memory_allocator/memory_allocator.h"
+#include "../../errors.h"
+#include "../symbol_table/global_symbol_table.h"
 
 const char* DEFINE = ".define";
 
@@ -61,6 +63,133 @@ bool is_directive(const char* directive) {
     return find_directive(directive) != -1;
 }
 
+bool is_number_helper(const char* str){
+    while (*str != '\0') {
+        if (!isdigit((unsigned char)*str)) {
+            return false;
+        }
+        str++;
+    }
+    return true;
+}
+
+bool is_number_signed(const char* str) {
+    if (str == NULL || *str == '\0') {
+        return false;
+    }
+
+    // Allow a leading + or -
+    if (*str == '+' || *str == '-') {
+        str++; // Skip the sign
+    }
+
+    return is_number_helper(str);
+}
+
+bool is_number_unsigned(const char* str) {
+    if (str == NULL || *str == '\0') {
+        return false;
+    }
+    return is_number_helper(str);
+}
+
+int get_value_signed(const char* str, int* result) {
+    // this function gets a number or an mdefien label and returns it's int value
+    if (is_number_signed(str)) {
+        *result = atoi(str);
+        return 0;
+    }
+    Symbol* symbol = symbol_table_find(str);
+    if (symbol == NULL) {
+        goto error;
+    }
+    if (symbol->type != MDEFINE_LABEL) {
+        goto error;
+    }
+    *result = symbol->value;
+    return 0;
+
+    error:
+    return -1;
+}
+
+int get_value_unsigned(const char* str, int* result) {
+    if (get_value_signed(str, result) != 0) {
+        goto error;
+    }
+    if (*result < 0) {
+        goto error;
+    }
+    return 0;
+
+    error:
+    return -1;
+}
+
+char** split_string_by_comma(const char* str) {
+    char* str_copy = strdup(str);
+    track_pointer(str_copy);
+    char** result = malloc_track(sizeof(char *) * (strlen(str) + 1));
+    if (!result) {
+        fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
+        exit(EXIT_FAILURE);
+    }
+    char* token = strtok(str_copy, ",");
+    int i = 0;
+
+    while (token != NULL) {
+        result[i] = strdup(token);
+        track_pointer(result[i]);
+        token = strtok(NULL, ",");
+        i++;
+    }
+
+    result[i] = NULL; // Null-terminate the array
+    return result;
+}
+
+int comma_seperated_list_length(const char* str) {
+    int count = 0;
+
+    // If the string is not empty, start count from 1
+    if (str != NULL && *str != '\0') {
+        count = 1;
+    }
+
+    // For each character in the string
+    for (const char* c = str; *c != '\0'; c++) {
+        // If the character is a comma, increment the count
+        if (*c == ',') {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+void trim_whitespace(char* str) {
+    char* start = str;
+    char* end = str + strlen(str);
+
+    // Move start pointer to first non-whitespace character
+    while (isspace((unsigned char)*start)) {
+        start++;
+    }
+
+    // Move end pointer to last non-whitespace character
+    while (end > start && isspace((unsigned char)*(end - 1))) {
+        end--;
+    }
+
+    // Calculate new length
+    size_t length = end - start;
+
+    // Shift characters to start of string
+    memmove(str, start, length);
+
+    // Null-terminate the string
+    str[length] = '\0';
+}
 
 bool check_register(const char* operand) {
     // check if starts with r and the rest is a number

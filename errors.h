@@ -5,6 +5,8 @@
 #ifndef ASSEMBLER_ERRORS_H
 #define ASSEMBLER_ERRORS_H
 
+#define ERR_INVALID_FILEPATH "Error: Invalid filepath: %s\n"
+#define ERR_INVALID_FILE_EXTENSION "Error: Invalid file extension: %s\n"
 #define ERR_INVALID_SENTENCE "Error: Invalid sentence:\n %s\n"
 #define ERR_EMPTY_OPERAND "Error: Empty operand:\n %s\n"
 #define ERR_LABEL_TOO_LONG "Error: Label '%s' too long, max 31 characters:\n %s\n"
@@ -35,7 +37,6 @@
 
 #define ERR_MEMORY_ALLOCATION_FAILED "Error: Memory allocation failed\n"
 #define ERR_FAILED_TO_TRACK_MEMORY "Error: Failed to track memory\n"
-
 #define WARN_ENTRY_LABEL_IGNORED "Warning: instruction label in .entry directive is ignored\n %s\n"
 #define WARN_EXTERN_LABEL_IGNORED "Warning: instruction label in .extern directive is ignored\n %s\n"
 

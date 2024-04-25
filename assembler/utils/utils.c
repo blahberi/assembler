@@ -4,147 +4,164 @@
 
 
 #include <stdbool.h>
-#include <ctype.h>
-#include <stdio.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
-#include "../symbol_table/global_symbol_table.h"
-#include "../../errors.h"
 #include "../../memory_allocator/memory_allocator.h"
+#include "../../errors.h"
 
-bool is_number_helper(const char* str){
-    while (*str != '\0') {
-        if (!isdigit((unsigned char)*str)) {
-            return false;
-        }
-        str++;
+bool check_filename_extension(const char* filepath, const char* extension) {
+    const char* file_extension = strrchr(filepath, '.');
+    if (file_extension != NULL && strcmp(file_extension, extension) == 0) {
+        return true;
     }
-    return true;
+    return false;
 }
 
-bool is_number_signed(const char* str) {
-    if (str == NULL || *str == '\0') {
-        return false;
+char* get_base_path(const char* filepath) {
+    char* last_separator = strrchr(filepath, '/');
+    char* last_backslash = strrchr(filepath, '\\');
+
+    // Use the last occurring separator, whether it's a slash or a backslash
+    char* last_occurrence;
+    if (last_separator > last_backslash) {
+        last_occurrence = last_separator;
+    } else {
+        last_occurrence = last_backslash;
     }
 
-    // Allow a leading + or -
-    if (*str == '+' || *str == '-') {
-        str++; // Skip the sign
+    if (last_occurrence == NULL) {
+        return NULL;
     }
 
-    return is_number_helper(str);
+    int directory_length = last_occurrence - filepath + 1;
+    char* directory = malloc_track(directory_length + 1);
+    strncpy(directory, filepath, directory_length);
+    directory[directory_length] = '\0';
+    return directory;
 }
 
-bool is_number_unsigned(const char* str) {
-    if (str == NULL || *str == '\0') {
-        return false;
+char* get_base_name(const char* filepath) {
+    char* last_separator = strrchr(filepath, '/');
+    char* last_backslash = strrchr(filepath, '\\');
+
+    // Use the last occurring separator, whether it's a slash or a backslash
+    char* last_occurrence;
+    if (last_separator > last_backslash) {
+        last_occurrence = last_separator;
+    } else {
+        last_occurrence = last_backslash;
     }
-    return is_number_helper(str);
+
+    if (last_occurrence == NULL) {
+        return strdup(filepath);
+    }
+    char* base_name = strdup(last_occurrence + 1);
+    track_pointer(base_name);
+    return base_name;
 }
 
-int get_value_signed(const char* str, int* result) {
-    // this function gets a number or an mdefien label and returns it's int value
-    if (is_number_signed(str)) {
-        *result = atoi(str);
-        return 0;
+char* remove_extension(const char* filepath) {
+    char* dot = strrchr(filepath, '.');
+    if (dot == NULL) {
+        return strdup(filepath);
     }
-    Symbol* symbol = symbol_table_find(str);
-    if (symbol == NULL) {
-        goto error;
-    }
-    if (symbol->type != MDEFINE_LABEL) {
-        goto error;
-    }
-    *result = symbol->value;
-    return 0;
-
-    error:
-    return -1;
+    int length = dot - filepath;
+    char* filepath_without_extension = malloc_track(length + 1);
+    strncpy(filepath_without_extension, filepath, length);
+    filepath_without_extension[length] = '\0';
+    return filepath_without_extension;
 }
 
-int get_value_unsigned(const char* str, int* result) {
-    if (get_value_signed(str, result) != 0) {
-        goto error;
-    }
-    if (*result < 0) {
-        goto error;
-    }
-    return 0;
-
-    error:
-    return -1;
-}
-
-void print_binary(unsigned int num, int bits) {
-    for (int i = bits - 1; i >= 0; i--) {
-        printf("%d", (num >> i) & 1);
-    }
-    printf("\n");
-}
-
-char** split_string_by_comma(const char* str) {
-    char* str_copy = strdup(str);
-    track_pointer(str_copy);
-    char** result = malloc_track(sizeof(char *) * (strlen(str) + 1));
-    if (!result) {
-        fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
+void check_valid_filepath(const char* filepath) {
+    push_memory();
+    char* directory = get_base_path(filepath);
+    char* base_name = get_base_name(filepath);
+    if (!directory || !base_name) {
+        pop_memory();
+        fprintf(stderr, ERR_INVALID_FILEPATH, filepath);
         exit(EXIT_FAILURE);
     }
-    char* token = strtok(str_copy, ",");
-    int i = 0;
-
-    while (token != NULL) {
-        result[i] = strdup(token);
-        track_pointer(result[i]);
-        token = strtok(NULL, ",");
-        i++;
-    }
-
-    result[i] = NULL; // Null-terminate the array
-    return result;
+    if (!check_filename_extension(base_name, ".as")) {
+        pop_memory();
+        fprintf(stderr, ERR_INVALID_FILE_EXTENSION, filepath);
+        exit(EXIT_FAILURE);    }
+    pop_memory();
 }
 
-int comma_seperated_list_length(const char* str) {
-    int count = 0;
+char* get_preprocessed_filepath(const char* filepath) {
+    check_valid_filepath(filepath);
+    push_memory();
+    char* directory = get_base_path(filepath);
+    char* base_name = get_base_name(filepath);
 
-    // If the string is not empty, start count from 1
-    if (str != NULL && *str != '\0') {
-        count = 1;
+    int new_filepath_length = (directory ? strlen(directory) : 0) + strlen(".preprocessed_") + strlen(base_name) + 1;
+    char* new_filepath = malloc_track_global(new_filepath_length);
+
+    if (directory) {
+        strcpy(new_filepath, directory);
     }
+    strcat(new_filepath, ".preprocessed_");
+    strcat(new_filepath, base_name);
 
-    // For each character in the string
-    for (const char* c = str; *c != '\0'; c++) {
-        // If the character is a comma, increment the count
-        if (*c == ',') {
-            count++;
-        }
-    }
-
-    return count;
+    pop_memory();
+    return new_filepath;
 }
 
-void trim_whitespace(char* str) {
-    char* start = str;
-    char* end = str + strlen(str);
+char* get_extern_filepath(const char* filepath) {
+    check_valid_filepath(filepath);
+    push_memory();
+    char* directory = get_base_path(filepath);
+    char* base_name = remove_extension(get_base_name(filepath));
 
-    // Move start pointer to first non-whitespace character
-    while (isspace((unsigned char)*start)) {
-        start++;
+    int new_filepath_length = (directory ? strlen(directory) : 0) + strlen(base_name) + strlen(".ext") + 1;
+    char* new_filepath = malloc_track_global(new_filepath_length);
+
+    if (directory) {
+        strcpy(new_filepath, directory);
     }
+    strcat(new_filepath, base_name);
+    strcat(new_filepath, ".ext");
 
-    // Move end pointer to last non-whitespace character
-    while (end > start && isspace((unsigned char)*(end - 1))) {
-        end--;
+    pop_memory();
+    return new_filepath;
+}
+
+char* get_entry_filepath(const char* filepath) {
+    check_valid_filepath(filepath);
+    push_memory();
+    char* directory = get_base_name(filepath);
+    char* base_name_without_extension = remove_extension(get_base_name(filepath));
+
+    int new_filepath_length = (directory ? strlen(directory) : 0) + strlen(base_name_without_extension) + strlen(".ent") + 1;
+    char* new_filepath = malloc_track_global(new_filepath_length);
+
+    if (directory) {
+        strcpy(new_filepath, directory);
     }
+    strcat(new_filepath, base_name_without_extension);
+    strcat(new_filepath, ".ent");
 
-    // Calculate new length
-    size_t length = end - start;
+    pop_memory();
+    return new_filepath;
+}
 
-    // Shift characters to start of string
-    memmove(str, start, length);
+char* get_output_filepath(const char* filepath) {
+    check_valid_filepath(filepath);
+    push_memory();
+    char* directory = get_base_path(filepath);
+    char* base_name= remove_extension(get_base_name(filepath));
 
-    // Null-terminate the string
-    str[length] = '\0';
+    int new_filepath_length = (directory ? strlen(directory) : 0) + strlen(base_name) + strlen(".obj") + 1;
+    char* new_filepath = malloc_track_global(new_filepath_length);
+
+    if (directory) {
+        strcpy(new_filepath, directory);
+    }
+    strcat(new_filepath, base_name);
+    strcat(new_filepath, ".obj");
+
+    pop_memory();
+    return new_filepath;
 }
