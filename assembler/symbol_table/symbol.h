@@ -20,7 +20,6 @@ typedef struct symbol {
     LABEL_TYPE type; // MDEFINE_LABEL, DATA_LABEL, CODE_LABEL
     int value;
     bool is_entry; // Did we apply .entry to this label?
-    void (*free)(struct symbol*); // Garbage collection
 } Symbol;
 
 Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry);

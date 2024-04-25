@@ -11,11 +11,12 @@
 #include "utils/utils.h"
 #include "context/context.h"
 #include "utils/assembly_strings.h"
-
-#include <stdlib.h>
+#include "../memory_tracker/scope_memory_tracker.c.h"
+#include "../memory_tracker/global_memory_tracker.h"
 #include <stdio.h>
 
 void assemble(const char* filename) {
+    init_memory_stack();
     AssemblerContext assembler_context = {
             .is_first_pass = true,
             .IC = 0,
@@ -28,9 +29,8 @@ void assemble(const char* filename) {
     init_operation_table();
     init_directive_table();
 
-    Word *instruction_words = calloc(MEMORY_SIZE, sizeof(Word));
-    Word *data_words = calloc(MEMORY_SIZE, sizeof(Word));
-
+    Word *instruction_words = calloc_track(MEMORY_SIZE, sizeof(Word));
+    Word *data_words = calloc_track(MEMORY_SIZE, sizeof(Word));
 
     Context context = {
             .assembler_context = &assembler_context,
@@ -41,8 +41,8 @@ void assemble(const char* filename) {
             .data_words = data_words,
     };
 
-    context.line_descriptor = malloc(sizeof(LineDescriptor));
-    context.instruction = malloc(sizeof(InstructionLineDescriptor));
+    context.line_descriptor = malloc_track(sizeof(LineDescriptor));
+    context.instruction = malloc_track(sizeof(InstructionLineDescriptor));
 
     // First pass
     read_file(filename, &context);
@@ -56,9 +56,6 @@ void assemble(const char* filename) {
     symbol_table_update_address(assembler_context.IC);
 
     if (assembler_context.error) {
-        destroy_global_symbol_table();
-        free(instruction_words);
-        free(data_words);
         return;
     }
     printf("Instruction Words:\n");
@@ -77,10 +74,6 @@ void assemble(const char* filename) {
     write_extern_file("C:\\Users\\blahb\\CLionProjects\\assembler\\extern.ext");
     write_entry_file("C:\\Users\\blahb\\CLionProjects\\assembler\\entry.ent");
 
-    free(instruction_words);
-    free(data_words);
-    free(context.line_descriptor);
-    free(context.instruction);
-
-    destroy_global_symbol_table();
+    free_all_memory_stack();
+    free_all_global_memory();
 }

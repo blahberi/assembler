@@ -33,6 +33,9 @@
 #define ERR_SRC_CANNOT_BE_REGISTER "Error: Source operand cannot be register\n %s\n"
 #define ERR_DEST_CANNOT_BE_INDEX "Error: Destination operand cannot be index\n %s\n"
 
+#define ERR_MEMORY_ALLOCATION_FAILED "Error: Memory allocation failed\n"
+#define ERR_FAILED_TO_TRACK_MEMORY "Error: Failed to track memory\n"
+
 #define WARN_ENTRY_LABEL_IGNORED "Warning: instruction label in .entry directive is ignored\n %s\n"
 #define WARN_EXTERN_LABEL_IGNORED "Warning: instruction label in .extern directive is ignored\n %s\n"
 

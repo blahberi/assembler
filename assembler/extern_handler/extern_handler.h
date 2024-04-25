@@ -9,7 +9,6 @@
 
 void init_extern_list();
 void add_extern_label_usage(const char *label, int memory_address);
-void remove_extern_label_usage(const char *label);
 ExternalLabelUsage *get_extern_label_usage(const char *label);
 void free_extern_list();
 void update_extern_list_address();

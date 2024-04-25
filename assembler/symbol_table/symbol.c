@@ -3,30 +3,18 @@
 //
 
 #include "symbol.h"
-#include "../../config.h"
+#include "../../memory_tracker/global_memory_tracker.h"
 
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 // Construct a new Symbol
 Symbol *construct_symbol(const char *name, LABEL_TYPE type, int value, bool is_entry) {
-    Symbol* symbol = (Symbol*)malloc(sizeof(Symbol));
-    if (!symbol) {
-        fprintf(stderr, "Failed to allocate memory for Symbol\n");
-        return NULL;
-    }
+    Symbol* symbol = malloc_track_global(sizeof(Symbol));
     strncpy(symbol->name, name, MAX_LABEL_LENGTH - 1);
     symbol->name[MAX_LABEL_LENGTH - 1] = '\0';
     symbol->value = value;
     symbol->type = type;
     symbol->is_entry = is_entry;
     return symbol;
-}
-
-// Frees all memory associated with a symbol
-void free_symbol(Symbol *symbol) {
-    if (symbol == NULL) return;
-    free(symbol);
 }

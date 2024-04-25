@@ -48,7 +48,7 @@ add_executable(assembler main.c
         assembler/assembler.h
         assembler/utils/error_checking.c
         assembler/utils/error_checking.h
-        assembler/utils/errors.h
+        errors.h
         assembler/handlers/handle_line.c
         assembler/descriptors/line_descriptor.h
         assembler/context/context.h
@@ -58,4 +58,11 @@ add_executable(assembler main.c
         assembler/enums.h
         hash_table/int_hash_table.h
         hash_table/int_hash_table.c
+        assembler/preprocessing/macro.h
+        assembler/preprocessing/line_list.h
+        assembler/preprocessing/line_list.h.c
+        memory_tracker/scope_memory_tracker.c
+        memory_tracker/scope_memory_tracker.c.h
+        memory_tracker/global_memory_tracker.c
+        memory_tracker/global_memory_tracker.h
 )

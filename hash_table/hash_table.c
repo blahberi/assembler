@@ -3,6 +3,7 @@
 //
 
 #include "hash_table.h"
+#include "../memory_tracker/global_memory_tracker.h"
 #include <malloc.h>
 #include <string.h>
 
@@ -18,7 +19,7 @@ unsigned int hash(const char *key) {
 
 static void insert(struct HashTable *this, const char* key, void* value){
     unsigned int index = hash(key);
-    Node* new_node = malloc(sizeof(Node));
+    Node* new_node = malloc_track_global(sizeof(Node));
     new_node->key = key;
     new_node->value = value;
     new_node->next = this->buckets[index];
@@ -51,25 +52,12 @@ static void foreach(struct HashTable *this, void (*callback)(const char* key, vo
     }
 }
 
-static void free_table(struct HashTable *this){
-    for (int i = 0; i < HASH_TABLE_SIZE; i++){
-        Node* current = this->buckets[i];
-        while (current != NULL){
-            Node* next = current->next;
-            free(current->value);
-            free(current);
-            current = next;
-        }
-    }
-}
-
 HashTable* construct_hash_table() {
-    HashTable* table = malloc(sizeof(HashTable));
+    HashTable* table = malloc_track_global(sizeof(HashTable));
     table->size = HASH_TABLE_SIZE;
     table->insert = insert;
     table->find = find;
     table->is_in = is_in;
-    table->free = free_table;
     for (int i = 0; i < HASH_TABLE_SIZE; i++){
         table->buckets[i] = NULL;
     }

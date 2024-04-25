@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include "context/context.h"
-#include "utils/errors.h"
+#include "../errors.h"
 #include "utils/utils.h"
 #include "utils/error_checking.h"
 #include "symbol_table/symbol.h"
@@ -20,7 +20,7 @@ int generate_data_directive(Context *context){
     bool is_first_pass = context->assembler_context->is_first_pass;
     Word* words = context->data_words;
 
-    int DC = context->assembler_context->DC;
+    int *DC = &context->assembler_context->DC;
     if (operands == NULL) {
         fprintf(stderr, ERR_DATA_EXPECTS_OPERANDS, line);
         goto error;
@@ -29,8 +29,7 @@ int generate_data_directive(Context *context){
     char** tokens = split_string_by_comma(operands);
     if (is_first_pass) {
         int length = comma_seperated_list_length(operands);
-        DC += length;
-        context->assembler_context->DC = DC;
+        *DC += length;
         return 0;
     }
 
@@ -41,30 +40,19 @@ int generate_data_directive(Context *context){
             fprintf(stderr, ERR_INVALID_DATA_OPERAND, line);
             goto error;
         }
-        (words+DC)->word = value;
-        DC++;
+        (words+(*DC))->word = value;
+        (*DC)++;
     }
-    // Free the tokens
-    for (char** token = tokens; *token != NULL; token++) {
-        free(*token);
-    }
-    free(tokens);
-
-    context->assembler_context->DC = DC;
     return 0;
 
     error:
-    for (char** token = tokens; *token != NULL; token++) {
-        free(*token);
-    }
-    free(tokens);
     return -1;
 }
 
 int generate_string_directive(Context *context){
     const char* line = context->line_descriptor->line;
     const char* operand = context->line_descriptor->operands;
-    int DC = context->assembler_context->DC;
+    int *DC = &context->assembler_context->DC;
     Word* words = context->data_words;
     char* str = get_string_from_quotes(operand);
     if (str == NULL) {
@@ -72,20 +60,15 @@ int generate_string_directive(Context *context){
         goto error;
     }
 
-    for (; str[DC] != '\0'; DC++) {
-        words[DC].word = (unsigned int)str[DC];
+    for (; str[*DC] != '\0'; (*DC)++) {
+        words[*DC].word = (unsigned int)str[*DC];
     }
 
     // Add null terminator
-    words[DC].word = 0;
-    DC++;
-
-    free(str);
-    context->assembler_context->DC = DC;
+    words[*DC].word = 0;
     return 0;
 
     error:
-    free(str);
     return -1;
 }
 

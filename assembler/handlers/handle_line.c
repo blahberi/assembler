@@ -11,7 +11,7 @@
 #include "../descriptors/directive_descriptor.h"
 #include "../descriptors/operation_descriptor.h"
 #include "../symbol_table/global_symbol_table.h"
-#include "../utils/errors.h"
+#include "../../errors.h"
 #include "../utils/error_checking.h"
 #include "../context/context.h"
 
@@ -48,11 +48,9 @@ int handle_define_line(Context *context) {
 
     Symbol *symbol = construct_symbol(label, MDEFINE_LABEL, value, false);
     symbol_table_insert(symbol);
-    free(operands);
     return 0;
 
     error:
-    free(operands);
     return -1;
 }
 
@@ -72,11 +70,9 @@ int handle_directive_line(Context *context) {
     get_operands(context);
 
     int result = descriptor->generate(context);
-    free(context->line_descriptor->operands);
     return result;
 
     error:
-    free(context->line_descriptor->operands);
     return -1;
 }
 
@@ -106,21 +102,9 @@ int handle_instruction_line(Context *context) {
     }
 
     int result = descriptor->generate(context);
-
-    for (int i = 0; i < size; i++) {
-        free((void*)(operandDescriptors + i)->operand);
-    }
-    free(operandDescriptors);
-    free(operands);
-    if (descriptor != NULL) {
-        free(descriptor);
-    }
     return result;
 
     error:
-    if (descriptor != NULL){
-        free(descriptor);
-    }
     return -1;
 }
 

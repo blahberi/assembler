@@ -8,13 +8,14 @@
 #include <stdlib.h>
 #include "context/context.h"
 #include "utils/utils.h"
-#include "utils/errors.h"
+#include "../errors.h"
 #include "are.h"
 #include "utils/error_checking.h"
 #include "symbol_table/symbol.h"
 #include "symbol_table/global_symbol_table.h"
 #include "extern_handler/extern_handler.h"
 #include "utils/assembly_strings.h"
+#include "../memory_tracker/scope_memory_tracker.c.h"
 
 int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) {
     // bits 0-1: ARE
@@ -104,8 +105,8 @@ int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
         return 0;
     }
 
-    char* address = malloc(strlen(descriptor->operand) + 1);
-    char* index_str = malloc(strlen(descriptor->operand) + 1);
+    char* address = malloc_track(strlen(descriptor->operand) + 1);
+    char* index_str = malloc_track(strlen(descriptor->operand) + 1);
     parse_index_operand(descriptor->operand, address, index_str);
 
     int index;
@@ -134,15 +135,10 @@ int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
     mc->index_word.ARE = ABSOLUTE;
     mc->index_word.VALUE = index; // Index
 
-    free(address);
-    free(index_str);
-
     *IC += 2;
     return 0;
 
     error:
-    free(address);
-    free(index_str);
     return -1;
 }
 

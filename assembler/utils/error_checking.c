@@ -7,7 +7,7 @@
 #include <string.h>
 #include "../symbol_table/global_symbol_table.h"
 #include "../context/context.h"
-#include "errors.h"
+#include "../../errors.h"
 #include "assembly_strings.h"
 
 

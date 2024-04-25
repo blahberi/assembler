@@ -16,16 +16,8 @@ void add_extern_label_usage(const char *label, int memory_address) {
     EXTERN_LIST->add(EXTERN_LIST, usage);
 }
 
-void remove_extern_label_usage(const char *label) {
-    EXTERN_LIST->remove(EXTERN_LIST, label);
-}
-
 ExternalLabelUsage *get_extern_label_usage(const char *label) {
     return EXTERN_LIST->get(EXTERN_LIST, label);
-}
-
-void free_extern_list() {
-    EXTERN_LIST->free(EXTERN_LIST);
 }
 
 void update_extern_list_address() {

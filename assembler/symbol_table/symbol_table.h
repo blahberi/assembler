@@ -19,7 +19,6 @@ typedef struct SymbolTable {
     Symbol* (*find)(struct SymbolTable* this, const char* name);
     bool (*is_in)(struct SymbolTable* this, const char* name);
     void (*foreach)(struct SymbolTable* this, void (*callback)(Symbol* symbol, void* context), void* context);
-    void (*free)(struct SymbolTable* this);
 } SymbolTable;
 
 // Function prototypes

@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "../symbol_table/global_symbol_table.h"
+#include "../../errors.h"
+#include "../../memory_tracker/scope_memory_tracker.c.h"
 
 bool is_number_helper(const char* str){
     while (*str != '\0') {
@@ -84,18 +86,23 @@ void print_binary(unsigned int num, int bits) {
 
 char** split_string_by_comma(const char* str) {
     char* str_copy = strdup(str);
-    char** result = malloc(sizeof(char*) * (strlen(str) + 1)); // Allocate enough pointers
+    track_pointer(str_copy);
+    char** result = malloc_track(sizeof(char *) * (strlen(str) + 1));
+    if (!result) {
+        fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
+        exit(EXIT_FAILURE);
+    }
     char* token = strtok(str_copy, ",");
     int i = 0;
 
     while (token != NULL) {
         result[i] = strdup(token);
+        track_pointer(result[i]);
         token = strtok(NULL, ",");
         i++;
     }
 
     result[i] = NULL; // Null-terminate the array
-    free(str_copy);
     return result;
 }
 

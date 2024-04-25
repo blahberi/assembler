@@ -9,7 +9,8 @@
 #include "../../config.h"
 #include "../context/context.h"
 #include "../../hash_table/int_hash_table.h"
-#include "errors.h"
+#include "../../errors.h"
+#include "../../memory_tracker/scope_memory_tracker.c.h"
 
 
 const char* DEFINE = ".define";
@@ -114,18 +115,16 @@ bool check_label(const char* label) {
 int parse_index_operand(const char* operand, char* address, char* index) {
     if (strchr(operand, '[') && strchr(operand, ']')) {
         char* operand_copy = strdup(operand);
+        track_pointer(operand_copy);
         char* address_str = strtok(operand_copy, "[");
         char* index_str = strtok(NULL, "]");
 
         if (address_str == NULL || index_str == NULL) {
-            free(operand_copy);
             return -1;
         }
 
         strcpy(address, address_str);
         strcpy(index, index_str);
-
-        free(operand_copy);
         return 0;
     }
     return -1;
@@ -133,8 +132,8 @@ int parse_index_operand(const char* operand, char* address, char* index) {
 
 
 bool check_index_operand(const char* operand) {
-    char* address = malloc(strlen(operand) + 1);
-    char* index = malloc(strlen(operand) + 1);
+    char* address = malloc_track(strlen(operand) + 1);
+    char* index = malloc_track(strlen(operand) + 1);
     int code = parse_index_operand(operand, address, index);
     if (code != 0) {
         goto error;
@@ -143,18 +142,11 @@ bool check_index_operand(const char* operand) {
     bool index_status = check_label(index);
 
     if (!address_status|| (!index_status && !is_number_unsigned(index))) {
-        free(address);
-        free(index);
         return false;
     }
-
-    free(address);
-    free(index);
     return true;
 
     error:
-    free(address);
-    free(index);
     return false;
 }
 
@@ -183,9 +175,10 @@ void split_label_and_sentence(const char* line, char* label, char* sentence) {
 
 char* get_sentence_start(const char* sentence) {
     char* sentence_copy = strdup(sentence); // Create a copy of the sentence to avoid modifying the original string
+    track_pointer(sentence_copy);
     char* first_word = strtok(sentence_copy, " "); // Get the first word
     char* result = strdup(first_word); // Copy the first word to a new string
-    free(sentence_copy);
+    track_pointer(result);
     return result;
 }
 
@@ -220,6 +213,7 @@ char* get_operands(Context *context) {
 
     // Copy characters from sentence to operands, starting from the character after the space
     char* operands = strdup(space_position + 1);
+    track_pointer(operands);
     trim_whitespace(operands);
     context->line_descriptor->operands = operands;
     return operands;
@@ -228,6 +222,7 @@ char* get_operands(Context *context) {
 char* get_string_from_quotes(const char* str) {
     if (str[0] == '"' && str[strlen(str) - 1] == '"') {
         char* result = strdup(str + 1);
+        track_pointer(result);
         result[strlen(result) - 1] = '\0';
         return result;
     }

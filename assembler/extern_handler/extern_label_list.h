@@ -12,9 +12,7 @@ typedef struct extern_label_list ExternalLabelList;
 struct extern_label_list{
     ExternalLabelNode* head;
     void (*add)(ExternalLabelList* this, ExternalLabelUsage* usage);
-    void (*remove)(ExternalLabelList* this, const char* label);
     ExternalLabelUsage* (*get)(ExternalLabelList* this, const char* label);
-    void (*free)(ExternalLabelList* list);
 };
 
 ExternalLabelList* construct_external_label_list();

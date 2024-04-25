@@ -9,19 +9,11 @@
 SymbolTable *SYMBOL_TABLE = NULL;
 int init_global_symbol_table() {
     if (SYMBOL_TABLE){
-        SYMBOL_TABLE->free(SYMBOL_TABLE);
+        return 0;
     }
     SYMBOL_TABLE = construct_symbol_table();
     if (!SYMBOL_TABLE) {
-        return 1;
-    }
-    return 0;
-}
-
-int destroy_global_symbol_table() {
-    if (SYMBOL_TABLE) {
-        SYMBOL_TABLE->free(SYMBOL_TABLE);
-        SYMBOL_TABLE = NULL;
+        return -1;
     }
     return 0;
 }

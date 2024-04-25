@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include "context/context.h"
-#include "utils/errors.h"
+#include "../errors.h"
 #include "are.h"
 
 // Instruction generator utilities
@@ -27,8 +27,15 @@ int generate_first_word(Context *context) {
     OperationDescriptor *descriptor = context->instruction->operation;
     OperandDescriptor *operands = context->instruction->operands;
 
-    ADDR_MODE dest = operands[0].addr_mode;
-    ADDR_MODE src = operands[1].addr_mode;
+    ADDR_MODE dest = 0;
+    ADDR_MODE src = 0;
+    int operand_count = context->instruction->operand_count;
+    if (operand_count == 1) {
+        dest = operands[0].addr_mode;
+    } else if (operand_count == 2) {
+        dest = operands[1].addr_mode;
+        src = operands[0].addr_mode;
+    }
 
     int ic = *IC;
     FirstWord *word = (FirstWord*)(instruction_word+ic);

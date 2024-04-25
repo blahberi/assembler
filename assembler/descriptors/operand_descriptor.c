@@ -7,7 +7,8 @@
 #include "../utils/utils.h"
 #include "../operand_to_machine_code.h"
 #include "../utils/assembly_strings.h"
-#include "../utils/errors.h"
+#include "../../errors.h"
+#include "../../memory_tracker/scope_memory_tracker.c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -29,7 +30,11 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
         count++;
     }
 
-    OperandDescriptor* descriptors = malloc((count) * sizeof(OperandDescriptor)); // Allocate an array of OperandDescriptor objects
+    OperandDescriptor* descriptors = malloc_track((count) * sizeof(OperandDescriptor)); // Allocate an array of OperandDescriptor objects
+    if (descriptors == NULL) {
+        fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
+        goto error;
+    }
 
     if (count != comma_seperated_list_length(operands)) {
         if (is_first_pass){
@@ -52,28 +57,18 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
 
         // Create a new OperandDescriptor
         descriptors[i].operand = strdup(operand_strings[i]); // Set the operand field directly
+        track_pointer((void *) descriptors[i].operand);
         if (get_addr_mode(&descriptors[i], context) != 0) {
             goto error;
         }
 
     }
 
-    // Free the operand strings
-    for (int i = 0; i < count; i++) {
-        free(operand_strings[i]);
-    }
-    free(operand_strings);
-
     context->instruction->operands = descriptors;
     context->instruction->operand_count = count;
     return descriptors;
 
     error:
-    for (int i = 0; i < count; i++) {
-        free(operand_strings[i]);
-    }
-    free(operand_strings);
-    free(descriptors);
     return NULL;
 }
 

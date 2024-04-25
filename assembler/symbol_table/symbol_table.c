@@ -2,9 +2,9 @@
 // Author: Eitan H.
 //
 
-#include <malloc.h>
 #include "symbol_table.h"
 #include "symbol.h"
+#include "../../memory_tracker/global_memory_tracker.h"
 
 static void insert(SymbolTable* this, Symbol* symbol) {
     this->base->insert(this->base, symbol->name, symbol);
@@ -29,26 +29,14 @@ static void foreach(SymbolTable* this, void (*callback)(Symbol* symbol, void* co
     }
 }
 
-static void symbol_table_free(SymbolTable* this) {
-    this->base->free(this->base);
-    free(this);
-}
-
 SymbolTable* construct_symbol_table() {
-    struct SymbolTable* table = malloc(sizeof(struct SymbolTable));
-    if (!table) return NULL;
-
+    struct SymbolTable* table = malloc_track_global(sizeof(struct SymbolTable));
     table->base = construct_hash_table();
-    if (!table->base) {
-        free(table);
-        return NULL;
-    }
 
     table->insert = insert;
     table->find = find;
     table->is_in = is_in;
     table->foreach = foreach;
-    table->free = symbol_table_free;
 
     return table;
 }

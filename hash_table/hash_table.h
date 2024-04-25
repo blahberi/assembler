@@ -16,7 +16,6 @@ typedef struct HashTable {
     void* (*find)(struct HashTable* this, const char* key);
     bool (*is_in)(struct HashTable* this, const char* key);
     void (*foreach)(struct HashTable* this, void (*callback)(const char* key, void* value, void* context), void* context);
-    void (*free)(struct HashTable* this);
 } HashTable;
 
 HashTable* construct_hash_table();

@@ -11,7 +11,6 @@ typedef struct IntHashTable {
     HashTable *base;
     void (*insert)(struct IntHashTable *this, const char* key, int value);
     int (*find)(struct IntHashTable *this, const char* key);
-    void (*free)(struct IntHashTable *this);
 } IntHashTable;
 
 struct IntHashTable* construct_int_hash_table();
