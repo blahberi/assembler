@@ -7,7 +7,7 @@
 #include <string.h>
 #include "line_list.h"
 #include "../../errors.h"
-#include "../../memory_tracker/global_memory_tracker.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 
 LineList* construct_line_list() {

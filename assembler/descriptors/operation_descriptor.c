@@ -9,7 +9,7 @@
 #include "../utils/utils.h"
 #include "../instruction_to_machine_code.h"
 #include "../../errors.h"
-#include "../../memory_tracker/scope_memory_tracker.c.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 OperationDescriptor* get_operation_descriptor(Context *context){
     const char* sentence = context->line_descriptor->sentence;

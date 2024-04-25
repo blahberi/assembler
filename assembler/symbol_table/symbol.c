@@ -3,7 +3,7 @@
 //
 
 #include "symbol.h"
-#include "../../memory_tracker/global_memory_tracker.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 
 #include <string.h>

@@ -10,7 +10,7 @@
 #include "../utils/utils.h"
 #include "../directive_to_machine_code.h"
 #include "../../errors.h"
-#include "../../memory_tracker/scope_memory_tracker.c.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 DirectiveDescriptor* get_directive_descriptor(Context* context) {
     const char* sentence = context->line_descriptor->sentence;

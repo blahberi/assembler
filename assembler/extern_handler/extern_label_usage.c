@@ -2,8 +2,7 @@
 // Author: Eitan H.
 //
 #include "extern_label_usage.h"
-#include "../../memory_tracker/global_memory_tracker.h"
-#include <stdlib.h>
+#include "../../memory_allocator/memory_allocator.h"
 #include <string.h>
 
 ExternalLabelUsage* construct_external_label_usage(const char* label, int memory_address) {

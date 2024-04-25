@@ -12,7 +12,7 @@
 #include "utils.h"
 #include "../symbol_table/global_symbol_table.h"
 #include "../../errors.h"
-#include "../../memory_tracker/scope_memory_tracker.c.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 bool is_number_helper(const char* str){
     while (*str != '\0') {

@@ -10,10 +10,9 @@
 #include "../../config.h"
 #include "macro_table.h"
 #include "../utils/utils.h"
-#include "../../memory_tracker/global_memory_tracker.h"
 #include "preprocess.h"
 #include "../utils/assembly_strings.h"
-#include "../../memory_tracker/scope_memory_tracker.c.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 static int handle_line(PreprocessingContext* context, char* line);
 
@@ -79,19 +78,19 @@ static int handle_line(PreprocessingContext* context, char* line) {
 }
 
 int preprocess(const char* filename) {
+    init_memory();
     init_macro_table();
-    init_memory_stack();
     FILE* input = fopen(filename, "r");
     if (!input) {
         fprintf(stderr, "Failed to open file %s\n", filename);
-        free_all_global_memory();
+        free_all_memory();
         exit(EXIT_FAILURE);
     }
     FILE* output = fopen("C:\\Users\\blahb\\CLionProjects\\assembler\\preprocessed.asm", "w");
     if (!output) {
         fprintf(stderr, "Failed to open file preprocessed.asm\n");
         fclose(input);
-        free_all_global_memory();
+        free_all_memory();
         exit(EXIT_FAILURE);
     }
     PreprocessingContext context = {
@@ -105,7 +104,6 @@ int preprocess(const char* filename) {
     while (fgets(line, MAX_LINE_LENGTH, input)) {
         handle_line(&context, line);
     }
-    free_all_global_memory();
-    free_all_memory_stack();
+    free_all_memory();
     return 0;
 }

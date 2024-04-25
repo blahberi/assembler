@@ -4,7 +4,7 @@
 
 #include "symbol_table.h"
 #include "symbol.h"
-#include "../../memory_tracker/global_memory_tracker.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 static void insert(SymbolTable* this, Symbol* symbol) {
     this->base->insert(this->base, symbol->name, symbol);

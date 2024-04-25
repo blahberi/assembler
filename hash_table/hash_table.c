@@ -3,7 +3,7 @@
 //
 
 #include "hash_table.h"
-#include "../memory_tracker/global_memory_tracker.h"
+#include "../memory_allocator/memory_allocator.h"
 #include <malloc.h>
 #include <string.h>
 

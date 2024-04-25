@@ -10,8 +10,7 @@
 #include "../context/context.h"
 #include "../../hash_table/int_hash_table.h"
 #include "../../errors.h"
-#include "../../memory_tracker/scope_memory_tracker.c.h"
-
+#include "../../memory_allocator/memory_allocator.h"
 
 const char* DEFINE = ".define";
 

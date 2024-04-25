@@ -11,16 +11,15 @@
 #include "utils/utils.h"
 #include "context/context.h"
 #include "utils/assembly_strings.h"
-#include "../memory_tracker/scope_memory_tracker.c.h"
-#include "../memory_tracker/global_memory_tracker.h"
 #include "preprocessing/preprocess.h"
+#include "../memory_allocator/memory_allocator.h"
 #include <stdio.h>
 
 void assemble(const char* filename) {
     preprocess(filename);
     filename = "C:\\Users\\blahb\\CLionProjects\\assembler\\preprocessed.asm";
 
-    init_memory_stack();
+    init_memory();
     AssemblerContext assembler_context = {
             .is_first_pass = true,
             .IC = 0,
@@ -78,6 +77,5 @@ void assemble(const char* filename) {
     write_extern_file("C:\\Users\\blahb\\CLionProjects\\assembler\\extern.ext");
     write_entry_file("C:\\Users\\blahb\\CLionProjects\\assembler\\entry.ent");
 
-    free_all_memory_stack();
-    free_all_global_memory();
+    free_all_memory();
 }

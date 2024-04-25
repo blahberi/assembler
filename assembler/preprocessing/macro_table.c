@@ -4,8 +4,8 @@
 
 #include <string.h>
 #include "../../hash_table/hash_table.h"
-#include "../../memory_tracker/global_memory_tracker.h"
 #include "macro_table.h"
+#include "../../memory_allocator/memory_allocator.h"
 
 typedef struct MacroTable {
     HashTable *base;
