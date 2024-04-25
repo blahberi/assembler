@@ -44,31 +44,6 @@ bool check_filename_extension(const char* filepath, const char* extension) {
     return false;
 }
 
-char* get_base_path(const char* filepath) {
-    char* last_separator = strrchr(filepath, '/');
-    char* last_backslash = strrchr(filepath, '\\');
-    int directory_length;
-    char* directory;
-    char* last_occurrence;
-
-    /* Use the last occurring separator, whether it's a slash or a backslash */
-    if (last_separator > last_backslash) {
-        last_occurrence = last_separator;
-    } else {
-        last_occurrence = last_backslash;
-    }
-
-    if (last_occurrence == NULL) {
-        return NULL;
-    }
-
-    directory_length = last_occurrence - filepath + 1;
-    directory = malloc_track(directory_length + 1);
-    strncpy(directory, filepath, directory_length);
-    directory[directory_length] = '\0';
-    return directory;
-}
-
 char* get_base_name(const char* filepath) {
     char* last_separator = strrchr(filepath, '/');
     char* last_backslash = strrchr(filepath, '\\');
@@ -105,13 +80,11 @@ char* remove_extension(const char* filepath) {
 }
 
 void check_valid_filepath(const char* filepath) {
-    char* directory;
     char* base_name;
 
     push_memory();
-    directory = get_base_path(filepath);
     base_name = get_base_name(filepath);
-    if (!directory || !base_name) {
+    if (!base_name) {
         free_all_memory();
         fprintf(stderr, ERR_INVALID_FILEPATH, filepath);
         exit(EXIT_FAILURE);
@@ -124,23 +97,17 @@ void check_valid_filepath(const char* filepath) {
 }
 
 char* get_preprocessed_filepath(const char* filepath) {
-    char* directory;
     char* base_name;
     int new_filepath_length;
     char* new_filepath;
 
     push_memory();
     check_valid_filepath(filepath);
-    directory = get_base_path(filepath);
     base_name = get_base_name(filepath);
 
-    new_filepath_length = (directory ? strlen(directory) : 0) + strlen(".preprocessed_") + strlen(base_name) + 1;
+    new_filepath_length = strlen(".preprocessed_") + strlen(base_name) + 1;
     new_filepath = malloc_track_global(new_filepath_length);
-
-    if (directory) {
-        strcpy(new_filepath, directory);
-    }
-    strcat(new_filepath, ".preprocessed_");
+    strcpy(new_filepath, ".preprocessed_");
     strcat(new_filepath, base_name);
 
     pop_memory();
@@ -148,23 +115,18 @@ char* get_preprocessed_filepath(const char* filepath) {
 }
 
 char* get_extern_filepath(const char* filepath) {
-    char* directory;
     char* base_name;
     int new_filepath_length;
     char* new_filepath;
 
     push_memory();
     check_valid_filepath(filepath);
-    directory = get_base_path(filepath);
     base_name = remove_extension(get_base_name(filepath));
 
-    new_filepath_length = (directory ? strlen(directory) : 0) + strlen(base_name) + strlen(".ext") + 1;
+    new_filepath_length = strlen(base_name) + strlen(".ext") + 1;
     new_filepath = malloc_track_global(new_filepath_length);
 
-    if (directory) {
-        strcpy(new_filepath, directory);
-    }
-    strcat(new_filepath, base_name);
+    strcpy(new_filepath, base_name);
     strcat(new_filepath, ".ext");
 
     pop_memory();
@@ -172,23 +134,18 @@ char* get_extern_filepath(const char* filepath) {
 }
 
 char* get_entry_filepath(const char* filepath) {
-    char* directory;
     char* base_name_without_extension;
     int new_filepath_length;
     char* new_filepath;
 
     push_memory();
     check_valid_filepath(filepath);
-    directory = get_base_name(filepath);
     base_name_without_extension = remove_extension(get_base_name(filepath));
 
-    new_filepath_length = (directory ? strlen(directory) : 0) + strlen(base_name_without_extension) + strlen(".ent") + 1;
+    new_filepath_length = strlen(base_name_without_extension) + strlen(".ent") + 1;
     new_filepath = malloc_track_global(new_filepath_length);
 
-    if (directory) {
-        strcpy(new_filepath, directory);
-    }
-    strcat(new_filepath, base_name_without_extension);
+    strcpy(new_filepath, base_name_without_extension);
     strcat(new_filepath, ".ent");
 
     pop_memory();
@@ -196,23 +153,18 @@ char* get_entry_filepath(const char* filepath) {
 }
 
 char* get_output_filepath(const char* filepath) {
-    char* directory;
     char* base_name_without_extension;
     int new_filepath_length;
     char* new_filepath;
 
     push_memory();
     check_valid_filepath(filepath);
-    directory = get_base_path(filepath);
     base_name_without_extension = remove_extension(get_base_name(filepath));
 
-    new_filepath_length = (directory ? strlen(directory) : 0) + strlen(base_name_without_extension) + strlen(".obj") + 1;
+    new_filepath_length = strlen(base_name_without_extension) + strlen(".obj") + 1;
     new_filepath = malloc_track_global(new_filepath_length);
 
-    if (directory) {
-        strcpy(new_filepath, directory);
-    }
-    strcat(new_filepath, base_name_without_extension);
+    strcpy(new_filepath, base_name_without_extension);
     strcat(new_filepath, ".obj");
 
     pop_memory();

@@ -33,16 +33,17 @@ void init_memory() {
 
 void pop_memory() {
     MemoryNode* node = stack->memory_node;
-    StackNode* next;
+    StackNode* stack_next;
+    MemoryNode* next;
     while (node != NULL) {
-        MemoryNode* next = node->next;
+        next = node->next;
         free(node->data);
         free(node);
         node = next;
     }
-    next = stack->next;
+    stack_next = stack->next;
     free(stack);
-    stack = next;
+    stack = stack_next;
 }
 
 void free_all_memory() {
