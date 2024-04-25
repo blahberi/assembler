@@ -18,6 +18,6 @@ typedef struct HashTable {
     void (*foreach)(struct HashTable* this, void (*callback)(const char* key, void* value, void* context), void* context);
 } HashTable;
 
-HashTable* construct_hash_table();
+HashTable * construct_hash_table();
 
 #endif //ASSEMBLER_HASH_TABLE_H

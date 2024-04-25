@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../errors.h"
+#include "global_memory_tracker.h"
 
 typedef struct MemoryNode {
     void* data;
@@ -16,7 +17,7 @@ typedef struct StackNode {
     struct StackNode* next;
 } StackNode;
 
-StackNode *stack;
+StackNode *stack = NULL;
 
 void init_memory_stack() {
     stack = malloc(sizeof(StackNode));
@@ -52,6 +53,7 @@ void increment_memory_stack() {
     if (new_node == NULL) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
         free_all_memory_stack();
+        free_all_global_memory();
         exit(EXIT_FAILURE);
     }
     new_node->memory_node = NULL;
@@ -76,6 +78,7 @@ static void* allocate_helper(void* data) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
     }
     free_all_memory_stack();
+    free_all_global_memory();
     exit(EXIT_FAILURE);
 }
 

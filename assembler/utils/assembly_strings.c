@@ -201,13 +201,11 @@ SENTENCE_TYPE get_sentence_type(const char* sentence) {
     return -1;
 }
 
-char* get_operands(Context *context) {
-    char* sentence = context->line_descriptor->sentence;
+char* get_operands(const char* sentence) {
     char* space_position = strchr(sentence, ' ');
 
     // If there is no space in the sentence, return NULL
     if (space_position == NULL) {
-        context->line_descriptor->operands = NULL;
         return NULL;
     }
 
@@ -215,7 +213,6 @@ char* get_operands(Context *context) {
     char* operands = strdup(space_position + 1);
     track_pointer(operands);
     trim_whitespace(operands);
-    context->line_descriptor->operands = operands;
     return operands;
 }
 

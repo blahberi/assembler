@@ -24,7 +24,7 @@ bool is_label_in_line(const char* line);
 void split_label_and_sentence(const char* line, char* label, char* sentence);
 char* get_sentence_start(const char* sentence);
 SENTENCE_TYPE get_sentence_type(const char* sentence);
-char* get_operands(Context* context);
+char* get_operands(const char* sentence);
 char* get_string_from_quotes(const char* str);
 
 #endif //ASSEMBLER_ASSEMBLY_STRINGS_H

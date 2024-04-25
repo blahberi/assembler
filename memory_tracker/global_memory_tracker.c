@@ -42,6 +42,7 @@ static void* allocate_helper(void* data) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
     }
     free_all_memory_stack();
+    free_all_global_memory();
     exit(EXIT_FAILURE);
 }
 

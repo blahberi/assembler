@@ -13,9 +13,13 @@
 #include "utils/assembly_strings.h"
 #include "../memory_tracker/scope_memory_tracker.c.h"
 #include "../memory_tracker/global_memory_tracker.h"
+#include "preprocessing/preprocess.h"
 #include <stdio.h>
 
 void assemble(const char* filename) {
+    preprocess(filename);
+    filename = "C:\\Users\\blahb\\CLionProjects\\assembler\\preprocessed.asm";
+
     init_memory_stack();
     AssemblerContext assembler_context = {
             .is_first_pass = true,

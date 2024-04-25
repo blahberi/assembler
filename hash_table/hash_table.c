@@ -52,7 +52,7 @@ static void foreach(struct HashTable *this, void (*callback)(const char* key, vo
     }
 }
 
-HashTable* construct_hash_table() {
+HashTable * construct_hash_table() {
     HashTable* table = malloc_track_global(sizeof(HashTable));
     table->size = HASH_TABLE_SIZE;
     table->insert = insert;
