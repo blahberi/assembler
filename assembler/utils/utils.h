@@ -13,6 +13,6 @@ char* my_strdup_global(const char* str); /* Similar to POSIX strdup, but uses th
 char* get_preprocessed_filepath(const char* filepath); /* Get the preprocessed file path */
 char* get_extern_filename(const char* filepath); /* Get the extern file path */
 char* get_entry_filename(const char* filepath); /* Get the entry file path */
-char* get_output_filepath(const char* filepath); /* Get the output file path */
+char* get_output_filename(const char* filepath); /* Get the output file path */
 
 #endif /* ASSEMBLER_UTILS_H */
