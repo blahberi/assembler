@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_LINE_DESCRIPTOR_H
 #define ASSEMBLER_LINE_DESCRIPTOR_H
@@ -26,4 +26,4 @@ typedef struct line_descriptor {
     bool is_label;
 } LineDescriptor;
 
-#endif //ASSEMBLER_LINE_DESCRIPTOR_H
+#endif /* ASSEMBLER_LINE_DESCRIPTOR_H */

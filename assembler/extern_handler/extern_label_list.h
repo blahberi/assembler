@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_EXTERN_LABEL_LIST_H
 #define ASSEMBLER_EXTERN_LABEL_LIST_H
@@ -17,4 +17,4 @@ struct extern_label_list{
 
 ExternalLabelList* construct_external_label_list();
 
-#endif //ASSEMBLER_EXTERN_LABEL_LIST_H
+#endif /* ASSEMBLER_EXTERN_LABEL_LIST_H */

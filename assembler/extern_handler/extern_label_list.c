@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #include "extern_label_list.h"
 #include <string.h>

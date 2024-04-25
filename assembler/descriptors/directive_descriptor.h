@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_DIRECTIVE_DESCRIPTOR_H
 #define ASSEMBLER_DIRECTIVE_DESCRIPTOR_H
@@ -21,4 +21,4 @@ struct directive_descriptor {
 
 DirectiveDescriptor* get_directive_descriptor(Context *context);
 
-#endif //ASSEMBLER_DIRECTIVE_DESCRIPTOR_H
+#endif /* ASSEMBLER_DIRECTIVE_DESCRIPTOR_H */

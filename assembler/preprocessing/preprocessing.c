@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include <stdio.h>
@@ -100,7 +100,7 @@ void preprocess(const char* filepath) {
         .output = output
     };
 
-    // handle line by line
+    /* handle line by line */
     char line[MAX_LINE_LENGTH];
     while (fgets(line, MAX_LINE_LENGTH, input)) {
         handle_line(&context, line);

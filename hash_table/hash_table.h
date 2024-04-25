@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_HASH_TABLE_H
 #define ASSEMBLER_HASH_TABLE_H
@@ -20,4 +20,4 @@ typedef struct HashTable {
 
 HashTable * construct_hash_table();
 
-#endif //ASSEMBLER_HASH_TABLE_H
+#endif /* ASSEMBLER_HASH_TABLE_H */

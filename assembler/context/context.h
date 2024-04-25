@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSERMBLER_CONTEXT_H
 #define ASSERMBLER_CONTEXT_H
@@ -21,4 +21,4 @@ typedef struct context {
     Word* data_words;
 } Context;
 
-#endif //ASSEMBLER_CONTEXT_H
+#endif /* ASSEMBLER_CONTEXT_H */

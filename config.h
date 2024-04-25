@@ -1,11 +1,11 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_CONFIG_H
 #define ASSEMBLER_CONFIG_H
 
-// Define constants
+/* Define constants */
 #define MEMORY_SIZE 4096
 
 #define WORD_SIZE 14
@@ -28,6 +28,6 @@
 
 #define REGISTER_COUNT 8
 
-#define HASH_TABLE_SIZE 137 // Prime number
+#define HASH_TABLE_SIZE 137 /* Prime number */
 
-#endif //ASSEMBLER_CONFIG_H
+#endif /*ASSEMBLER_CONFIG_H */

@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 typedef struct context Context;
 
@@ -9,4 +9,4 @@ typedef struct context Context;
 
 int handle_line(Context *context);
 
-#endif //ASSEMBLER_HANDLE_LINE_H
+#endif /* ASSEMBLER_HANDLE_LINE_H */

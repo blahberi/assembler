@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #include <string.h>
 #include "../../hash_table/hash_table.h"

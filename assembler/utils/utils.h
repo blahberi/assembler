@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_UTILS_H
 #define ASSEMBLER_UTILS_H
@@ -14,4 +14,4 @@ char* get_entry_filepath(const char* filepath);
 char* get_output_filepath(const char* filepath);
 bool is_valid_filepath(const char* filepath);
 
-#endif //ASSEMBLER_UTILS_H
+#endif /* ASSEMBLER_UTILS_H */

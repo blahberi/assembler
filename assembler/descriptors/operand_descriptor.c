@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include "../context/context.h"
@@ -24,13 +24,13 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
     }
     char** operand_strings = split_string_by_comma(operands);
 
-    // Count the number of operand strings
+    /* Count the number of operand strings */
     int count = 0;
     while (operand_strings[count] != NULL) {
         count++;
     }
 
-    OperandDescriptor* descriptors = malloc_track((count) * sizeof(OperandDescriptor)); // Allocate an array of OperandDescriptor objects
+    OperandDescriptor* descriptors = malloc_track((count) * sizeof(OperandDescriptor)); /* Allocate an array of OperandDescriptor objects */
     if (descriptors == NULL) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
         goto error;
@@ -45,7 +45,7 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
 
     int i;
     for (i = 0; i < count; i++) {
-        // Trim leading and trailing whitespace
+        /* Trim leading and trailing whitespace */
         trim_whitespace(operand_strings[i]);
 
         if (operand_strings[i][0] == '\0') {
@@ -55,8 +55,8 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
             goto error;
         }
 
-        // Create a new OperandDescriptor
-        descriptors[i].operand = strdup(operand_strings[i]); // Set the operand field directly
+        /* Create a new OperandDescriptor */
+        descriptors[i].operand = strdup(operand_strings[i]); /* Set the operand field directly */
         track_pointer((void *) descriptors[i].operand);
         if (get_addr_mode(&descriptors[i], context) != 0) {
             goto error;

@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_SYMBOL_TABLE_H
 #define ASSEMBLER_SYMBOL_TABLE_H
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// typedefs for structs
+/* typedefs for structs */
 typedef struct SymbolTable {
     HashTable* base;
     void (*insert)(struct SymbolTable* this, Symbol* symbol);
@@ -21,7 +21,7 @@ typedef struct SymbolTable {
     void (*foreach)(struct SymbolTable* this, void (*callback)(Symbol* symbol, void* context), void* context);
 } SymbolTable;
 
-// Function prototypes
+/* Function prototypes */
 SymbolTable* construct_symbol_table();
 
-#endif //ASSEMBLER_SYMBOL_TABLE_H
+#endif /* ASSEMBLER_SYMBOL_TABLE_H */

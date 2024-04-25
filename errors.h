@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_ERRORS_H
 #define ASSEMBLER_ERRORS_H
@@ -40,4 +40,4 @@
 #define WARN_ENTRY_LABEL_IGNORED "Warning: instruction label in .entry directive is ignored\n %s\n"
 #define WARN_EXTERN_LABEL_IGNORED "Warning: instruction label in .extern directive is ignored\n %s\n"
 
-#endif //ASSEMBLER_ERRORS_H
+#endif /* ASSEMBLER_ERRORS_H */

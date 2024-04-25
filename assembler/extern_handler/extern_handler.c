@@ -1,13 +1,14 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #include <stdio.h>
 #include "extern_label_list.h"
+#include "extern_handler.h"
 
 ExternalLabelList *EXTERN_LIST;
 
-void init_extern_list() {
+void init_extern_list(void) {
     EXTERN_LIST = construct_external_label_list();
 }
 
@@ -20,7 +21,7 @@ ExternalLabelUsage *get_extern_label_usage(const char *label) {
     return EXTERN_LIST->get(EXTERN_LIST, label);
 }
 
-void update_extern_list_address() {
+void update_extern_list_address(void) {
     ExternalLabelNode *current = EXTERN_LIST->head;
     while (current != NULL) {
         current->usage->memory_address += 100;

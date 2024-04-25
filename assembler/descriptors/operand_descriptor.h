@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_OPERAND_DESCRIPTOR_H
 #define ASSEMBLER_OPERAND_DESCRIPTOR_H
@@ -25,4 +25,4 @@ OperandDescriptor* get_operand_descriptors(Context *context);
 int get_addr_mode(OperandDescriptor *descriptor, Context *context);
 
 
-#endif //ASSEMBLER_OPERAND_DESCRIPTOR_H
+#endif /* ASSEMBLER_OPERAND_DESCRIPTOR_H */

@@ -1,36 +1,36 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_ENUMS_H
 #define ASSEMBLER_ENUMS_H
 
-// Enum for addressing modes
+/* Enum for addressing modes */
 typedef enum {
-    IMMEDIATE = 0, // Immediate value
-    DIRECT,        // Direct memory address
-    INDEX,         // Indexed addressing mode
-    REGISTER       // Register direct
+    IMMEDIATE = 0, /* Immediate value */
+    DIRECT,        /* Direct memory address */
+    INDEX,         /* Indexed addressing mode */
+    REGISTER       /* Register direct */
 } ADDR_MODE;
 
-// Enum for operation codes
+/* Enum for operation codes */
 typedef enum {
-    MOV = 0, // Move
-    CMP,     // Compare
-    ADD,     // Add
-    SUB,     // Subtract
-    NOT,     // Logical NOT
-    CLR,     // Clear
-    LEA,     // Load Effective Address
-    INC,     // Increment
-    DEC,     // Decrement
-    JMP,     // Jump
-    BNE,     // Branch if Not Equal
-    RED,     // Read
-    PRN,     // Print
-    JSR,     // Jump to Subroutine
-    RTS,     // Return from Subroutine
-    HLT      // Halt
+    MOV = 0, /* Move */
+    CMP,     /* Compare */
+    ADD,     /* Add */
+    SUB,     /* Subtract */
+    NOT,     /* Logical NOT */
+    CLR,     /* Clear */
+    LEA,     /* Load Effective Address */
+    INC,     /* Increment */
+    DEC,     /* Decrement */
+    JMP,     /* Jump */
+    BNE,     /* Branch if Not Equal */
+    RED,     /* Read */
+    PRN,     /* Print */
+    JSR,     /* Jump to Subroutine */
+    RTS,     /* Return from Subroutine */
+    HLT      /* Halt */
 } OPCODE;
 
 typedef enum {
@@ -54,4 +54,4 @@ typedef enum {
 } SENTENCE_TYPE;
 
 
-#endif //ASSEMBLER_ENUMS_H
+#endif /* ASSEMBLER_ENUMS_H */

@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_MACRO_TABLE_H
 #define ASSEMBLER_MACRO_TABLE_H
@@ -19,4 +19,4 @@ void insert_macro(Macro *macro);
 Macro* find_macro(const char *name);
 bool is_macro(const char *name);
 
-#endif //ASSEMBLER_MACRO_TABLE_H
+#endif /* ASSEMBLER_MACRO_TABLE_H */

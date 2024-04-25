@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #ifndef ASSEMBLER_GLOBAL_SYMBOL_TABLE_H
@@ -18,4 +18,4 @@ void symbol_table_update_address(int ic);
 void write_entry_file(const char *filepath);
 void symbol_table_print();
 
-#endif //ASSEMBLER_GLOBAL_SYMBOL_TABLE_H
+#endif /* ASSEMBLER_GLOBAL_SYMBOL_TABLE_H */

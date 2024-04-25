@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+Author: Eitan H.
+*/
 
 #include "symbol_table.h"
 #include "symbol.h"

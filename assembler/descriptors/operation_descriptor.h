@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_OPERATION_DESCRIPTOR_H
 #define ASSEMBLER_OPERATION_DESCRIPTOR_H
@@ -22,4 +22,4 @@ struct operation_descriptor {
 
 OperationDescriptor* get_operation_descriptor(Context *context);
 
-#endif //ASSEMBLER_OPERATION_DESCRIPTOR_H
+#endif /* ASSEMBLER_OPERATION_DESCRIPTOR_H */

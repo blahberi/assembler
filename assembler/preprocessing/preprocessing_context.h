@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_PREPROCESSING_CONTEXT_H
 #define ASSEMBLER_PREPROCESSING_CONTEXT_H
@@ -16,4 +16,4 @@ typedef struct PreprocessingContext {
     FILE* output;
 } PreprocessingContext;
 
-#endif //ASSEMBLER_PREPROCESSING_CONTEXT_H
+#endif /* ASSEMBLER_PREPROCESSING_CONTEXT_H */
