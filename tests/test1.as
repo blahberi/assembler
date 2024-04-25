@@ -11,7 +11,7 @@ prn #-5
 mov STR[5], STR[2]
 sub r1, r4
 m_mcr
-inc K
+L1: inc K
 bne LOOP
 END: hlt
 ; another comment

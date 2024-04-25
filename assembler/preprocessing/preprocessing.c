@@ -116,6 +116,8 @@ void preprocess(const char* filepath) {
     char* line;
 
     init_memory(); /* Initialize the memory allocator */
+    init_operation_table();
+    init_directive_table();
     line = malloc_track(MAX_LINE_LENGTH); /* Allocate memory for the line */
     init_macro_table(); /* Initialize the macro table */
     input = fopen(filepath, "r");
