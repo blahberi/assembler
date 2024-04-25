@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "line_list.h"
 
-typedef struct PreprocessingContext {
+typedef struct PreprocessingContext { /* Context for the preprocessing stage */
     bool is_macro;
     char* macro_name;
     LineList* macro_lines;

@@ -9,15 +9,15 @@
 #include "../enums.h"
 
 
-typedef struct directive_descriptor DirectiveDescriptor;
+typedef struct DirectiveDescriptor DirectiveDescriptor;
 struct Context;
 
-typedef int DirectiveGenerator(struct Context *context);
+typedef int DirectiveGenerator(struct Context *context); /* Function pointer for generating directive machine code */
 
-struct directive_descriptor {
-    DIRECTIVE_TYPE type;
-    DirectiveGenerator *generate;
-    LabelHandler *handle_label;
+struct DirectiveDescriptor { /* Information about a directive */
+    DIRECTIVE_TYPE type; /* Directive type */
+    DirectiveGenerator *generate; /* Function for generating machine code */
+    LabelHandler *handle_label; /* Function for handling labels */
 };
 
 DirectiveDescriptor* get_directive_descriptor(struct Context *context);

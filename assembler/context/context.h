@@ -12,13 +12,13 @@
 #include "../descriptors/operation_descriptor.h"
 #include "../words.h"
 
-typedef struct Context {
-    AssemblerContext* assembler_context;
-    LineDescriptor* line_descriptor;
-    InstructionLineDescriptor* instruction;
-    DirectiveDescriptor *directive;
-    Word* instruction_words;
-    Word* data_words;
+typedef struct Context { /* Context for the first and second pass */
+    AssemblerContext* assembler_context; /* Assembler context */
+    LineDescriptor* line_descriptor; /* Information about a line */
+    InstructionLineDescriptor* instruction; /* Populate this if the line is an instruction */
+    DirectiveDescriptor *directive; /* Populate this if the line is a directive */
+    Word* instruction_words; /* Instruction machine code goes here */
+    Word* data_words; /* Data machine code goes here */
 } Context;
 
 #endif /* ASSEMBLER_CONTEXT_H */

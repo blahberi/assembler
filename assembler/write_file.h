@@ -7,6 +7,6 @@
 
 #include "words.h"
 
-void write_file(const char *filepath, Word* words, int ic, int dc);
+void write_file(const char *filepath, Word* words, int ic, int dc); /* Write the words to the output file */
 
 #endif /* ASSEMBLER_WRITE_FILE_H */

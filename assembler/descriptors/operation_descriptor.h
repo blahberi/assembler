@@ -12,12 +12,12 @@ struct Context;
 
 typedef int InstructionGenerator(struct Context *context);
 
-typedef struct OperationDescriptor {
-    OPCODE opcode;
-    InstructionGenerator* generate;
-    LabelHandler *handle_label;
+typedef struct OperationDescriptor { /* Information about the operation */
+    OPCODE opcode; /* The opcode */
+    InstructionGenerator* generate; /* Function to generate the instruction */
+    LabelHandler *handle_label; /* Function to handle a label */
 } OperationDescriptor;
 
-OperationDescriptor* get_operation_descriptor(struct Context *context);
+OperationDescriptor* get_operation_descriptor(struct Context *context); /* Get the operation descriptor */
 
 #endif /* ASSEMBLER_OPERATION_DESCRIPTOR_H */

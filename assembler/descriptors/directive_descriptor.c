@@ -41,7 +41,7 @@ DirectiveDescriptor* get_directive_descriptor(Context* context) {
         handle_label = handle_label_extern;
         generate = generate_extern_directive;
     }
-    descriptor = (DirectiveDescriptor*) malloc_track(sizeof(struct directive_descriptor));
+    descriptor = (DirectiveDescriptor*) malloc_track(sizeof(struct DirectiveDescriptor));
     descriptor->type = type;
     descriptor->generate = generate;
     descriptor->handle_label = handle_label;
