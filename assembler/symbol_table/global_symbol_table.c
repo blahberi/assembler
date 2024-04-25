@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 SymbolTable *SYMBOL_TABLE = NULL;
-int init_global_symbol_table() {
+int init_global_symbol_table() { /* Initialize the global symbol table */
     if (SYMBOL_TABLE){
         return 0;
     }
@@ -18,11 +18,11 @@ int init_global_symbol_table() {
     return 0;
 }
 
-Symbol* symbol_table_find(const char *name) {
+Symbol* symbol_table_find(const char *name) { /* Find a symbol in the table */
     return SYMBOL_TABLE->find(SYMBOL_TABLE, name);
 }
 
-void symbol_table_insert(Symbol *symbol) {
+void symbol_table_insert(Symbol *symbol) { /* Insert a symbol to the table */
     SYMBOL_TABLE->insert(SYMBOL_TABLE, symbol);
 }
 
@@ -34,7 +34,7 @@ typedef struct {
     int ic;
 } UpdateContext;
 
-void update_address(Symbol* symbol, UpdateContext* context) {
+void update_address(Symbol* symbol, UpdateContext* context) { /* Update the address of a symbol */
     int ic = context->ic;
     if (symbol->type == CODE_LABEL) {
         symbol->value += 100;
@@ -43,7 +43,7 @@ void update_address(Symbol* symbol, UpdateContext* context) {
     }
 }
 
-void symbol_table_update_address(int ic) {
+void symbol_table_update_address(int ic) { /* Update the address of all symbols */
     UpdateContext context;
     context.ic = ic;
     SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void(*)(Symbol*, void*)) update_address, &context);
@@ -53,7 +53,7 @@ typedef struct {
     FILE* file;
 } WriteContext;
 
-void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) {
+void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) { /* callback function that writes a symbol to the .ent file if it's an entry Symbol */
     FILE* file = (FILE*)context->file;
     if (file == NULL) {
         return;
@@ -63,7 +63,7 @@ void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) 
     }
 }
 
-void write_entry_file(const char* filepath) {
+void write_entry_file(const char* filepath) { /* Write the .ent file */
     FILE* file = fopen(filepath, "w");
     WriteContext context;
 
@@ -75,16 +75,4 @@ void write_entry_file(const char* filepath) {
     SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void (*)(Symbol*, void*)) write_entry_file_helper, &context);
 
     fclose(file);
-}
-
-void print_symbol(Symbol* symbol) {
-    printf("Name: %s, Value: %d, Type: %d, Is Entry: %s\n",
-           symbol->name,
-           symbol->value,
-           symbol->type,
-           symbol->is_entry ? "Yes" : "No");
-}
-
-void symbol_table_print() {
-    SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void (*)(Symbol*, void*)) print_symbol, NULL);
 }

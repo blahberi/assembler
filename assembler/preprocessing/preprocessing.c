@@ -14,6 +14,25 @@
 #include "../utils/assembly_strings.h"
 #include "../../memory_allocator/memory_allocator.h"
 
+static bool check_macro_name(const char* name) { /* Check if the macro name is valid */
+    /*
+     * The macro name can be anything other than a reserved keyword or a number
+     */
+    if (check_register(name)) { /* Check if the name is a register */
+        return false;
+    }
+    if (is_operation(name)) { /* Check if the name is an instruction */
+        return false;
+    }
+    if (is_directive(name)) { /* Check if the name is a directive */
+        return false;
+    }
+    if (is_number_signed(name)) { /* Check if the name is a signed number */
+        return false;
+    }
+    return true;
+}
+
 static void handle_line(PreprocessingContext* context, char* line);
 
 static void handle_macro_line(PreprocessingContext* context, char* line) {
@@ -49,6 +68,11 @@ static void handle_regular_line(PreprocessingContext* context, char* line) {
         context->macro_lines = construct_line_list();
         context->is_macro = true; /* Toggle on the macro flag */
         context->macro_name = get_operands(line); /* Get the macro name */
+        if (!check_macro_name(context->macro_name)) { /* Check if the macro name is valid */
+            fprintf(stderr, "Invalid macro name: %s\n", context->macro_name); /* Print an error message */
+            free_all_memory(); /* Free all memory */
+            exit(EXIT_FAILURE); /* Exit with failure */
+        }
         return;
     }
     if (is_macro(line)) { /* Check if the line is a macro */

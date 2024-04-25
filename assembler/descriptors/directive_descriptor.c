@@ -12,40 +12,41 @@
 #include "../../errors.h"
 #include "../../memory_allocator/memory_allocator.h"
 
-DirectiveDescriptor* get_directive_descriptor(Context* context) {
+DirectiveDescriptor* get_directive_descriptor(Context* context) { /* Get the directive descriptor*/
     const char* sentence = context->line_descriptor->sentence;
-    char* directive_str = get_sentence_start(sentence);
-    DirectiveGenerator *generate;
-    LabelHandler *handle_label;
+    char* directive_str = get_sentence_start(sentence); /* Get the directive string */
+    DirectiveGenerator *generate; /* Function to generate the directive machine code */
+    LabelHandler *handle_label; /* Function to handle the label i.e put it in the symbol table */
     DIRECTIVE_TYPE type;
     DirectiveDescriptor *descriptor;
 
-    trim_whitespace(directive_str);
+    trim_whitespace(directive_str); /* Remove whitespace from the directive string */
     generate= NULL;
     handle_label = NULL;
-    type = 0;
-    if (strcmp(directive_str, ".data") == 0) {
-        type = DATA_DIRECTIVE;
-        generate = generate_data_directive;
-        handle_label = handle_label_data;
-    } else if (strcmp(directive_str, ".string") == 0) {
-        type = STRING_DIRECTIVE;
-        generate = generate_string_directive;
-        handle_label = handle_label_data;
-    } else if (strcmp(directive_str, ".entry") == 0) {
-        type = ENTRY_DIRECTIVE;
-        handle_label = handle_label_entry;
-        generate = generate_entry_directive;
-    } else if (strcmp(directive_str, ".extern") == 0) {
-        type = EXTERN_DIRECTIVE;
-        handle_label = handle_label_extern;
-        generate = generate_extern_directive;
+    type = find_directive(directive_str); /* Get the directive type */
+    switch (type) {
+        case DATA_DIRECTIVE:
+            generate = generate_data_directive;
+            handle_label = handle_label_data;
+            break;
+        case STRING_DIRECTIVE:
+            generate = generate_string_directive;
+            handle_label = handle_label_data; /* Same as data directive */
+            break;
+        case ENTRY_DIRECTIVE:
+            generate = generate_entry_directive;
+            handle_label = handle_label_entry; /* Just warn that label is not used */
+            break;
+        case EXTERN_DIRECTIVE:
+            generate = generate_extern_directive;
+            handle_label = handle_label_extern; /* Just warn that label is not used */
+            break;
     }
-    descriptor = (DirectiveDescriptor*) malloc_track(sizeof(struct DirectiveDescriptor));
-    descriptor->type = type;
-    descriptor->generate = generate;
-    descriptor->handle_label = handle_label;
+    descriptor = (DirectiveDescriptor*) malloc_track(sizeof(struct DirectiveDescriptor)); /* Allocate memory for the descriptor */
+    descriptor->type = type; /* Set the type */
+    descriptor->generate = generate; /* Set the generate function */
+    descriptor->handle_label = handle_label; /* Set the handle label function */
 
-    context->directive = descriptor;
+    context->directive = descriptor; /* Add the descriptor to the context */
     return descriptor;
 }

@@ -94,8 +94,8 @@ void assemble(const char* filepath) {
 
     update_extern_list_address(); /* Update the addresses of the externs */
 
-    extern_filepath = get_extern_filepath(filepath); /* Get the extern file path */
-    entry_filepath = get_entry_filepath(filepath); /* Get the entry file path */
+    extern_filepath = get_extern_filename(filepath); /* Get the extern file path */
+    entry_filepath = get_entry_filename(filepath); /* Get the entry file path */
     write_extern_file(extern_filepath); /* Write the extern file */
     write_entry_file(entry_filepath); /* Write the entry file */
 

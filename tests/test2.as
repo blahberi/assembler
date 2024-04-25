@@ -5,7 +5,7 @@
 .define sz = 2
 MAIN: mov r3, LIST[sz]
 LOOP: jmp W
-prn #-5
+.data 6, -5
 mov STR[5], STR[2]
 sub r1, r4
 cmp K, #sz
