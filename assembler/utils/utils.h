@@ -8,8 +8,8 @@ Author: Eitan H.
 #include <stdbool.h>
 #include <ctype.h>
 
-char* strdup(const char* str);
-char* strdup_global(const char* str);
+char* my_strdup(const char* str);
+char* my_strdup_global(const char* str);
 char* get_preprocessed_filepath(const char* filepath);
 char* get_extern_filepath(const char* filepath);
 char* get_entry_filepath(const char* filepath);

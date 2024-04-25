@@ -64,8 +64,9 @@ void push_memory() {
 }
 
 static void* allocate_helper(void* data, StackNode *stack_node) {
+    MemoryNode* node;
     if (data != NULL) {
-        MemoryNode * node = malloc(sizeof(MemoryNode));
+        node = malloc(sizeof(MemoryNode));
         if (node != NULL) {
             node->data = data;
             node->next = stack_node->memory_node;

@@ -60,7 +60,7 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
         }
 
         /* Create a new OperandDescriptor */
-        descriptors[i].operand = strdup(operand_strings[i]); /* Set the operand field directly */
+        descriptors[i].operand = my_strdup(operand_strings[i]); /* Set the operand field directly */
         if (get_addr_mode(&descriptors[i], context) != 0) {
             goto error;
         }

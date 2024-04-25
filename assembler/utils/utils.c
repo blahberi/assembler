@@ -11,7 +11,7 @@
 #include "../../memory_allocator/memory_allocator.h"
 #include "../../errors.h"
 
-char* strdup_helper(const char* s) {
+char* my_strdup_helper(const char* s) {
     char* d;
     if (s == NULL) return NULL; /* Check for NULL pointer */
 
@@ -24,14 +24,14 @@ char* strdup_helper(const char* s) {
     return d; /* Return the duplicate string */
 }
 
-char* strdup(const char* s) {
-    char* d = strdup_helper(s);
+char* my_strdup(const char* s) {
+    char* d = my_strdup_helper(s);
     track_pointer(d);
     return d;
 }
 
-char* strdup_global(const char *s) {
-    char* d = strdup_helper(s);
+char* my_strdup_global(const char *s) {
+    char* d = my_strdup_helper(s);
     track_pointer_global(d);
     return d;
 }
@@ -83,9 +83,9 @@ char* get_base_name(const char* filepath) {
     }
 
     if (last_occurrence == NULL) {
-        return strdup(filepath);
+        return my_strdup(filepath);
     }
-    base_name = strdup(last_occurrence + 1);
+    base_name = my_strdup(last_occurrence + 1);
     return base_name;
 }
 
@@ -95,7 +95,7 @@ char* remove_extension(const char* filepath) {
     char* filepath_without_extension;
 
     if (dot == NULL) {
-        return strdup(filepath);
+        return my_strdup(filepath);
     }
     length = dot - filepath;
     filepath_without_extension = malloc_track(length + 1);

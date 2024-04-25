@@ -7,7 +7,7 @@
 
 ExternalLabelUsage* construct_external_label_usage(const char* label, int memory_address) {
     ExternalLabelUsage* usage = malloc_track_global(sizeof(ExternalLabelUsage));
-    usage->label = strdup_global(label); /* Duplicate the label string */
+    usage->label = my_strdup_global(label); /* Duplicate the label string */
     usage->memory_address = memory_address;
     return usage;
 }

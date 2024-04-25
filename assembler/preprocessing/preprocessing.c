@@ -88,9 +88,10 @@ void preprocess(const char* filepath) {
     FILE* output;
     PreprocessingContext context;
     const char* preprocessed_filepath;
-    char* line = malloc_track(MAX_LINE_LENGTH);
+    char* line;
 
     init_memory();
+    line = malloc_track(MAX_LINE_LENGTH);
     init_macro_table();
     input = fopen(filepath, "r");
     if (!input) {

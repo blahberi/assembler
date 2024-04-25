@@ -128,7 +128,7 @@ int get_value_unsigned(const char* str, int* result) {
 }
 
 char** split_string_by_comma(const char* str) {
-    char* str_copy = strdup(str);
+    char* str_copy = my_strdup(str);
     char** result = malloc_track(sizeof(char *) * (strlen(str) + 1));
     char* token;
     int i;
@@ -140,7 +140,7 @@ char** split_string_by_comma(const char* str) {
     token = strtok(str_copy, ",");
     i = 0;
     while (token != NULL) {
-        result[i] = strdup(token);
+        result[i] = my_strdup(token);
         token = strtok(NULL, ",");
         i++;
     }
@@ -247,7 +247,7 @@ bool check_label(const char* label) {
 
 int parse_index_operand(const char* operand, char* address, char* index) {
     if (strchr(operand, '[') && strchr(operand, ']')) {
-        char* operand_copy = strdup(operand);
+        char* operand_copy = my_strdup(operand);
         char* address_str = strtok(operand_copy, "[");
         char* index_str = strtok(NULL, "]");
 
@@ -309,9 +309,9 @@ void split_label_and_sentence(const char* line, char* label, char* sentence) {
 }
 
 char* get_sentence_start(const char* sentence) {
-    char* sentence_copy = strdup(sentence); /* Create a copy of the sentence to avoid modifying the original string */
+    char* sentence_copy = my_strdup(sentence); /* Create a copy of the sentence to avoid modifying the original string */
     char* first_word = strtok(sentence_copy, " "); /* Get the first word */
-    char* result = strdup(first_word); /* Copy the first word to a new string */
+    char* result = my_strdup(first_word); /* Copy the first word to a new string */
     return result;
 }
 
@@ -344,14 +344,14 @@ char* get_operands(const char* sentence) {
     }
 
     /* Copy characters from sentence to operands, starting from the character after the space */
-    operands = strdup(space_position + 1);
+    operands = my_strdup(space_position + 1);
     trim_whitespace(operands);
     return operands;
 }
 
 char* get_string_from_quotes(const char* str) {
     if (str[0] == '"' && str[strlen(str) - 1] == '"') {
-        char* result = strdup(str + 1);
+        char* result = my_strdup(str + 1);
         result[strlen(result) - 1] = '\0';
         return result;
     }
