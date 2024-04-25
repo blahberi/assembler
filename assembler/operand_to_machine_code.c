@@ -1,88 +1,170 @@
 //
-// Author: Eitan H. .
+// Author: Eitan H.
 //
 
-#include "operand_to_machine_code.h"
-#include "../symbol_table/global_symbol_table.h"
-#include "../utils/utils.h"
-#include "are.h"
-#include "operand_words.h"
-
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#include <stdlib.h>
+#include "context/context.h"
+#include "utils/utils.h"
+#include "../errors.h"
+#include "are.h"
+#include "utils/error_checking.h"
+#include "symbol_table/symbol.h"
+#include "symbol_table/global_symbol_table.h"
+#include "extern_handler/extern_handler.h"
+#include "utils/assembly_strings.h"
+#include "../memory_tracker/scope_memory_tracker.c.h"
 
-
-int generate_immediate_operand(OperandDescriptor* descriptor, InstructionWord *instruction_word) {
+int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) {
     // bits 0-1: ARE
     // bits 2-13: Value
 
-    int value = atoi(descriptor->operand + 1);
-    ValueWord *word = (ValueWord *)instruction_word;
+    const char* line = context->line_descriptor->line;
+    Word *instruction_word = context->instruction_words;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    int *IC = &context->assembler_context->IC;
+
+    if (is_first_pass) {
+        (*IC)++;
+        return 0;
+    }
+
+    const char* str_value = descriptor->operand + 1; // Skip the '#' character
+    int value;
+    if (get_value_signed(str_value, &value) != 0) {
+        fprintf(stderr, ERR_IMMEDIATE_MUST_BE_NUMBER, line);
+        goto error;
+    }
+    int ic = *IC;
+    ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = ABSOLUTE;
-    word->VALUE = value; // Value
-    return 1;
+    word->VALUE = value;
+
+    (*IC)++;
+    return 0;
+
+    error:
+    return -1;
 }
 
-int generate_direct_operand(OperandDescriptor* descriptor, InstructionWord *instruction_word) {
+int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
     // bits 0-1: ARE
     // bits 2-13: Address
 
+    const char* line = context->line_descriptor->line;
+    Word *instruction_word = context->instruction_words;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    int *IC = &context->assembler_context->IC;
+
+    if (is_first_pass) {
+        (*IC)++;
+        return 0;
+    }
+
+    int ic = *IC;
+    if (check_label_err(descriptor->operand, context) != 0) {
+        goto error;
+    }
     Symbol *symbol = symbol_table_find(descriptor->operand);
-    ARE are = symbol->is_external ? EXTERNAL : RELOCATABLE;
-    ValueWord *word = (ValueWord *)instruction_word;
+    if (symbol->type == MDEFINE_LABEL) {
+        fprintf(stderr, ERR_DIRECT_CANNOT_BE_MDEFINE, descriptor->operand, line);
+        goto error;
+    }
+    if (symbol->type == EXTERN_LABEL) {
+        add_extern_label_usage(symbol->name, ic);
+    }
+
+    ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
+    ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = are;
     word->VALUE = symbol->value; // Address
-    return 1;
+
+    (*IC)++;
+    return 0;
+
+    error:
+    return -1;
 }
 
-int generate_index_operand(OperandDescriptor* descriptor, InstructionWord *instruction_word) {
+int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
     // First word bits 0-1: ARE
     // First word bits 2-13: Address
 
     // Second word bits 0-1: ARE
     // Second word bits 2-13: Index
 
-    const char *operand = descriptor->operand;
-    char *operand_copy = strdup(operand);
-    char *address = strtok(operand_copy, "[");
-    char *index_str = strtok(NULL, "]");
+    const char* line = context->line_descriptor->line;
+    Word *instruction_word = context->instruction_words;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    int *IC = &context->assembler_context->IC;
+
+    if (is_first_pass) {
+        *IC += 2;
+        return 0;
+    }
+
+    char* address = malloc_track(strlen(descriptor->operand) + 1);
+    char* index_str = malloc_track(strlen(descriptor->operand) + 1);
+    parse_index_operand(descriptor->operand, address, index_str);
 
     int index;
-    if (symbol_table_is_in(index_str)){
-        index = symbol_table_find(index_str)->value;
+    if (check_label_err(address, context) != 0){
+        goto error;
     }
-    else if (is_number_unsigned(index_str)){
-        index = atoi(index_str);
-    }
-    else {
-        fprintf(stderr, "Invalid index: %s\n", index_str);
-        exit(EXIT_FAILURE); // TODO: Handle error appropriately
+    if (get_value_unsigned(index_str, &index) != 0) {
+        fprintf(stderr, ERR_INDEX_MUST_BE_NUMBER, line);
+        goto error;
     }
 
+    int ic = *IC;
     Symbol *symbol = symbol_table_find(address);
-    ARE are = symbol->is_external ? EXTERNAL : RELOCATABLE;
-    IndexMachineCode* mc = (IndexMachineCode*)instruction_word;
+    if (symbol->type == EXTERN_LABEL){
+        add_extern_label_usage(symbol->name, ic);
+    }
+    if (symbol->type == MDEFINE_LABEL) {
+        fprintf(stderr, ERR_BASE_LABEL_CANNOT_BE_MDEFINE, address, line);
+        goto error;
+    }
+
+    ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
+    IndexMachineCode* mc = (IndexMachineCode*)(instruction_word+ic);
     mc->address_word.ARE = are;
     mc->address_word.VALUE = symbol->value; // Address
     mc->index_word.ARE = ABSOLUTE;
     mc->index_word.VALUE = index; // Index
 
-    free(operand_copy);
-    return 2;
+    *IC += 2;
+    return 0;
+
+    error:
+    return -1;
 }
 
-int generate_register_operand(OperandDescriptor* descriptor, InstructionWord *instruction_word) {
+int generate_register_operand(OperandDescriptor* descriptor, Context *context) {
     // bits 0-1: ARE
     // bits 2-4: Source register
 
+    Word *instruction_word = context->instruction_words;
+    bool is_first_pass = context->assembler_context->is_first_pass;
+    int *IC = &context->assembler_context->IC;
+
+    if (is_first_pass) {
+        (*IC)++;
+        return 0;
+    }
+
+    int ic = *IC;
     int reg_num = atoi(descriptor->operand + 1);
-    RegisterWord *word = (RegisterWord*)instruction_word;
+    RegisterWord *word = (RegisterWord*)(instruction_word+ic);
     word->ARE = ABSOLUTE;
     if (descriptor->is_dest) {
         word->DEST = reg_num; // Register number for destination operand
     } else {
         word->SRC = reg_num; // Register number for source operand
     }
-    return 1;
+
+    (*IC)++;
+    return 0;
 }

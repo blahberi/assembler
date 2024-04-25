@@ -1,0 +1,8 @@
+//
+// Author: Eitan H.
+//
+
+#ifndef ASSEMBLER_SENTENCE_TYPE_H
+#define ASSEMBLER_SENTENCE_TYPE_H
+
+#endif //ASSEMBLER_SENTENCE_TYPE_H

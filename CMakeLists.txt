@@ -4,27 +4,65 @@ project(assembler C)
 set(CMAKE_C_STANDARD 90)
 
 add_executable(assembler main.c
-        symbol_table/symbol_table.c
-        symbol_table/symbol_table.h
+        assembler/symbol_table/symbol_table.c
+        assembler/symbol_table/symbol_table.h
         assembler/instruction_to_machine_code.c
         assembler/instruction_to_machine_code.h
-        utils/utils.c
-        utils/utils.h
+        assembler/utils/utils.c
+        assembler/utils/utils.h
         config.h
-        symbol_table/symbol_node.h
-        symbol_table/symbol.h
-        symbol_table/global_symbol_table.h
-        symbol_table/symbol.c
-        symbol_table/symbol_node.c
-        symbol_table/global_symbol_table.c
-        assembler/instruction_word.h
-        assembler/operation_descriptor.h
-        assembler/operand_descriptor.h
-        assembler/operand_words.h
-        assembler/addressing_mode.c
+        assembler/symbol_table/symbol.h
+        assembler/symbol_table/global_symbol_table.h
+        assembler/symbol_table/symbol.c
+        assembler/symbol_table/global_symbol_table.c
+        assembler/descriptors/operation_descriptor.h
+        assembler/descriptors/operand_descriptor.h
+        assembler/words.h
         assembler/operand_to_machine_code.c
-        assembler/addressing_mode.h
         assembler/operand_to_machine_code.h
         assembler/are.h
-        assembler/assembler_context.h
-        assembler/register_error.h)
+        assembler/context/assembler_context.h
+        assembler/utils/assembly_strings.c
+        assembler/utils/assembly_strings.h
+        assembler/directive_to_machine_code.c
+        assembler/descriptors/directive_descriptor.h
+        assembler/handlers/handle_label.c
+        assembler/handlers/handle_label.h
+        assembler/directive_to_machine_code.h
+        assembler/handlers/handle_line.c
+        assembler/sentence_type.h
+        assembler/descriptors/directive_descriptor.c
+        assembler/descriptors/operation_descriptor.c
+        assembler/descriptors/operand_descriptor.c
+        assembler/handlers/handle_line.h
+        assembler/read_file.h
+        assembler/extern_handler/extern_label_node.h
+        assembler/extern_handler/extern_label_list.h
+        assembler/extern_handler/extern_label_list.c
+        assembler/extern_handler/extern_handler.c
+        assembler/extern_handler/extern_label_usage.c
+        assembler/extern_handler/extern_label_usage.h
+        assembler/extern_handler/extern_handler.h
+        assembler/read_file.c
+        assembler/assembler.c
+        assembler/assembler.h
+        assembler/utils/error_checking.c
+        assembler/utils/error_checking.h
+        errors.h
+        assembler/handlers/handle_line.c
+        assembler/descriptors/line_descriptor.h
+        assembler/context/context.h
+        hash_table/node.h
+        hash_table/hash_table.h
+        hash_table/hash_table.c
+        assembler/enums.h
+        hash_table/int_hash_table.h
+        hash_table/int_hash_table.c
+        assembler/preprocessing/macro.h
+        assembler/preprocessing/line_list.h
+        assembler/preprocessing/line_list.h.c
+        memory_tracker/scope_memory_tracker.c
+        memory_tracker/scope_memory_tracker.c.h
+        memory_tracker/global_memory_tracker.c
+        memory_tracker/global_memory_tracker.h
+)
