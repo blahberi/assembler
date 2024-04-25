@@ -58,11 +58,17 @@ add_executable(assembler main.c
         assembler/enums.h
         hash_table/int_hash_table.h
         hash_table/int_hash_table.c
-        assembler/preprocessing/macro.h
         assembler/preprocessing/line_list.h
-        assembler/preprocessing/line_list.h.c
-        memory_tracker/scope_memory_tracker.c
-        memory_tracker/scope_memory_tracker.c.h
-        memory_tracker/global_memory_tracker.c
-        memory_tracker/global_memory_tracker.h
+        assembler/preprocessing/line_list.c
+        assembler/preprocessing/macro_table.h
+        assembler/preprocessing/macro_table.c
+        assembler/preprocessing/preprocessing_context.h
+        assembler/preprocessing/preprocessing.c
+        assembler/preprocessing/preprocess.h
+        memory_allocator/memory_allocator.c
+        memory_allocator/memory_allocator.h
+        assembler/write_file.c
+        assembler/write_file.h
 )
+
+target_compile_options(assembler PRIVATE -ansi -Wall -pedantic)

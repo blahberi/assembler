@@ -28,16 +28,16 @@ void update_extern_list_address() {
     }
 }
 
-void write_extern_file(const char *filename) {
-    FILE *file = fopen(filename, "w");
+void write_extern_file(const char *filepath) {
+    FILE *file = fopen(filepath, "w");
     if (file == NULL) {
-        printf("Unable to open file %s\n", filename);
+        printf("Unable to open file %s\n", filepath);
         return;
     }
 
     ExternalLabelNode* current = EXTERN_LIST->head;
     while (current != NULL) {
-        fprintf(file, "%s\t%04d\n", current->usage->label, current->usage->memory_address);
+        fprintf(file, "%s %04d\n", current->usage->label, current->usage->memory_address);
         current = current->next;
     }
 

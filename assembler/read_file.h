@@ -7,6 +7,6 @@
 
 typedef struct context Context;
 
-void read_file(const char* filename, Context *context);
+void read_file(const char* filepath, Context *context);
 
 #endif //ASSEMBLER_READ_FILE_H

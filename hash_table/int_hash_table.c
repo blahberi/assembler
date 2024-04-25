@@ -4,7 +4,7 @@
 
 #include <malloc.h>
 #include "int_hash_table.h"
-#include "../memory_tracker/scope_memory_tracker.c.h"
+#include "../memory_allocator/memory_allocator.h"
 
 void insert(struct IntHashTable *this, const char* key, int value){
     int* p = malloc_track(sizeof(int));

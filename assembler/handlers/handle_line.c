@@ -2,14 +2,11 @@
 // Author: Eitan H.
 //
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "../context/assembler_context.h"
 #include "../utils/assembly_strings.h"
-#include "../utils/utils.h"
 #include "../descriptors/directive_descriptor.h"
-#include "../descriptors/operation_descriptor.h"
 #include "../symbol_table/global_symbol_table.h"
 #include "../../errors.h"
 #include "../utils/error_checking.h"
@@ -23,8 +20,9 @@ int handle_define_line(Context *context) {
         fprintf(stderr, ERR_DEFINE_GOT_LABEL, context->line_descriptor->line);
         goto error;
     }
-
-    char* operands = get_operands(context);
+    const char* sentence = context->line_descriptor->sentence;
+    char* operands = get_operands(sentence);
+    context->line_descriptor->operands = operands;
     char* label = strtok(operands, "=");
     trim_whitespace(label);
 
@@ -67,7 +65,9 @@ int handle_directive_line(Context *context) {
         descriptor->handle_label(context);
     }
 
-    get_operands(context);
+    const char* sentence = context->line_descriptor->sentence;
+    char* operands = get_operands(sentence);
+    context->line_descriptor->operands = operands;
 
     int result = descriptor->generate(context);
     return result;
@@ -90,7 +90,9 @@ int handle_instruction_line(Context *context) {
         descriptor->handle_label(context);
     }
 
-    char* operands = get_operands(context);
+    const char* sentence = context->line_descriptor->sentence;
+    char* operands = get_operands(sentence);
+    context->line_descriptor->operands = operands;
     int size = 0;
     if (operands != NULL) {
         size = comma_seperated_list_length(operands);

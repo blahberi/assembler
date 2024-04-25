@@ -8,15 +8,20 @@
 #include "extern_handler/extern_handler.h"
 #include "words.h"
 #include "read_file.h"
-#include "utils/utils.h"
 #include "context/context.h"
 #include "utils/assembly_strings.h"
-#include "../memory_tracker/scope_memory_tracker.c.h"
-#include "../memory_tracker/global_memory_tracker.h"
+#include "preprocessing/preprocess.h"
+#include "../memory_allocator/memory_allocator.h"
+#include "write_file.h"
+#include "utils/utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-void assemble(const char* filename) {
-    init_memory_stack();
+
+void assemble(const char* filepath) {
+    preprocess(filepath);
+    init_memory();
+    const char *preprocessed_filepath = get_preprocessed_filepath(filepath);
     AssemblerContext assembler_context = {
             .is_first_pass = true,
             .IC = 0,
@@ -45,35 +50,42 @@ void assemble(const char* filename) {
     context.instruction = malloc_track(sizeof(InstructionLineDescriptor));
 
     // First pass
-    read_file(filename, &context);
+    read_file(preprocessed_filepath, &context);
+    symbol_table_update_address(assembler_context.IC);
 
     assembler_context.IC = 0;
     assembler_context.DC = 0;
     assembler_context.is_first_pass = false;
 
     // Second pass
-    read_file(filename, &context);
-    symbol_table_update_address(assembler_context.IC);
-
+    read_file(preprocessed_filepath, &context);
     if (assembler_context.error) {
-        return;
+        free_all_memory();
+        exit(EXIT_FAILURE);
     }
-    printf("Instruction Words:\n");
-    for (int i = 0; i < assembler_context.IC; i++) {
-        print_binary(instruction_words[i].word, 14);
+
+    Word *output_words = calloc_track(MEMORY_SIZE - 100, sizeof(Word));
+    int ic = assembler_context.IC;
+    int dc = assembler_context.DC;
+    for (int i = 0; i < ic; i++) {
+        output_words[i] = instruction_words[i];
     }
-    printf("Data Words:\n");
-    for (int i = 0; i < assembler_context.DC; i++) {
-        print_binary(data_words[i].word, 14);
+    for (int i = 0; i < dc; i++) {
+        output_words[ic + i] = data_words[i];
     }
-    printf("Symbol Table:\n");
-    symbol_table_print();
+
+    const char* output_filepath = get_output_filepath(filepath);
+
+    write_file(output_filepath, output_words, ic, dc);
 
     update_extern_list_address();
 
-    write_extern_file("C:\\Users\\blahb\\CLionProjects\\assembler\\extern.ext");
-    write_entry_file("C:\\Users\\blahb\\CLionProjects\\assembler\\entry.ent");
+    const char* extern_filepath = get_extern_filepath(filepath);
+    const char* entry_filepath = get_entry_filepath(filepath);
+    write_extern_file(extern_filepath);
+    write_entry_file(entry_filepath);
 
-    free_all_memory_stack();
-    free_all_global_memory();
+    free_all_memory();
+
+    printf("Assembling completed successfully\n");
 }

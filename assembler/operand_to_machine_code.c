@@ -15,7 +15,7 @@
 #include "symbol_table/global_symbol_table.h"
 #include "extern_handler/extern_handler.h"
 #include "utils/assembly_strings.h"
-#include "../memory_tracker/scope_memory_tracker.c.h"
+#include "../memory_allocator/memory_allocator.h"
 
 int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) {
     // bits 0-1: ARE
