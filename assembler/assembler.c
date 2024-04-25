@@ -88,7 +88,7 @@ void assemble(const char* filepath) {
         output_words[ic + i] = data_words[i]; /* Copy the data words to the output words */
     }
 
-    output_filepath = get_output_filepath(filepath); /* Get the output file path */
+    output_filepath = get_output_filename(filepath); /* Get the output file path */
 
     write_file(output_filepath, output_words, ic, dc); /* Write the output words to the output file */
 
