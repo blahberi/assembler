@@ -1,19 +1,20 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include <stdio.h>
 #include "context/context.h"
 #include "../errors.h"
-#include "are.h"
 
-// Instruction generator utilities
 int generate_first_word(Context *context) {
-    // bits 0-1: ARE
-    // bits 2-3: Destination addressing mode
-    // bits 4-5: Source addressing mode
-    // bits 6-9: Opcode
+    /*
+     * bits 0-1: ARE
+     * bits 2-3: Destination addressing mode
+     * bits 4-5: Source addressing mode
+     * bits 6-9: Opcode
+     * bits 10-13: padding
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     Word *instruction_word = context->instruction_words;
@@ -90,9 +91,11 @@ int generate_zero_word_instruction(Context *context) {
     return generate_first_word(context);
 }
 
-int generate_type_1(Context *context) { // mov, add, sub
-    // src operand: Immediate, Direct, Index, Register
-    // dest operand: Direct, Index, Register
+int generate_type_1(Context *context) { /* mov, add, sub */
+    /*
+     * src operand: Immediate, Direct, Index, Register
+     * dest operand: Direct, Index, Register
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
@@ -119,9 +122,11 @@ int generate_type_1(Context *context) { // mov, add, sub
     return -1;
 }
 
-int generate_type_2(Context *context) {  // cmp
-    // src operand: Immediate, Direct, Index, Register
-    // dest operand: Immediate, Direct, Index, Register
+int generate_type_2(Context *context) {  /* cmp */
+    /*
+     * src operand: Immediate, Direct, Index, Register
+     * dest operand: Immediate, Direct, Index, Register
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     char *line = context->line_descriptor->line;
@@ -139,9 +144,11 @@ int generate_type_2(Context *context) {  // cmp
     return -1;
 }
 
-int generate_type_3(Context *context) { // not, clr, inc, dec, red
-    // no src operand
-    // dest operand: Direct, Index, Register
+int generate_type_3(Context *context) { /* not, clr, inc, dec, red */
+    /*
+     * src operand: None
+     * dest operand: Direct, Index, Register
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
@@ -169,9 +176,11 @@ int generate_type_3(Context *context) { // not, clr, inc, dec, red
     return -1;
 }
 
-int generate_type_4(Context *context) { // lea
-    // src operand: Direct, Index
-    // dest operand: Direct, Index, Register
+int generate_type_4(Context *context) { /* lea */
+    /*
+     * src operand: Direct, Index
+     * dest operand: Direct, Index, Register
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
@@ -213,9 +222,11 @@ int generate_type_4(Context *context) { // lea
     return -1;
 }
 
-int generate_type_5(Context *context) { // jmp, bne, jsr
-    // no src operand
-    // dest operand: Direct, Register
+int generate_type_5(Context *context) { /* jmp, bne, jsr */
+    /*
+     * src operand: None
+     * dest operand: Direct, Register
+     */
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
     int operand_count = context->instruction->operand_count;
@@ -248,9 +259,11 @@ int generate_type_5(Context *context) { // jmp, bne, jsr
     return -1;
 }
 
-int generate_type_6(Context *context) { // prn
-    // no src operand
-    // dest operand: Immediate, Direct, Index, Register
+int generate_type_6(Context *context) { /* prn */
+    /*
+     * src operand: None
+     * dest operand: Immediate, Direct, Index, Register
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char* line = context->line_descriptor->line;
@@ -269,9 +282,11 @@ int generate_type_6(Context *context) { // prn
     return -1;
 }
 
-int generate_type_7(Context *context) { // rts, hlt
-    // no src operand
-    // no dest operand
+int generate_type_7(Context *context) { /* rts, hlt */
+    /*
+     * src operand: None
+     * dest operand: None
+     */
 
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
@@ -290,7 +305,7 @@ int generate_type_7(Context *context) { // rts, hlt
     return -1;
 }
 
-int (*get_instruction_generator(OPCODE opcode))(Context*){ // Get the generator function given the opcode
+int (*get_instruction_generator(OPCODE opcode))(Context*){ /* Get the generator function given the opcode */
     int (*generator_functions[])(Context*) = {
             [MOV] = generate_type_1,
             [ADD] = generate_type_1,

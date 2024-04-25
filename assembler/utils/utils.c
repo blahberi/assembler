@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include <stdbool.h>
@@ -23,7 +23,7 @@ char* get_base_path(const char* filepath) {
     char* last_separator = strrchr(filepath, '/');
     char* last_backslash = strrchr(filepath, '\\');
 
-    // Use the last occurring separator, whether it's a slash or a backslash
+    /* Use the last occurring separator, whether it's a slash or a backslash */
     char* last_occurrence;
     if (last_separator > last_backslash) {
         last_occurrence = last_separator;
@@ -46,7 +46,7 @@ char* get_base_name(const char* filepath) {
     char* last_separator = strrchr(filepath, '/');
     char* last_backslash = strrchr(filepath, '\\');
 
-    // Use the last occurring separator, whether it's a slash or a backslash
+    /* Use the last occurring separator, whether it's a slash or a backslash */
     char* last_occurrence;
     if (last_separator > last_backslash) {
         last_occurrence = last_separator;

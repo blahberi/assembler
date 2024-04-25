@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include <stdio.h>
@@ -21,13 +21,13 @@ int check_label_err_first_pass(const char* line, const char* label) {
         return 0;
     }
 
-    // Check if label is reserved for register
+    /* Check if label is reserved for register */
     if (check_register(label) || is_operation(label)) {
         fprintf(stderr, ERR_RESERVED_LABEL, label, line);
         goto error;
     }
 
-    // Check if label exceeds length limit
+    /* Check if label exceeds length limit */
     if (strlen(label) > MAX_LABEL_LENGTH) {
         fprintf(stderr, ERR_LABEL_TOO_LONG, label, line);
         goto error;

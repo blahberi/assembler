@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_MEMORY_ALLOCATOR_H
 #define ASSEMBLER_MEMORY_ALLOCATOR_H
@@ -19,4 +19,4 @@ void* calloc_track_global(size_t num, size_t size);
 void track_pointer_global(void* ptr);
 
 
-#endif //ASSEMBLER_MEMORY_ALLOCATOR_H
+#endif /* ASSEMBLER_MEMORY_ALLOCATOR_H */

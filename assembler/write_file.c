@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include <stdio.h>
@@ -10,15 +10,15 @@
 
 
 char* word_to_string(int word) {
-    char* str = malloc_track(8); // 7 digits plus null terminator
-    char* p = str + 7; // start at the end of the string
-    *p = '\0'; // null terminator
-    p--; // move to the last digit
+    char* str = malloc_track(8); /* 7 digits plus null terminator */
+    char* p = str + 7; /* start at the end of the string */
+    *p = '\0'; /* null terminator */
+    p--; /* move to the last digit */
 
-    // map from base 4 digits to characters
+    /* map from base 4 digits to characters */
     char map[] = {'*', '#', '%', '!'};
 
-    // convert the word to base 4
+    /* convert the word to base 4 */
     for (int i = 0; i < 7; i++) {
         int digit = word % 4;
         *p = map[digit];

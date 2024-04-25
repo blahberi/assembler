@@ -1,8 +1,6 @@
-//
-// Author: Eitan H.
-//
-
-
+/*
+ Author: Eitan H.
+*/
 
 #include <stdio.h>
 #include <malloc.h>
@@ -64,7 +62,7 @@ int generate_string_directive(Context *context){
         words[*DC].word = (unsigned int)str[*DC];
     }
 
-    // Add null terminator
+    /* Add null terminator */
     (*DC)++;
     words[*DC].word = 0;
     return 0;

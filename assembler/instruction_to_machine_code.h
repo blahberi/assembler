@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #include "descriptors/operation_descriptor.h"
 
@@ -9,11 +9,11 @@
 
 typedef struct context Context;
 
-// Function prototypes
+/* Function prototypes */
 int generate_two_word_instruction(Context *context);
 int generate_one_word_instruction(Context *context);
 int generate_zero_word_instruction(Context *context);
 
 int (*get_instruction_generator(OPCODE opcode))(Context*);
 
-#endif //ASSEMBLER_INSTRUCTION_TO_MACHINE_CODE_H
+#endif /* ASSEMBLER_INSTRUCTION_TO_MACHINE_CODE_H */

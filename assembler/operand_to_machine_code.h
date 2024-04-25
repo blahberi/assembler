@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_OPERAND_TO_MACHINE_CODE_H
 #define ASSEMBLER_OPERAND_TO_MACHINE_CODE_H
@@ -12,4 +12,4 @@ int generate_direct_operand(OperandDescriptor* descriptor, Context *context);
 int generate_index_operand(OperandDescriptor* descriptor, Context *context);
 int generate_register_operand(OperandDescriptor* descriptor, Context *context);
 
-#endif //ASSEMBLER_OPERAND_TO_MACHINE_CODE_H
+#endif /* ASSEMBLER_OPERAND_TO_MACHINE_CODE_H */

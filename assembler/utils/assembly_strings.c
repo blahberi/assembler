@@ -181,10 +181,10 @@ void trim_whitespace(char* str) {
         end--;
     }
 
-    // Calculate new length
+    /* Calculate new length */
     size_t length = end - start;
 
-    // Shift characters to start of string
+    /* Shift characters to start of string */
     memmove(str, start, length);
 
     // Null-terminate the string
@@ -192,10 +192,10 @@ void trim_whitespace(char* str) {
 }
 
 bool check_register(const char* operand) {
-    // check if starts with r and the rest is a number
+    /* check if starts with r and the rest is a number */
     if (operand[0] == 'r' && is_number_unsigned(operand + 1)) {
         int reg_num = atoi(operand + 1);
-        if (reg_num < REGISTER_COUNT) { // Check if the register number is valid
+        if (reg_num < REGISTER_COUNT) { /* Check if the register number is valid */
             return true;
         }
     }
@@ -203,39 +203,39 @@ bool check_register(const char* operand) {
 }
 
 bool check_label(const char* label) {
-    // Check if label is empty
+    /* Check if label is empty */
     if (strlen(label) == 0) {
         return false;
     }
 
-    // Check if label is reserved for register
+    /* Check if label is reserved for register */
     if (check_register(label)) {
         return false;
     }
 
-    // Check if label is reserved for instruction
+    /* Check if label is reserved for instruction */
     if (is_operation(label)) {
         return false;
     }
 
-    // Check if label starts with a number
+    /* Check if label starts with a number */
     if (is_number_signed(label)) {
         return false;
     }
 
-    // Check if label exceeds length limit
+    /* Check if label exceeds length limit */
     if (strlen(label) > MAX_LABEL_LENGTH) {
         return false;
     }
 
-    // Check if all characters are alphanumeric
+    /* Check if all characters are alphanumeric */
     for (int i = 0; i < strlen(label); i++) {
         if (!isalnum(label[i])) {
             return false;
         }
     }
 
-    // If none of the above conditions are met, the label is valid
+    /* If none of the above conditions are met, the label is valid */
     return true;
 }
 
@@ -279,7 +279,7 @@ bool check_index_operand(const char* operand) {
 }
 
 
-bool is_label_in_line(const char* line) { // does the line start with "<label>: "
+bool is_label_in_line(const char* line) { /* does the line start with "<label>: " */
     char* colon_position = strchr(line, ':');
     if (colon_position != NULL && colon_position != line && *(colon_position - 1) != ' ') {
         return true;
@@ -291,21 +291,21 @@ bool is_label_in_line(const char* line) { // does the line start with "<label>: 
 void split_label_and_sentence(const char* line, char* label, char* sentence) {
     char* colon_position = strchr(line, ':');
 
-    // Copy characters from line to label
+    /* Copy characters from line to label */
     strncpy(label, line, colon_position - line);
-    label[colon_position - line] = '\0'; // Null-terminate the string
+    label[colon_position - line] = '\0'; /* Null-terminate the string */
     trim_whitespace(label);
 
-    // Copy characters from line to sentence
+    /* Copy characters from line to sentence */
     strcpy(sentence, colon_position + 1);
     trim_whitespace(sentence);
 }
 
 char* get_sentence_start(const char* sentence) {
-    char* sentence_copy = strdup(sentence); // Create a copy of the sentence to avoid modifying the original string
+    char* sentence_copy = strdup(sentence); /* Create a copy of the sentence to avoid modifying the original string */
     track_pointer(sentence_copy);
-    char* first_word = strtok(sentence_copy, " "); // Get the first word
-    char* result = strdup(first_word); // Copy the first word to a new string
+    char* first_word = strtok(sentence_copy, " "); /* Get the first word */
+    char* result = strdup(first_word); /* Copy the first word to a new string */
     track_pointer(result);
     return result;
 }
@@ -325,19 +325,19 @@ SENTENCE_TYPE get_sentence_type(const char* sentence) {
         return DIRECTIVE_SENTENCE;
     }
 
-    // If none of the above conditions are met, return an error or a default value
+    /* If none of the above conditions are met, return an error or a default value */
     return -1;
 }
 
 char* get_operands(const char* sentence) {
     char* space_position = strchr(sentence, ' ');
 
-    // If there is no space in the sentence, return NULL
+    /* If there is no space in the sentence, return NULL */
     if (space_position == NULL) {
         return NULL;
     }
 
-    // Copy characters from sentence to operands, starting from the character after the space
+    /* Copy characters from sentence to operands, starting from the character after the space */
     char* operands = strdup(space_position + 1);
     track_pointer(operands);
     trim_whitespace(operands);

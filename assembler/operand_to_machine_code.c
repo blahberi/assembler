@@ -1,15 +1,12 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #include <stdio.h>
-#include <malloc.h>
 #include <string.h>
 #include <stdlib.h>
 #include "context/context.h"
-#include "utils/utils.h"
 #include "../errors.h"
-#include "are.h"
 #include "utils/error_checking.h"
 #include "symbol_table/symbol.h"
 #include "symbol_table/global_symbol_table.h"
@@ -18,8 +15,10 @@
 #include "../memory_allocator/memory_allocator.h"
 
 int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) {
-    // bits 0-1: ARE
-    // bits 2-13: Value
+    /*
+     * bits 0-1: ARE
+     * bits 2-13: Value
+     */
 
     const char* line = context->line_descriptor->line;
     Word *instruction_word = context->instruction_words;
@@ -31,7 +30,7 @@ int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) 
         return 0;
     }
 
-    const char* str_value = descriptor->operand + 1; // Skip the '#' character
+    const char* str_value = descriptor->operand + 1; /* Skip the '#' character */
     int value;
     if (get_value_signed(str_value, &value) != 0) {
         fprintf(stderr, ERR_IMMEDIATE_MUST_BE_NUMBER, line);
@@ -50,8 +49,10 @@ int generate_immediate_operand(OperandDescriptor* descriptor, Context *context) 
 }
 
 int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
-    // bits 0-1: ARE
-    // bits 2-13: Address
+    /*
+     * bits 0-1: ARE
+     * bits 2-13: Address
+     */
 
     const char* line = context->line_descriptor->line;
     Word *instruction_word = context->instruction_words;
@@ -79,7 +80,7 @@ int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
     ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
     ValueWord *word = (ValueWord *)(instruction_word+ic);
     word->ARE = are;
-    word->VALUE = symbol->value; // Address
+    word->VALUE = symbol->value; /* Address */
 
     (*IC)++;
     return 0;
@@ -89,11 +90,13 @@ int generate_direct_operand(OperandDescriptor* descriptor, Context *context) {
 }
 
 int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
-    // First word bits 0-1: ARE
-    // First word bits 2-13: Address
-
-    // Second word bits 0-1: ARE
-    // Second word bits 2-13: Index
+    /*
+     * First word bits 0-1: ARE
+     * First word bits 2-13: Address
+     *
+     * Second word bits 0-1: ARE
+     * Second word bits 2-13: Index
+     */
 
     const char* line = context->line_descriptor->line;
     Word *instruction_word = context->instruction_words;
@@ -131,9 +134,9 @@ int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
     ARE are = symbol->type==EXTERN_LABEL ? EXTERNAL : RELOCATABLE;
     IndexMachineCode* mc = (IndexMachineCode*)(instruction_word+ic);
     mc->address_word.ARE = are;
-    mc->address_word.VALUE = symbol->value; // Address
+    mc->address_word.VALUE = symbol->value; /* Address */
     mc->index_word.ARE = ABSOLUTE;
-    mc->index_word.VALUE = index; // Index
+    mc->index_word.VALUE = index; /* Index */
 
     *IC += 2;
     return 0;
@@ -143,8 +146,11 @@ int generate_index_operand(OperandDescriptor* descriptor, Context *context) {
 }
 
 int generate_register_operand(OperandDescriptor* descriptor, Context *context) {
-    // bits 0-1: ARE
-    // bits 2-4: Source register
+    /*
+     * bits 0-1: ARE
+     * bits 2-4: Destination register number
+     * bits 5-7: Source register number
+     */
 
     Word *instruction_word = context->instruction_words;
     bool is_first_pass = context->assembler_context->is_first_pass;
@@ -160,9 +166,9 @@ int generate_register_operand(OperandDescriptor* descriptor, Context *context) {
     RegisterWord *word = (RegisterWord*)(instruction_word+ic);
     word->ARE = ABSOLUTE;
     if (descriptor->is_dest) {
-        word->DEST = reg_num; // Register number for destination operand
+        word->DEST = reg_num; /* Register number for destination operand */
     } else {
-        word->SRC = reg_num; // Register number for source operand
+        word->SRC = reg_num; /* Register number for source operand */
     }
 
     (*IC)++;

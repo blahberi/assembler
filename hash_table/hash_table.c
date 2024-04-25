@@ -1,13 +1,13 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #include "hash_table.h"
 #include "../memory_allocator/memory_allocator.h"
 #include <malloc.h>
 #include <string.h>
 
-// djb2 hash function
+/* djb2 hash function */
 unsigned int hash(const char *key) {
     unsigned int hash = 5381;
     int c;

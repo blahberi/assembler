@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 
 #include "context/assembler_context.h"
@@ -49,7 +49,7 @@ void assemble(const char* filepath) {
     context.line_descriptor = malloc_track(sizeof(LineDescriptor));
     context.instruction = malloc_track(sizeof(InstructionLineDescriptor));
 
-    // First pass
+    /* First pass */
     read_file(preprocessed_filepath, &context);
     symbol_table_update_address(assembler_context.IC);
 
@@ -57,7 +57,7 @@ void assemble(const char* filepath) {
     assembler_context.DC = 0;
     assembler_context.is_first_pass = false;
 
-    // Second pass
+    /* Second pass */
     read_file(preprocessed_filepath, &context);
     if (assembler_context.error) {
         free_all_memory();

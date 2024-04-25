@@ -20,7 +20,6 @@ add_executable(assembler main.c
         assembler/words.h
         assembler/operand_to_machine_code.c
         assembler/operand_to_machine_code.h
-        assembler/are.h
         assembler/context/assembler_context.h
         assembler/utils/assembly_strings.c
         assembler/utils/assembly_strings.h
@@ -70,5 +69,3 @@ add_executable(assembler main.c
         assembler/write_file.c
         assembler/write_file.h
 )
-
-target_compile_options(assembler PRIVATE -ansi -Wall -pedantic)

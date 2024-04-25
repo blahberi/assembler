@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_NODE_H
 #define ASSEMBLER_NODE_H
@@ -11,4 +11,4 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-#endif //ASSEMBLER_NODE_H
+#endif /* ASSEMBLER_NODE_H */

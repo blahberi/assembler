@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_ASSEMBLY_STRINGS_H
 #define ASSEMBLER_ASSEMBLY_STRINGS_H
@@ -35,4 +35,4 @@ char* get_operands(const char* sentence);
 char* get_string_from_quotes(const char* str);
 
 
-#endif //ASSEMBLER_ASSEMBLY_STRINGS_H
+#endif /* ASSEMBLER_ASSEMBLY_STRINGS_H */

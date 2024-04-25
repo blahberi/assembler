@@ -2,11 +2,9 @@
  Author: Eitan H.
 */
 
-#include <stdlib.h>
 #include <stdio.h>
 #include "../context/context.h"
 #include "../utils/assembly_strings.h"
-#include "../utils/utils.h"
 #include "../instruction_to_machine_code.h"
 #include "../../errors.h"
 #include "../../memory_allocator/memory_allocator.h"

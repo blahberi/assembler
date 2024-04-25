@@ -1,6 +1,6 @@
-//
-// Author: Eitan H.
-//
+/*
+ Author: Eitan H.
+*/
 
 #ifndef ASSEMBLER_WORDS_H
 #define ASSEMBLER_WORDS_H
@@ -24,15 +24,15 @@ typedef struct {
 } RegisterWord;
 
 typedef struct  {
-    ValueWord address_word; // The label's address
-    ValueWord index_word; // The index, ARE = ABSOLUTE
+    ValueWord address_word; /* The label's address */
+    ValueWord index_word; /* The index, ARE = ABSOLUTE */
 } IndexMachineCode;
 
 typedef struct  {
     unsigned int ARE : ARE_SIZE;
-    unsigned int DEST : ADDRESING_MODE_SIZE; // Destination operand addressing mode
-    unsigned int SRC : ADDRESING_MODE_SIZE; // Source operand addressing mode
+    unsigned int DEST : ADDRESING_MODE_SIZE; /* Destination operand addressing mode */
+    unsigned int SRC : ADDRESING_MODE_SIZE; /* Source operand addressing mode */
     unsigned int OPCODE : OPCODE_SIZE;
 } FirstWord;
 
-#endif //ASSEMBLER_WORDS_H
+#endif /*ASSEMBLER_WORDS_H */
