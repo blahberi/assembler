@@ -113,7 +113,7 @@ char* get_preprocessed_filepath(const char* filepath) { /* Get the preprocessed 
      * {filename}.as -> .preprocessed_{filename}.as
      *
      * For example:
-     * code.as -> .preprocessed_code.as
+     * test1.as -> .preprocessed_code.as
      */
     char* base_name;
     int new_filepath_length;
@@ -132,10 +132,10 @@ char* get_preprocessed_filepath(const char* filepath) { /* Get the preprocessed 
     return new_filepath;
 }
 
-char* get_filepath_with_extension(const char* filepath, const char* extension) { /* Get the file path with a certain extension */
+char* get_filename_with_extension(const char* filepath, const char* extension) { /* Get the file name with a certain extension */
     /*
-     * For example, if the filepath is "/home/user/file.as" and the extension is ".ext",
-     * the new filepath will be "/home/user/file.as".
+     * For example, if the filename is "file.as" and the extension is ".ext",
+     * the new filepath will be "file.ext".
      */
     char* base_name_without_extension;
     int new_filepath_length;
@@ -155,23 +155,30 @@ char* get_filepath_with_extension(const char* filepath, const char* extension) {
     return new_filepath;
 }
 
-char* get_extern_filepath(const char* filepath) { /* Get the extern file path */
+char* get_extern_filename(const char* filepath) { /* Get the extern file path */
     /*
      * {filename}.as -> {filename}.ext
      */
-    return get_filepath_with_extension(filepath, ".ext");
+    return get_filename_with_extension(filepath, ".ext");
 }
 
-char* get_entry_filepath(const char* filepath) { /* Get the entry file path */
+char* get_entry_filename(const char* filepath) { /* Get the entry file path */
     /*
      * {filename}.as -> {filename}.ent
      */
-    return get_filepath_with_extension(filepath, ".ent");
+    return get_filename_with_extension(filepath, ".ent");
 }
 
-char* get_output_filepath(const char* filepath) { /* Get the output file path */
+char* get_output_filename(const char* filepath) { /* Get the output file path */
     /*
      * {filename}.as -> {filename}.obj
      */
-    return get_filepath_with_extension(filepath, ".obj");
+    return get_filename_with_extension(filepath, ".obj");
+}
+
+char* get_current_director() {
+
+    char* current_directory = malloc_track_global(1024);
+    getcwd(current_directory, 1024);
+    return current_directory;
 }
