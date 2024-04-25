@@ -78,9 +78,9 @@ bool is_number_signed(const char* str) {
         return false;
     }
 
-    // Allow a leading + or -
+    /* Allow a leading + or - */
     if (*str == '+' || *str == '-') {
-        str++; // Skip the sign
+        str++; /* Skip the sign */
     }
 
     return is_number_helper(str);
@@ -95,11 +95,12 @@ bool is_number_unsigned(const char* str) {
 
 int get_value_signed(const char* str, int* result) {
     /* this function gets a number or an mdefien label and returns it's int value */
+    Symbol* symbol;
     if (is_number_signed(str)) {
         *result = atoi(str);
         return 0;
     }
-    Symbol* symbol = symbol_table_find(str);
+    symbol = symbol_table_find(str);
     if (symbol == NULL) {
         goto error;
     }
@@ -128,18 +129,18 @@ int get_value_unsigned(const char* str, int* result) {
 
 char** split_string_by_comma(const char* str) {
     char* str_copy = strdup(str);
-    track_pointer(str_copy);
     char** result = malloc_track(sizeof(char *) * (strlen(str) + 1));
+    char* token;
+    int i;
+
     if (!result) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
         exit(EXIT_FAILURE);
     }
-    char* token = strtok(str_copy, ",");
-    int i = 0;
-
+    token = strtok(str_copy, ",");
+    i = 0;
     while (token != NULL) {
         result[i] = strdup(token);
-        track_pointer(result[i]);
         token = strtok(NULL, ",");
         i++;
     }
@@ -150,6 +151,7 @@ char** split_string_by_comma(const char* str) {
 
 int comma_seperated_list_length(const char* str) {
     int count = 0;
+    const char *c;
 
     /* If the string is not empty, start count from 1 */
     if (str != NULL && *str != '\0') {
@@ -157,7 +159,7 @@ int comma_seperated_list_length(const char* str) {
     }
 
     /* For each character in the string */
-    for (const char* c = str; *c != '\0'; c++) {
+    for (c = str; *c != '\0'; c++) {
         /* If the character is a comma, increment the count */
         if (*c == ',') {
             count++;
@@ -170,6 +172,7 @@ int comma_seperated_list_length(const char* str) {
 void trim_whitespace(char* str) {
     char* start = str;
     char* end = str + strlen(str);
+    size_t length;
 
     /* Move start pointer to first non-whitespace character */
     while (isspace((unsigned char)*start)) {
@@ -182,12 +185,12 @@ void trim_whitespace(char* str) {
     }
 
     /* Calculate new length */
-    size_t length = end - start;
+    length = end - start;
 
     /* Shift characters to start of string */
     memmove(str, start, length);
 
-    // Null-terminate the string
+    /* Null-terminate the string */
     str[length] = '\0';
 }
 
@@ -203,6 +206,8 @@ bool check_register(const char* operand) {
 }
 
 bool check_label(const char* label) {
+    int i;
+
     /* Check if label is empty */
     if (strlen(label) == 0) {
         return false;
@@ -229,7 +234,7 @@ bool check_label(const char* label) {
     }
 
     /* Check if all characters are alphanumeric */
-    for (int i = 0; i < strlen(label); i++) {
+    for (i = 0; i < strlen(label); i++) {
         if (!isalnum(label[i])) {
             return false;
         }
@@ -243,7 +248,6 @@ bool check_label(const char* label) {
 int parse_index_operand(const char* operand, char* address, char* index) {
     if (strchr(operand, '[') && strchr(operand, ']')) {
         char* operand_copy = strdup(operand);
-        track_pointer(operand_copy);
         char* address_str = strtok(operand_copy, "[");
         char* index_str = strtok(NULL, "]");
 
@@ -263,11 +267,14 @@ bool check_index_operand(const char* operand) {
     char* address = malloc_track(strlen(operand) + 1);
     char* index = malloc_track(strlen(operand) + 1);
     int code = parse_index_operand(operand, address, index);
+    bool address_status;
+    bool index_status;
+
     if (code != 0) {
         goto error;
     }
-    bool address_status = check_label(address);
-    bool index_status = check_label(index);
+    address_status = check_label(address);
+    index_status = check_label(index);
 
     if (!address_status|| (!index_status && !is_number_unsigned(index))) {
         return false;
@@ -303,10 +310,8 @@ void split_label_and_sentence(const char* line, char* label, char* sentence) {
 
 char* get_sentence_start(const char* sentence) {
     char* sentence_copy = strdup(sentence); /* Create a copy of the sentence to avoid modifying the original string */
-    track_pointer(sentence_copy);
     char* first_word = strtok(sentence_copy, " "); /* Get the first word */
     char* result = strdup(first_word); /* Copy the first word to a new string */
-    track_pointer(result);
     return result;
 }
 
@@ -331,6 +336,7 @@ SENTENCE_TYPE get_sentence_type(const char* sentence) {
 
 char* get_operands(const char* sentence) {
     char* space_position = strchr(sentence, ' ');
+    char* operands;
 
     /* If there is no space in the sentence, return NULL */
     if (space_position == NULL) {
@@ -338,8 +344,7 @@ char* get_operands(const char* sentence) {
     }
 
     /* Copy characters from sentence to operands, starting from the character after the space */
-    char* operands = strdup(space_position + 1);
-    track_pointer(operands);
+    operands = strdup(space_position + 1);
     trim_whitespace(operands);
     return operands;
 }
@@ -347,7 +352,6 @@ char* get_operands(const char* sentence) {
 char* get_string_from_quotes(const char* str) {
     if (str[0] == '"' && str[strlen(str) - 1] == '"') {
         char* result = strdup(str + 1);
-        track_pointer(result);
         result[strlen(result) - 1] = '\0';
         return result;
     }

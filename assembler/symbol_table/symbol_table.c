@@ -19,7 +19,8 @@ static bool is_in(SymbolTable* this, const char* name) {
 }
 
 static void foreach(SymbolTable* this, void (*callback)(Symbol* symbol, void* context), void* context) {
-    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
+    int i;
+    for (i = 0; i < HASH_TABLE_SIZE; i++) {
         Node* node = this->base->buckets[i];
         while (node) {
             Symbol* symbol = (Symbol*) node->value;

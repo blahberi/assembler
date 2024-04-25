@@ -12,7 +12,7 @@
 #include "../descriptors/operation_descriptor.h"
 #include "../words.h"
 
-typedef struct context {
+typedef struct Context {
     AssemblerContext* assembler_context;
     LineDescriptor* line_descriptor;
     InstructionLineDescriptor* instruction;

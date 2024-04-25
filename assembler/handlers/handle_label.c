@@ -14,6 +14,7 @@ int handle_label_instruction(Context *context) { /* For instructions */
     const char* label = context->line_descriptor->label;
     bool is_first_pass = context->assembler_context->is_first_pass;
     int *IC = &context->assembler_context->IC;
+    Symbol *symbol;
 
     if (!is_first_pass){
         return 0;
@@ -21,7 +22,7 @@ int handle_label_instruction(Context *context) { /* For instructions */
     if (check_label_err(label, context) != 0) {
         goto error;
     }
-    Symbol *symbol = construct_symbol(label, CODE_LABEL, *IC, false);
+    symbol = construct_symbol(label, CODE_LABEL, *IC, false);
     symbol_table_insert(symbol);
     return 0;
 
@@ -33,13 +34,15 @@ int handle_label_data(Context *context){ /* For .data and .string directives */
     const char* label = context->line_descriptor->label;
     bool is_first_pass = context->assembler_context->is_first_pass;
     int *DC = &context->assembler_context->DC;
+    Symbol* symbol;
+
     if (!is_first_pass){
         return 0;
     }
     if (check_label_err(label, context) != 0) {
         goto error;
     }
-    Symbol *symbol = construct_symbol(label, DATA_LABEL, *DC, false);
+    symbol = construct_symbol(label, DATA_LABEL, *DC, false);
     symbol_table_insert(symbol);
     return 0;
 

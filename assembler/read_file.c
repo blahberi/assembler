@@ -10,18 +10,19 @@
 #include "handlers/handle_line.h"
 
 int read_file(const char* filepath, Context* context) {
+    int result;
+    char line[MAX_LINE_LENGTH];
     FILE* file = fopen(filepath, "r");
+
     if (file == NULL) {
         fprintf(stderr, "Error: Could not open file %s\n", filepath);
         exit(EXIT_FAILURE);
     }
 
-    char line[MAX_LINE_LENGTH];
-
     while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
         push_memory();
         context->line_descriptor->line = line;
-        int result = handle_line(context);
+        result = handle_line(context);
         if (result == -1) {
             context->assembler_context->error = true;
         }

@@ -10,8 +10,9 @@
 
 
 typedef struct directive_descriptor DirectiveDescriptor;
+struct Context;
 
-typedef int DirectiveGenerator(Context *context);
+typedef int DirectiveGenerator(struct Context *context);
 
 struct directive_descriptor {
     DIRECTIVE_TYPE type;
@@ -19,6 +20,6 @@ struct directive_descriptor {
     LabelHandler *handle_label;
 };
 
-DirectiveDescriptor* get_directive_descriptor(Context *context);
+DirectiveDescriptor* get_directive_descriptor(struct Context *context);
 
 #endif /* ASSEMBLER_DIRECTIVE_DESCRIPTOR_H */

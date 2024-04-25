@@ -13,6 +13,13 @@
 #include "../context/context.h"
 
 int handle_define_line(Context *context) {
+    const char* sentence;
+    char* operands;
+    char* label;
+    char* value_str;
+    int value;
+    Symbol *symbol;
+
     if (!context->assembler_context->is_first_pass) {
         return 0;
     }
@@ -20,13 +27,13 @@ int handle_define_line(Context *context) {
         fprintf(stderr, ERR_DEFINE_GOT_LABEL, context->line_descriptor->line);
         goto error;
     }
-    const char* sentence = context->line_descriptor->sentence;
-    char* operands = get_operands(sentence);
+    sentence = context->line_descriptor->sentence;
+    operands = get_operands(sentence);
     context->line_descriptor->operands = operands;
-    char* label = strtok(operands, "=");
+    label = strtok(operands, "=");
     trim_whitespace(label);
 
-    char* value_str = strtok(NULL, "=");
+    value_str = strtok(NULL, "=");
     trim_whitespace(value_str);
 
     if (label == NULL || value_str == NULL) {
@@ -38,13 +45,12 @@ int handle_define_line(Context *context) {
         goto error;
     }
 
-    int value;
     if (get_value_signed(value_str, &value) != 0) {
         fprintf(stderr, ERR_INVALID_DEFINE_VALUE, context->line_descriptor->line);
         goto error;
     }
 
-    Symbol *symbol = construct_symbol(label, MDEFINE_LABEL, value, false);
+    symbol = construct_symbol(label, MDEFINE_LABEL, value, false);
     symbol_table_insert(symbol);
     return 0;
 
@@ -54,9 +60,14 @@ int handle_define_line(Context *context) {
 
 int handle_directive_line(Context *context) {
     const char* line = context->line_descriptor->line;
+    DirectiveDescriptor *descriptor;
+    const char* sentence;
+    char *operands;
+    int result;
     bool is_label = context->line_descriptor->is_label;
     bool is_first_pass = context->assembler_context->is_first_pass;
-    DirectiveDescriptor *descriptor = get_directive_descriptor(context);
+    descriptor = get_directive_descriptor(context);
+
     if (descriptor == NULL) {
         fprintf(stderr, ERR_INVALID_SENTENCE, line);
         goto error;
@@ -65,11 +76,11 @@ int handle_directive_line(Context *context) {
         descriptor->handle_label(context);
     }
 
-    const char* sentence = context->line_descriptor->sentence;
-    char* operands = get_operands(sentence);
+    sentence = context->line_descriptor->sentence;
+    operands = get_operands(sentence);
     context->line_descriptor->operands = operands;
 
-    int result = descriptor->generate(context);
+    result = descriptor->generate(context);
     return result;
 
     error:
@@ -81,6 +92,11 @@ int handle_instruction_line(Context *context) {
     bool is_label = context->line_descriptor->is_label;
     bool is_first_pass = context->assembler_context->is_first_pass;
     OperationDescriptor* descriptor = get_operation_descriptor(context);
+    OperandDescriptor* operandDescriptors;
+    const char* sentence;
+    char* operands;
+    int result;
+
     if (descriptor == NULL) {
         fprintf(stderr, ERR_INVALID_SENTENCE, line);
         goto error;
@@ -90,20 +106,16 @@ int handle_instruction_line(Context *context) {
         descriptor->handle_label(context);
     }
 
-    const char* sentence = context->line_descriptor->sentence;
-    char* operands = get_operands(sentence);
+    sentence = context->line_descriptor->sentence;
+    operands = get_operands(sentence);
     context->line_descriptor->operands = operands;
-    int size = 0;
-    if (operands != NULL) {
-        size = comma_seperated_list_length(operands);
-    }
 
-    OperandDescriptor* operandDescriptors = get_operand_descriptors(context);
+    operandDescriptors = get_operand_descriptors(context);
     if (operandDescriptors == NULL && context->instruction->operand_count != 0) {
         goto error;
     }
 
-    int result = descriptor->generate(context);
+    result = descriptor->generate(context);
     return result;
 
     error:
@@ -112,13 +124,16 @@ int handle_instruction_line(Context *context) {
 
 int handle_line(Context* context) {
     const char* line = context->line_descriptor->line;
+    bool is_label;
+    char sentence[MAX_LINE_LENGTH];
+    char label[MAX_LABEL_LENGTH];
+    SENTENCE_TYPE sentence_type;
+
     if (line[0] == '\n' || line[0] == '\0') {
         return 0;
     }
 
-    bool is_label = is_label_in_line(line);
-    char sentence[MAX_LINE_LENGTH];
-    char label[MAX_LABEL_LENGTH];
+    is_label = is_label_in_line(line);
     if(is_label) {
         split_label_and_sentence(line, label, sentence);
     }
@@ -127,7 +142,7 @@ int handle_line(Context* context) {
         trim_whitespace(sentence);
     }
 
-    SENTENCE_TYPE sentence_type = get_sentence_type(sentence);
+    sentence_type = get_sentence_type(sentence);
 
     context->line_descriptor->label = label;
     context->line_descriptor->sentence = sentence;

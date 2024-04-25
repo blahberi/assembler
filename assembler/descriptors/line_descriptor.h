@@ -7,12 +7,12 @@
 
 #include <stdbool.h>
 
-typedef struct operation_descriptor OperationDescriptor;
-typedef struct operand_descriptor OperandDescriptor;
+struct OperationDescriptor;
+struct OperandDescriptor;
 
 typedef struct instruction_line_descriptor {
-    OperationDescriptor *operation;
-    OperandDescriptor *operands;
+    struct OperationDescriptor *operation;
+    struct OperandDescriptor *operands;
     int operand_count;
 } InstructionLineDescriptor;
 

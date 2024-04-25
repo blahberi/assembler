@@ -1,7 +1,7 @@
 #include "assembler/assembler.h"
 
 int main() {
-    const char* filepath = "C:\\Users\\blahb\\CLionProjects\\assembler\\code.as";
+    const char* filepath = "/home/osboxes/assembler/assembler/code.as";
     assemble(filepath);
 
     return 0;

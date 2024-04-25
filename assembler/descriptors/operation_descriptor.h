@@ -8,18 +8,16 @@
 #include "../enums.h"
 #include "../handlers/handle_label.h"
 
-typedef struct context Context;
+struct Context;
 
-typedef struct operation_descriptor OperationDescriptor;
+typedef int InstructionGenerator(struct Context *context);
 
-typedef int InstructionGenerator(Context *context);
-
-struct operation_descriptor {
+typedef struct OperationDescriptor {
     OPCODE opcode;
     InstructionGenerator* generate;
     LabelHandler *handle_label;
-};
+} OperationDescriptor;
 
-OperationDescriptor* get_operation_descriptor(Context *context);
+OperationDescriptor* get_operation_descriptor(struct Context *context);
 
 #endif /* ASSEMBLER_OPERATION_DESCRIPTOR_H */

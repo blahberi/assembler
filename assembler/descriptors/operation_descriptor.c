@@ -12,15 +12,17 @@
 OperationDescriptor* get_operation_descriptor(Context *context){
     const char* sentence = context->line_descriptor->sentence;
     char* operation_str = get_sentence_start(sentence);
-    trim_whitespace(operation_str);
     OPCODE opcode;
-    InstructionGenerator *generate = NULL;
-    LabelHandler *handle_label = handle_label_instruction;
+    InstructionGenerator *generate;
+    LabelHandler *handle_label;
+    OperationDescriptor *descriptor;
 
+    trim_whitespace(operation_str);
+    handle_label = handle_label_instruction;
     opcode = find_operation(operation_str);
     generate = get_instruction_generator(opcode);
 
-    OperationDescriptor* descriptor = (OperationDescriptor*) malloc_track(sizeof(struct operation_descriptor));
+    descriptor = (OperationDescriptor*) malloc_track(sizeof(OperationDescriptor));
     if (!descriptor) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
         return NULL;

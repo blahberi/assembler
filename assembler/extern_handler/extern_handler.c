@@ -30,13 +30,15 @@ void update_extern_list_address(void) {
 }
 
 void write_extern_file(const char *filepath) {
+    ExternalLabelNode* current;
     FILE *file = fopen(filepath, "w");
+
     if (file == NULL) {
         printf("Unable to open file %s\n", filepath);
         return;
     }
 
-    ExternalLabelNode* current = EXTERN_LIST->head;
+    current = EXTERN_LIST->head;
     while (current != NULL) {
         fprintf(file, "%s %04d\n", current->usage->label, current->usage->memory_address);
         current = current->next;

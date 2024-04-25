@@ -44,7 +44,8 @@ void update_address(Symbol* symbol, UpdateContext* context) {
 }
 
 void symbol_table_update_address(int ic) {
-    UpdateContext context = {ic};
+    UpdateContext context;
+    context.ic = ic;
     SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void(*)(Symbol*, void*)) update_address, &context);
 }
 
@@ -64,12 +65,13 @@ void write_entry_file_helper(const Symbol* symbol, const WriteContext* context) 
 
 void write_entry_file(const char* filepath) {
     FILE* file = fopen(filepath, "w");
+    WriteContext context;
+
     if (file == NULL) {
         printf("Unable to open file %s\n", filepath);
         return;
     }
-
-    WriteContext context = {file};
+    context.file = file;
     SYMBOL_TABLE->foreach(SYMBOL_TABLE, (void (*)(Symbol*, void*)) write_entry_file_helper, &context);
 
     fclose(file);

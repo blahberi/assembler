@@ -15,22 +15,28 @@ int generate_first_word(Context *context) {
      * bits 6-9: Opcode
      * bits 10-13: padding
      */
-
     bool is_first_pass = context->assembler_context->is_first_pass;
     Word *instruction_word = context->instruction_words;
+    OperationDescriptor *descriptor;
+    OperandDescriptor *operands;
+    ADDR_MODE dest;
+    ADDR_MODE src;
     int *IC = &context->assembler_context->IC;
+    int operand_count;
+    FirstWord *word;
+
     if (!is_first_pass) {
         (*IC)++;
 
         return 0;
     }
 
-    OperationDescriptor *descriptor = context->instruction->operation;
-    OperandDescriptor *operands = context->instruction->operands;
+    descriptor = context->instruction->operation;
+    operands = context->instruction->operands;
 
-    ADDR_MODE dest = 0;
-    ADDR_MODE src = 0;
-    int operand_count = context->instruction->operand_count;
+    dest = 0;
+    src = 0;
+    operand_count = context->instruction->operand_count;
     if (operand_count == 1) {
         dest = operands[0].addr_mode;
     } else if (operand_count == 2) {
@@ -38,8 +44,7 @@ int generate_first_word(Context *context) {
         src = operands[0].addr_mode;
     }
 
-    int ic = *IC;
-    FirstWord *word = (FirstWord*)(instruction_word+ic);
+    word = (FirstWord*)(instruction_word+(*IC));
     word->ARE = ABSOLUTE;
     word->DEST = dest;
     word->SRC = src;
@@ -53,14 +58,17 @@ int generate_two_word_instruction(Context *context) {
     OperandDescriptor *src = operands;
     OperandDescriptor *dest = operands+1;
     int *IC = &context->assembler_context->IC;
+    int res1;
+    int res2;
+
     src->is_dest = false;
     dest->is_dest = true;
     generate_first_word(context);
-    int res1 = src->generate(src, context);
+    res1 = src->generate(src, context);
     if (src->addr_mode == REGISTER && dest->addr_mode == REGISTER) {
         (*IC)--;
     }
-    int res2 = dest->generate(dest, context);
+    res2 = dest->generate(dest, context);
 
     if (res1 != 0 || res2 != 0) {
         goto error;
@@ -74,9 +82,12 @@ int generate_two_word_instruction(Context *context) {
 int generate_one_word_instruction(Context *context) {
     OperandDescriptor *operands = context->instruction->operands;
     OperandDescriptor *dest = operands;
+    int res1;
+    int res2;
+
     dest->is_dest = true;
-    int res1 = generate_first_word(context);
-    int res2 = dest->generate(dest, context);
+    res1 = generate_first_word(context);
+    res2 = dest->generate(dest, context);
     if (res1 != 0 || res2 != 0) {
         goto error;
     }
@@ -100,6 +111,7 @@ int generate_type_1(Context *context) { /* mov, add, sub */
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
     int operand_count = context->instruction->operand_count;
+    OperandDescriptor dest;
 
     if (operand_count != 2) {
         if (is_first_pass){
@@ -108,7 +120,7 @@ int generate_type_1(Context *context) { /* mov, add, sub */
         goto error;
     }
 
-    OperandDescriptor dest = context->instruction->operands[1];
+    dest = context->instruction->operands[1];
 
     if (dest.addr_mode == IMMEDIATE) {
         if (is_first_pass) {
@@ -153,6 +165,7 @@ int generate_type_3(Context *context) { /* not, clr, inc, dec, red */
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
     int operand_count = context->instruction->operand_count;
+    OperandDescriptor dest;
 
     if (operand_count != 1) {
         if (is_first_pass) {
@@ -161,7 +174,7 @@ int generate_type_3(Context *context) { /* not, clr, inc, dec, red */
         goto error;
     }
 
-    OperandDescriptor dest = context->instruction->operands[0];
+    dest = context->instruction->operands[0];
 
     if (dest.addr_mode == IMMEDIATE) {
         if (is_first_pass) {
@@ -185,6 +198,8 @@ int generate_type_4(Context *context) { /* lea */
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
     int operand_count = context->instruction->operand_count;
+    OperandDescriptor src;
+    OperandDescriptor dest;
 
     if (operand_count != 2) {
         if (is_first_pass) {
@@ -193,8 +208,8 @@ int generate_type_4(Context *context) { /* lea */
         goto error;
     }
 
-    OperandDescriptor src = context->instruction->operands[0];
-    OperandDescriptor dest = context->instruction->operands[1];
+    src = context->instruction->operands[0];
+    dest = context->instruction->operands[1];
 
     if (src.addr_mode == IMMEDIATE) {
         if (is_first_pass) {
@@ -230,6 +245,7 @@ int generate_type_5(Context *context) { /* jmp, bne, jsr */
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char *line = context->line_descriptor->line;
     int operand_count = context->instruction->operand_count;
+    OperandDescriptor dest;
 
     if (operand_count != 1) {
         if (is_first_pass) {
@@ -238,7 +254,7 @@ int generate_type_5(Context *context) { /* jmp, bne, jsr */
         goto error;
     }
 
-    OperandDescriptor dest = context->instruction->operands[0];
+    dest = context->instruction->operands[0];
 
     if (dest.addr_mode == IMMEDIATE) {
         if (is_first_pass) {
@@ -307,22 +323,22 @@ int generate_type_7(Context *context) { /* rts, hlt */
 
 int (*get_instruction_generator(OPCODE opcode))(Context*){ /* Get the generator function given the opcode */
     int (*generator_functions[])(Context*) = {
-            [MOV] = generate_type_1,
-            [ADD] = generate_type_1,
-            [SUB] = generate_type_1,
-            [CMP] = generate_type_2,
-            [NOT] = generate_type_3,
-            [CLR] = generate_type_3,
-            [INC] = generate_type_3,
-            [DEC] = generate_type_3,
-            [RED] = generate_type_3,
-            [LEA] = generate_type_4,
-            [JMP] = generate_type_5,
-            [BNE] = generate_type_5,
-            [JSR] = generate_type_5,
-            [PRN] = generate_type_6,
-            [RTS] = generate_type_7,
-            [HLT] = generate_type_7
+            generate_type_1, /* mov */
+            generate_type_2, /* cmp */
+            generate_type_1, /* add */
+            generate_type_1, /* sub */
+            generate_type_3, /* not */
+            generate_type_3, /* clr */
+            generate_type_4, /* lea */
+            generate_type_3, /* inc */
+            generate_type_3, /* dec */
+            generate_type_5, /* jmp */
+            generate_type_5, /* bne */
+            generate_type_3, /* red */
+            generate_type_6, /* prn */
+            generate_type_5, /* jsr */
+            generate_type_7, /* rts */
+            generate_type_7, /* hlt */
     };
 
     return generator_functions[opcode];

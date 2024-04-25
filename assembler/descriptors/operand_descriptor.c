@@ -18,19 +18,24 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
     bool is_first_pass = context->assembler_context->is_first_pass;
     const char* line = context->line_descriptor->line;
     const char* operands = context->line_descriptor->operands;
+    char** operand_strings;
+    int count;
+    int i;
+    OperandDescriptor* descriptors;
+
     if (operands == NULL) {
         context->instruction->operand_count = 0;
         return NULL;
     }
-    char** operand_strings = split_string_by_comma(operands);
+    operand_strings = split_string_by_comma(operands);
 
     /* Count the number of operand strings */
-    int count = 0;
+    count = 0;
     while (operand_strings[count] != NULL) {
         count++;
     }
 
-    OperandDescriptor* descriptors = malloc_track((count) * sizeof(OperandDescriptor)); /* Allocate an array of OperandDescriptor objects */
+    descriptors = malloc_track((count) * sizeof(OperandDescriptor)); /* Allocate an array of OperandDescriptor objects */
     if (descriptors == NULL) {
         fprintf(stderr, ERR_MEMORY_ALLOCATION_FAILED);
         goto error;
@@ -43,7 +48,6 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
         goto error;
     }
 
-    int i;
     for (i = 0; i < count; i++) {
         /* Trim leading and trailing whitespace */
         trim_whitespace(operand_strings[i]);
@@ -57,7 +61,6 @@ OperandDescriptor* get_operand_descriptors(Context *context) {
 
         /* Create a new OperandDescriptor */
         descriptors[i].operand = strdup(operand_strings[i]); /* Set the operand field directly */
-        track_pointer((void *) descriptors[i].operand);
         if (get_addr_mode(&descriptors[i], context) != 0) {
             goto error;
         }

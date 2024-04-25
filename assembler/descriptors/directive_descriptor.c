@@ -15,10 +15,15 @@
 DirectiveDescriptor* get_directive_descriptor(Context* context) {
     const char* sentence = context->line_descriptor->sentence;
     char* directive_str = get_sentence_start(sentence);
+    DirectiveGenerator *generate;
+    LabelHandler *handle_label;
+    DIRECTIVE_TYPE type;
+    DirectiveDescriptor *descriptor;
+
     trim_whitespace(directive_str);
-    DirectiveGenerator *generate= NULL;
-    LabelHandler *handle_label = NULL;
-    DIRECTIVE_TYPE type = 0;
+    generate= NULL;
+    handle_label = NULL;
+    type = 0;
     if (strcmp(directive_str, ".data") == 0) {
         type = DATA_DIRECTIVE;
         generate = generate_data_directive;
@@ -36,7 +41,7 @@ DirectiveDescriptor* get_directive_descriptor(Context* context) {
         handle_label = handle_label_extern;
         generate = generate_extern_directive;
     }
-    DirectiveDescriptor* descriptor = (DirectiveDescriptor*) malloc_track(sizeof(struct directive_descriptor));
+    descriptor = (DirectiveDescriptor*) malloc_track(sizeof(struct directive_descriptor));
     descriptor->type = type;
     descriptor->generate = generate;
     descriptor->handle_label = handle_label;

@@ -8,21 +8,20 @@
 #include <stdbool.h>
 #include "../enums.h"
 
-typedef struct context Context;
+struct Context;
 
-typedef struct operand_descriptor OperandDescriptor;
+typedef struct OperandDescriptor OperandDescriptor;
+typedef int (OperandGenerator)(OperandDescriptor*, struct Context *context);
 
-typedef int (OperandGenerator)(OperandDescriptor*, Context *context);
-
-struct operand_descriptor {
+struct OperandDescriptor {
     const char* operand;
     ADDR_MODE addr_mode;
     bool is_dest;
     OperandGenerator *generate;
 };
 
-OperandDescriptor* get_operand_descriptors(Context *context);
-int get_addr_mode(OperandDescriptor *descriptor, Context *context);
+OperandDescriptor* get_operand_descriptors(struct Context *context);
+int get_addr_mode(OperandDescriptor *descriptor, struct Context *context);
 
 
 #endif /* ASSEMBLER_OPERAND_DESCRIPTOR_H */

@@ -43,7 +43,8 @@ static bool is_in(struct HashTable *this, const char* key){
 }
 
 static void foreach(struct HashTable *this, void (*callback)(const char* key, void* value, void* context), void* context){
-    for (int i = 0; i < HASH_TABLE_SIZE; i++){
+    int i;
+    for (i = 0; i < HASH_TABLE_SIZE; i++){
         Node* current = this->buckets[i];
         while (current != NULL){
             callback(current->value, current->next, context);
@@ -53,12 +54,14 @@ static void foreach(struct HashTable *this, void (*callback)(const char* key, vo
 }
 
 HashTable * construct_hash_table() {
+    int i;
     HashTable* table = malloc_track_global(sizeof(HashTable));
     table->size = HASH_TABLE_SIZE;
     table->insert = insert;
     table->find = find;
+    table->foreach = foreach;
     table->is_in = is_in;
-    for (int i = 0; i < HASH_TABLE_SIZE; i++){
+    for (i = 0; i < HASH_TABLE_SIZE; i++){
         table->buckets[i] = NULL;
     }
     return table;

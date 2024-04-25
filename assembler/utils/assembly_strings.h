@@ -9,8 +9,6 @@
 #include "../sentence_type.h"
 #include "../descriptors/operation_descriptor.h"
 
-typedef struct context Context;
-
 void init_operation_table();
 void init_directive_table();
 OPCODE find_operation(const char* operation);

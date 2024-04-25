@@ -5,6 +5,8 @@
 #ifndef ASSEMBLER_MEMORY_ALLOCATOR_H
 #define ASSEMBLER_MEMORY_ALLOCATOR_H
 
+#include <stdlib.h>
+
 void init_memory();
 void pop_memory();
 void free_all_memory();

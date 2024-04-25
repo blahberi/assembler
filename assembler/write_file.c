@@ -12,14 +12,16 @@
 char* word_to_string(int word) {
     char* str = malloc_track(8); /* 7 digits plus null terminator */
     char* p = str + 7; /* start at the end of the string */
+    int i;
+    char* map;
     *p = '\0'; /* null terminator */
     p--; /* move to the last digit */
 
     /* map from base 4 digits to characters */
-    char map[] = {'*', '#', '%', '!'};
+    map = "*#%!";
 
     /* convert the word to base 4 */
-    for (int i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++) {
         int digit = word % 4;
         *p = map[digit];
         p--;
@@ -36,6 +38,7 @@ void write_line(Word* word, int address, FILE* file) {
 
 void write_file(char* filepath, Word* words, int ic, int dc) {
     int words_count = ic + dc;
+    int i;
     FILE* file = fopen(filepath, "w");
     if (file == NULL) {
         fprintf(stderr, "Error: could not open file %s\n", filepath);
@@ -44,7 +47,7 @@ void write_file(char* filepath, Word* words, int ic, int dc) {
     }
     fprintf(file, "%4d %d\n", ic, dc);
 
-    for (int i = 0; i < words_count; i++) {
+    for (i = 0; i < words_count; i++) {
         write_line(&words[i], i+100, file);
     }
     fclose(file);

@@ -63,9 +63,11 @@ add_executable(assembler main.c
         assembler/preprocessing/macro_table.c
         assembler/preprocessing/preprocessing_context.h
         assembler/preprocessing/preprocessing.c
-        assembler/preprocessing/preprocess.h
+        assembler/preprocessing/preprocessing.h
         memory_allocator/memory_allocator.c
         memory_allocator/memory_allocator.h
         assembler/write_file.c
         assembler/write_file.h
 )
+
+target_compile_options(assembler PRIVATE -ansi -Wall -pedantic)
