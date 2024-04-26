@@ -141,5 +141,8 @@ void preprocess(const char* filepath) {
     while (fgets(line, MAX_LINE_LENGTH, input)) { /* Read line by line from the source assembly */
         handle_line(&context, line); /* Handle the line */
     }
+
     free_all_memory(); /* Free all memory */
+    fclose(input); /* Close the input file */
+    fclose(output); /* Close the output file */
 }
